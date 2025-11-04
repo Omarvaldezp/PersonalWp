@@ -26,3 +26,4 @@ Thumbs.db
 # WordPress (si mantienes algo temporal)
 wp-config.php
 wp-content/uploads/
+.github/workflows/deploy.yml
