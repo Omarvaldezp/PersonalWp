@@ -148,3 +148,8 @@ Ve a **GitHub → Actions** y verás el deploy en proceso.
 ---
 
 **¿Preguntas?** Contacta al equipo de desarrollo
+ ```
+
+   Test deploy - [fecha actual]
+
+   ```
