@@ -12,6 +12,11 @@ build/
 .env.local
 .env.production
 
+# PHP Configuration (contiene credenciales sensibles)
+src/api/config/config.php
+src/uploads/
+logs/
+
 # IDEs
 .vscode/
 .idea/
