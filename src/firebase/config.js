@@ -3,12 +3,12 @@
 // La seguridad se maneja con las reglas de Firestore, NO ocultando estas keys
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY_AQUI",
-  authDomain: "TU_PROJECT_ID.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROJECT_ID.appspot.com",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID"
+  apiKey: "AIzaSyDr8d_MdP3O5Fgy6JeHlsfErjgj4HAqbMA",
+  authDomain: "omarvaldez-web.firebaseapp.com",
+  projectId: "omarvaldez-web",
+  storageBucket: "omarvaldez-web.firebasestorage.app",
+  messagingSenderId: "871685611733",
+  appId: "1:871685611733:web:6b2b4acb1a47630128025c"
 };
 
 export default firebaseConfig;
