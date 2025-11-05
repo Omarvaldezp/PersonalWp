@@ -1,155 +1,194 @@
-# Personal WebApp
+# 🎓 Sitio Web Académico - Dr. Omar Valdez Palazuelos
 
-Webapp moderna y personalizada, evolucionada desde WordPress a una aplicación web completamente personalizada.
-
-## 🚀 Características
-
-- **Deploy automático** con GitHub Actions
-- **Tecnologías modernas**: Vite, JavaScript moderno
-- **Estructura escalable** y profesional
-- **Deploy a SiteGround** con cada push
-
-## 📦 Estructura del Proyecto
-
-```
-PersonalWp/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml          # GitHub Actions para deploy automático
-├── src/
-│   ├── components/             # Componentes reutilizables
-│   ├── assets/                 # Imágenes, fuentes, etc.
-│   ├── styles/
-│   │   └── main.css           # Estilos principales
-│   ├── utils/                  # Funciones utilitarias
-│   ├── index.html             # HTML principal
-│   └── main.js                # Entry point JavaScript
-├── public/                     # Archivos estáticos
-├── dist/                       # Build output (generado automáticamente)
-├── package.json
-├── vite.config.js
-└── README.md
-```
-
-## ⚙️ Configuración Inicial
-
-### 1. Instalar Dependencias
-
-```bash
-npm install
-```
-
-### 2. Desarrollo Local
-
-```bash
-npm run dev
-```
-
-Esto abrirá tu webapp en `http://localhost:3000`
-
-### 3. Build para Producción
-
-```bash
-npm run build
-```
-
-Los archivos compilados estarán en `/dist`
-
-## 🔧 Configurar Deploy Automático a SiteGround
-
-### Paso 1: Obtener Credenciales FTP de SiteGround
-
-1. Entra a **SiteGround → Site Tools**
-2. Ve a **Devs → FTP Accounts Manager**
-3. Crea una cuenta FTP o usa la existente
-4. Anota:
-   - **Servidor FTP**: (ejemplo: `ftpXX.siteground.com`)
-   - **Usuario**: tu usuario FTP
-   - **Contraseña**: tu contraseña FTP
-   - **Puerto**: 21 (normalmente)
-
-### Paso 2: Configurar Secrets en GitHub
-
-1. Ve a tu repositorio en GitHub
-2. Clic en **Settings** → **Secrets and variables** → **Actions**
-3. Clic en **New repository secret**
-4. Agrega estos secrets:
-
-| Nombre | Valor | Ejemplo |
-|--------|-------|---------|
-| `FTP_SERVER` | Tu servidor FTP | `ftp26.siteground.com` |
-| `FTP_USERNAME` | Tu usuario FTP | `u123456789` |
-| `FTP_PASSWORD` | Tu contraseña FTP | `tu_contraseña_segura` |
-| `FTP_PORT` | Puerto (opcional) | `21` |
-
-### Paso 3: Ajustar Configuración de Deploy
-
-Edita `.github/workflows/deploy.yml` si necesitas:
-
-- **Cambiar directorio de deploy**: Modifica `server-dir: /public_html/`
-- **Cambiar directorio local**: Modifica `local-dir: ./dist/`
-- **Protocolo**: Usa `ftps`, `ftp`, o `sftp` según tu SiteGround
-
-### Paso 4: Realizar tu Primer Deploy
-
-```bash
-git add .
-git commit -m "Initial webapp setup with auto-deploy"
-git push origin main
-```
-
-Ve a **GitHub → Actions** y verás el deploy en proceso.
-
-## 🔄 Workflow de Desarrollo
-
-1. **Desarrolla localmente**: `npm run dev`
-2. **Haz commit** de tus cambios: `git commit -m "descripción"`
-3. **Push a GitHub**: `git push origin main`
-4. **Deploy automático** se ejecuta automáticamente
-5. **Verifica** tu sitio en SiteGround
-
-## 🛠️ Próximos Pasos
-
-- [ ] Agregar framework (React, Vue, Svelte)
-- [ ] Configurar TypeScript
-- [ ] Agregar testing (Jest, Vitest)
-- [ ] Implementar CI/CD avanzado
-- [ ] Agregar backend API (Node.js, PHP)
-- [ ] Configurar base de datos
-- [ ] Implementar autenticación de usuarios
-
-## 📝 Notas Importantes
-
-- El deploy automático solo se ejecuta en push a `main` o `master`
-- Puedes ejecutar deploy manualmente desde GitHub Actions
-- Los archivos en `.gitignore` NO se suben a SiteGround
-- El directorio `/dist` se genera automáticamente con `npm run build`
-
-## 🆘 Troubleshooting
-
-### El deploy falla
-
-- Verifica que los secrets estén correctos en GitHub
-- Confirma que el usuario FTP tenga permisos de escritura
-- Revisa los logs en GitHub Actions
-
-### Cambios no se reflejan
-
-- Limpia cache del navegador (Ctrl + Shift + R)
-- Verifica que el deploy terminó exitosamente en GitHub Actions
-- Confirma que el directorio de destino sea correcto
-
-## 📚 Recursos
-
-- [Vite Documentation](https://vitejs.dev/)
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [SiteGround FTP Guide](https://www.siteground.com/tutorials/ftp/)
+Sitio web profesional para profesor universitario, investigador y consultor especializado en **Blockchain**, **Bitcoin**, **Inteligencia Artificial** y **Fintech**.
 
 ---
 
-**¿Preguntas?** Contacta al equipo de desarrollo
- ```
+## 🔥 Stack Tecnológico
 
-   Test deploy - [fecha actual]
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
+- **Backend:** Firebase (Firestore Database)
+- **Hosting:** Firebase Hosting
+- **Autenticación:** Firebase Auth (futuro)
+- **Storage:** Firebase Storage (futuro)
 
-   ```
+---
+
+## ✨ Características
+
+### Para Visitantes
+
+- 📝 **Blog** - Artículos sobre tecnologías emergentes
+- 🎓 **Cursos** - Capacitaciones en Blockchain, IA y Fintech
+- 🔬 **Investigaciones** - Publicaciones académicas
+- 📧 **Contacto** - Formulario de contacto directo
+- 📰 **Newsletter** - Suscripción a boletín
+
+### Para Administradores
+
+- ✅ Panel de administración visual (Firebase Console)
+- ✅ Agregar/editar contenido sin programar
+- ✅ Base de datos en tiempo real
+- ✅ Sin mantenimiento de servidores
+- ✅ Analytics incluido
+- ✅ Hosting GRATIS con SSL
+
+---
+
+## 🚀 Configuración Rápida
+
+### Prerrequisitos
+
+- Node.js 18+ instalado
+- Cuenta de Google
+- Git instalado
+
+### Instalación
+
+```bash
+# 1. Clonar repositorio
+git clone https://github.com/Omarvaldezp/PersonalWp.git
+cd PersonalWp
+
+# 2. Instalar dependencias
+npm install
+
+# 3. Configurar Firebase
+# Lee la guía completa en: FIREBASE_SETUP_GUIDE.md
+
+# 4. Actualizar configuración
+# Edita src/firebase/config.js con tu configuración de Firebase
+
+# 5. Probar localmente
+npx firebase serve
+
+# 6. Deploy a producción
+npx firebase deploy
+```
+
+---
+
+## 📖 Documentación
+
+### Guías Disponibles
+
+- **[FIREBASE_SETUP_GUIDE.md](FIREBASE_SETUP_GUIDE.md)** - Guía completa paso a paso (⭐ EMPIEZA AQUÍ)
+- **[BACKEND_SETUP.md](BACKEND_SETUP.md)** - Setup anterior con PHP/PostgreSQL (legacy)
+- **[POSTGRESQL_SETUP_OPTIONS.md](POSTGRESQL_SETUP_OPTIONS.md)** - Opciones de PostgreSQL (legacy)
+
+### Estructura del Proyecto
+
+```
+PersonalWp/
+├── src/
+│   ├── index.html              # Página principal (versión Firebase)
+│   ├── styles/
+│   │   └── main.css           # Estilos
+│   ├── firebase/
+│   │   ├── config.js          # Configuración Firebase
+│   │   ├── firebase.js        # Inicialización
+│   │   └── services/          # Servicios CRUD
+│   │       ├── blogService.js
+│   │       ├── courseService.js
+│   │       ├── researchService.js
+│   │       ├── contactService.js
+│   │       └── newsletterService.js
+│   └── admin/ (legacy PHP)
+├── firestore.rules             # Reglas de seguridad Firestore
+├── firestore.indexes.json      # Índices de Firestore
+├── firebase.json               # Configuración Firebase Hosting
+└── package.json                # Dependencias del proyecto
+```
+
+---
+
+## 🎛️ Panel de Administración
+
+### Acceso
+
+1. Ir a: **https://console.firebase.google.com/**
+2. Seleccionar proyecto: `omarvaldez-web`
+3. Navegar a **Firestore Database**
+
+### Gestión de Contenido
+
+#### Agregar Nuevo Blog Post
+
+```
+1. Firestore Database > blog_posts
+2. Click "Agregar documento"
+3. Llenar campos:
+   - titulo: "Tu título"
+   - slug: "tu-titulo"
+   - extracto: "Resumen corto"
+   - contenido: "Contenido completo"
+   - categorias: ["Blockchain", "Bitcoin"]
+   - estado: "publicado"
+   - fecha_publicacion: (timestamp actual)
+4. Guardar
+```
+
+---
+
+## 🌐 URLs del Proyecto
+
+### Desarrollo
+
+- **Local:** http://localhost:5000 (con `firebase serve`)
+
+### Producción
+
+- **Firebase Hosting:** https://omarvaldez-web.web.app
+- **Dominio Custom:** https://omarvaldez.com (configurar en Firebase Console)
+
+---
+
+## 🔒 Seguridad
+
+### Reglas de Firestore
+
+- ✅ Lectura pública de contenido publicado
+- ✅ Solo admin puede escribir (desde Firebase Console)
+- ✅ Formularios pueden crear documentos
+- ✅ Protección contra acceso no autorizado
+
+---
+
+## 💰 Costos
+
+### Firebase Free Tier (Spark Plan)
+
+**Completamente GRATIS:**
+
+- ✅ 50,000 lecturas/día
+- ✅ 20,000 escrituras/día
+- ✅ 1GB almacenamiento
+- ✅ 10GB bandwidth/mes
+- ✅ Hosting con SSL
+- ✅ Analytics ilimitado
+
+**Tu sitio académico cabe PERFECTO en el tier gratuito.**
+
+---
+
+## 🛠️ Desarrollo
+
+### Scripts Disponibles
+
+```bash
+# Servir con Firebase Hosting local
+npm run firebase:serve
+
+# Deploy a producción
+npm run firebase:deploy
+```
+
+---
+
+## 📄 Licencia
+
+MIT License - Omar Valdez Palazuelos
+
+---
+
+**Hecho con ❤️ para la educación en tecnologías emergentes**

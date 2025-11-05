@@ -31,4 +31,12 @@ Thumbs.db
 # WordPress (si mantienes algo temporal)
 wp-config.php
 wp-content/uploads/
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# GitHub Actions (ya no necesario con Firebase)
 .github/workflows/deploy.yml

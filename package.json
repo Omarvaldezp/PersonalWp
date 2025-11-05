@@ -1,19 +1,24 @@
 {
   "name": "personal-webapp",
-  "version": "1.0.0",
-  "description": "Modern webapp - evolved from WordPress",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Modern webapp with Firebase backend",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build"
+    "firebase:init": "firebase login && firebase init",
+    "firebase:deploy": "firebase deploy",
+    "firebase:serve": "firebase serve"
   },
-  "keywords": ["webapp", "personal"],
-  "author": "",
+  "keywords": ["webapp", "personal", "firebase"],
+  "author": "Omar Valdez Palazuelos",
   "license": "MIT",
   "devDependencies": {
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "firebase-tools": "^13.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "^10.7.0"
+  }
 }
