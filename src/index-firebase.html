@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Omar Valdez Palazuelos - Experto en Blockchain, IA y Fintech</title>
+    <meta name="description" content="Profesor universitario, investigador y consultor especializado en Blockchain, Bitcoin, Inteligencia Artificial y Fintech.">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">Omar Valdez</a>
+
+            <button class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="#investigacion" class="nav-link">Investigación</a></li>
+                <li><a href="#cursos" class="nav-link">Cursos</a></li>
+                <li><a href="#blog" class="nav-link">Blog</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-background"></div>
+        <div class="container hero-container">
+            <h1 class="hero-title">
+                <span class="hero-greeting">Bienvenido. Soy</span>
+                <span class="hero-name">Omar Valdez Palazuelos</span>
+            </h1>
+            <p class="hero-subtitle">
+                Profesor, Investigador, Consultor y Experto en Tecnologías Emergentes
+            </p>
+            <div class="hero-specializations">
+                <span class="specialization-tag">Blockchain</span>
+                <span class="specialization-tag">Bitcoin</span>
+                <span class="specialization-tag">Inteligencia Artificial</span>
+                <span class="specialization-tag">Fintech</span>
+            </div>
+            <div class="hero-cta">
+                <a href="#servicios" class="btn btn-primary">Conoce mis servicios</a>
+                <a href="#contacto" class="btn btn-outline">Contactar</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section" id="blog">
+        <div class="container">
+            <header class="section-header">
+                <h2 class="section-title">Blog</h2>
+                <p class="section-subtitle">Últimas publicaciones sobre tecnologías emergentes</p>
+            </header>
+
+            <div class="blog-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <div id="blog-category-filters">
+                    <!-- Categorías se cargan dinámicamente desde Firebase -->
+                </div>
+            </div>
+
+            <div class="blog-grid" id="blog-grid">
+                <!-- Posts se cargan dinámicamente desde Firebase -->
+                <div class="loading">Cargando posts...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="section bg-light" id="cursos">
+        <div class="container">
+            <header class="section-header">
+                <h2 class="section-title">Cursos y Capacitaciones</h2>
+                <p class="section-subtitle">Formación especializada en tecnologías emergentes</p>
+            </header>
+
+            <div class="courses-grid" id="courses-grid">
+                <!-- Cursos se cargan dinámicamente desde Firebase -->
+                <div class="loading">Cargando cursos...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Section -->
+    <section class="section" id="investigacion">
+        <div class="container">
+            <header class="section-header">
+                <h2 class="section-title">Investigación</h2>
+                <p class="section-subtitle">Publicaciones académicas y estudios</p>
+            </header>
+
+            <div class="research-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <div id="research-category-filters">
+                    <!-- Categorías se cargan dinámicamente desde Firebase -->
+                </div>
+            </div>
+
+            <div class="research-grid" id="research-grid">
+                <!-- Investigaciones se cargan dinámicamente desde Firebase -->
+                <div class="loading">Cargando investigaciones...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section" id="contacto">
+        <div class="container">
+            <header class="section-header">
+                <h2 class="section-title">Contacto</h2>
+                <p class="section-subtitle">¿Tienes un proyecto o consulta? Escríbeme</p>
+            </header>
+
+            <div class="contact-grid">
+                <form class="contact-form" id="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombre">Nombre completo *</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tipo">Tipo de consulta *</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="consultoria">Consultoría</option>
+                                <option value="curso">Curso</option>
+                                <option value="investigacion">Investigación</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje *</label>
+                        <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+
+                    <div id="contact-status" class="form-status"></div>
+                </form>
+
+                <div class="contact-info">
+                    <h3>Información de contacto</h3>
+                    <p>Estoy disponible para consultorias, cursos y proyectos de investigación.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="section newsletter-section">
+        <div class="container">
+            <div class="newsletter-card">
+                <h3>Suscríbete al Newsletter</h3>
+                <p>Recibe actualizaciones sobre tecnologías emergentes, cursos y publicaciones</p>
+
+                <form class="newsletter-form" id="newsletter-form">
+                    <input
+                        type="email"
+                        id="newsletter-email"
+                        placeholder="Tu email"
+                        required
+                    >
+                    <button type="submit" class="btn btn-primary">Suscribirse</button>
+                </form>
+
+                <div id="newsletter-status" class="form-status"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>&copy; 2024 Omar Valdez Palazuelos. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase y Scripts -->
+    <script type="module">
+        // Importar Firebase y servicios
+        import { db } from './firebase/firebase.js';
+        import * as blogService from './firebase/services/blogService.js';
+        import * as courseService from './firebase/services/courseService.js';
+        import * as researchService from './firebase/services/researchService.js';
+        import * as contactService from './firebase/services/contactService.js';
+        import * as newsletterService from './firebase/services/newsletterService.js';
+
+        // Hacer servicios disponibles globalmente para debugging
+        window.services = {
+            blog: blogService,
+            course: courseService,
+            research: researchService,
+            contact: contactService,
+            newsletter: newsletterService
+        };
+
+        // Cargar datos cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadAllContent();
+            setupEventListeners();
+        });
+
+        // Cargar todo el contenido
+        async function loadAllContent() {
+            try {
+                await Promise.all([
+                    loadBlogPosts(),
+                    loadCourses(),
+                    loadResearch()
+                ]);
+            } catch (error) {
+                console.error('Error cargando contenido:', error);
+            }
+        }
+
+        // Cargar blog posts
+        async function loadBlogPosts() {
+            try {
+                const posts = await blogService.getAllPosts({ limite: 12 });
+                const categories = await blogService.getCategorias();
+
+                // Renderizar categorías
+                renderCategories(categories, 'blog-category-filters', 'blog');
+
+                // Renderizar posts
+                renderBlogPosts(posts);
+            } catch (error) {
+                console.error('Error cargando blog:', error);
+                document.getElementById('blog-grid').innerHTML =
+                    '<p class="error">Error cargando posts. Por favor, intenta más tarde.</p>';
+            }
+        }
+
+        // Cargar cursos
+        async function loadCourses() {
+            try {
+                const courses = await courseService.getFeaturedCourses(6);
+                renderCourses(courses);
+            } catch (error) {
+                console.error('Error cargando cursos:', error);
+                document.getElementById('courses-grid').innerHTML =
+                    '<p class="error">Error cargando cursos.</p>';
+            }
+        }
+
+        // Cargar investigaciones
+        async function loadResearch() {
+            try {
+                const research = await researchService.getAllResearch({ limite: 10 });
+                const categories = await researchService.getCategorias();
+
+                renderCategories(categories, 'research-category-filters', 'research');
+                renderResearch(research);
+            } catch (error) {
+                console.error('Error cargando investigaciones:', error);
+                document.getElementById('research-grid').innerHTML =
+                    '<p class="error">Error cargando investigaciones.</p>';
+            }
+        }
+
+        // Renderizar categorías
+        function renderCategories(categories, containerId, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = categories.map(cat =>
+                `<button class="filter-btn" data-filter="${cat}" data-type="${type}">${cat}</button>`
+            ).join('');
+        }
+
+        // Renderizar blog posts
+        function renderBlogPosts(posts) {
+            const grid = document.getElementById('blog-grid');
+
+            if (posts.length === 0) {
+                grid.innerHTML = '<p>No hay posts disponibles.</p>';
+                return;
+            }
+
+            grid.innerHTML = posts.map(post => `
+                <article class="blog-card" data-categories="${(post.categorias || []).join(',')}">
+                    ${post.imagen_portada ? `<img src="${post.imagen_portada}" alt="${post.titulo}">` : ''}
+                    <div class="blog-card-content">
+                        <div class="blog-meta">
+                            ${(post.categorias || []).map(cat =>
+                                `<span class="blog-category">${cat}</span>`
+                            ).join('')}
+                            <time>${formatDate(post.fecha_publicacion)}</time>
+                        </div>
+                        <h3>${post.titulo}</h3>
+                        <p>${post.extracto || ''}</p>
+                        <a href="#" class="blog-read-more" data-id="${post.id}">Leer más →</a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Renderizar cursos
+        function renderCourses(courses) {
+            const grid = document.getElementById('courses-grid');
+
+            if (courses.length === 0) {
+                grid.innerHTML = '<p>No hay cursos disponibles.</p>';
+                return;
+            }
+
+            grid.innerHTML = courses.map(course => `
+                <div class="course-card ${course.destacado ? 'featured' : ''}">
+                    <div class="course-header">
+                        <span class="course-level">${course.nivel}</span>
+                        ${course.destacado ? '<span class="course-badge">Destacado</span>' : ''}
+                    </div>
+                    <h3>${course.titulo}</h3>
+                    <p>${course.descripcion_corta}</p>
+                    <div class="course-footer">
+                        <span class="course-duration">${course.duracion_horas}h</span>
+                        <span class="course-price">${formatPrice(course.precio, course.moneda)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar investigaciones
+        function renderResearch(research) {
+            const grid = document.getElementById('research-grid');
+
+            if (research.length === 0) {
+                grid.innerHTML = '<p>No hay investigaciones disponibles.</p>';
+                return;
+            }
+
+            grid.innerHTML = research.map(item => `
+                <article class="research-card" data-categories="${(item.categorias || []).join(',')}">
+                    <div class="research-type">${item.tipo}</div>
+                    <h3>${item.titulo}</h3>
+                    <p class="research-authors">${(item.autores || []).join(', ')}</p>
+                    <p>${item.abstract || ''}</p>
+                    <div class="research-meta">
+                        <time>${item.ano_publicacion || formatDate(item.fecha_publicacion)}</time>
+                        ${item.revista ? `<span>${item.revista}</span>` : ''}
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Event listeners
+        function setupEventListeners() {
+            // Navegación móvil
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.getElementById('nav-menu');
+
+            navToggle?.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+
+            // Formulario de contacto
+            const contactForm = document.getElementById('contact-form');
+            contactForm?.addEventListener('submit', handleContactSubmit);
+
+            // Newsletter
+            const newsletterForm = document.getElementById('newsletter-form');
+            newsletterForm?.addEventListener('submit', handleNewsletterSubmit);
+
+            // Filtros
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('.filter-btn')) {
+                    handleFilterClick(e.target);
+                }
+            });
+        }
+
+        // Manejar envío de contacto
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            const statusDiv = document.getElementById('contact-status');
+            const form = e.target;
+
+            try {
+                statusDiv.textContent = 'Enviando...';
+                statusDiv.className = 'form-status info';
+
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData);
+
+                await contactService.sendContactMessage(data);
+
+                statusDiv.textContent = '✓ Mensaje enviado exitosamente. Te contactaré pronto.';
+                statusDiv.className = 'form-status success';
+                form.reset();
+            } catch (error) {
+                statusDiv.textContent = '✗ Error al enviar. Intenta nuevamente.';
+                statusDiv.className = 'form-status error';
+            }
+        }
+
+        // Manejar suscripción newsletter
+        async function handleNewsletterSubmit(e) {
+            e.preventDefault();
+            const statusDiv = document.getElementById('newsletter-status');
+            const email = document.getElementById('newsletter-email').value;
+
+            try {
+                statusDiv.textContent = 'Suscribiendo...';
+                statusDiv.className = 'form-status info';
+
+                await newsletterService.subscribe({ email });
+
+                statusDiv.textContent = '✓ ¡Suscripción exitosa!';
+                statusDiv.className = 'form-status success';
+                e.target.reset();
+            } catch (error) {
+                statusDiv.textContent = error.message || '✗ Error en la suscripción.';
+                statusDiv.className = 'form-status error';
+            }
+        }
+
+        // Manejar filtros
+        function handleFilterClick(button) {
+            const type = button.dataset.type;
+            const filter = button.dataset.filter;
+
+            // Actualizar botones activos
+            button.parentElement.querySelectorAll('.filter-btn').forEach(btn =>
+                btn.classList.remove('active')
+            );
+            button.classList.add('active');
+
+            // Filtrar elementos
+            const gridId = type === 'blog' ? 'blog-grid' : 'research-grid';
+            const cards = document.querySelectorAll(`#${gridId} > *`);
+
+            cards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = '';
+                } else {
+                    const categories = card.dataset.categories?.split(',') || [];
+                    card.style.display = categories.includes(filter) ? '' : 'none';
+                }
+            });
+        }
+
+        // Utilidades
+        function formatDate(date) {
+            if (!date) return '';
+            return new Date(date).toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatPrice(price, currency = 'MXN') {
+            if (price === 0) return 'Gratis';
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency
+            }).format(price);
+        }
+    </script>
+</body>
+</html>

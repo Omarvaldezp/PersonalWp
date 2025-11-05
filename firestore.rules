@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Funciones helper
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == 'admin';
+    }
+
+    // Blog Posts
+    match /blog_posts/{postId} {
+      // Todos pueden leer posts publicados
+      allow read: if resource.data.estado == 'publicado';
+
+      // Solo admin puede crear, actualizar, eliminar
+      allow create, update, delete: if isAdmin();
+
+      // Admin puede leer todo (incluso borradores)
+      allow read: if isAdmin();
+    }
+
+    // Cursos
+    match /cursos/{cursoId} {
+      // Todos pueden leer cursos activos
+      allow read: if resource.data.activo == true;
+
+      // Solo admin puede crear, actualizar, eliminar
+      allow create, update, delete: if isAdmin();
+
+      // Admin puede leer todo
+      allow read: if isAdmin();
+    }
+
+    // Investigaciones
+    match /investigaciones/{investigacionId} {
+      // Todos pueden leer
+      allow read: if true;
+
+      // Solo admin puede escribir
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Contactos
+    match /contactos/{contactoId} {
+      // Cualquiera puede crear (enviar mensaje)
+      allow create: if true;
+
+      // Solo admin puede leer
+      allow read: if isAdmin();
+
+      // Solo admin puede actualizar/eliminar
+      allow update, delete: if isAdmin();
+    }
+
+    // Newsletter
+    match /newsletter_suscriptores/{suscriptorId} {
+      // Cualquiera puede suscribirse
+      allow create: if true;
+
+      // Solo admin puede leer
+      allow read: if isAdmin();
+
+      // Solo admin puede actualizar/eliminar
+      allow update, delete: if isAdmin();
+    }
+
+    // Usuarios
+    match /usuarios/{userId} {
+      // Los usuarios pueden leer su propia información
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+
+      // Solo admin puede crear/actualizar/eliminar usuarios
+      allow create, update, delete: if isAdmin();
+
+      // Admin puede leer todo
+      allow read: if isAdmin();
+    }
+
+    // Denegar todo lo demás por defecto
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
