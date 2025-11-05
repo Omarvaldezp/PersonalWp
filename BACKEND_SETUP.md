@@ -49,23 +49,27 @@ Sistema completo de backend para el sitio académico de Dr. Omar Valdez Palazuel
 
 ### Paso 2: Ejecutar el Schema SQL
 
-#### Opción A: Desde phpPgAdmin (en SiteGround)
+⚠️ **IMPORTANTE:** SiteGround ya NO tiene phpPgAdmin disponible en Site Tools.
 
-1. Ir a **Site Tools > PostgreSQL > phpPgAdmin**
-2. Seleccionar tu base de datos
-3. Click en **SQL** tab
-4. Copiar TODO el contenido de `database/schema.sql`
-5. Pegar y ejecutar
+📖 **Lee el archivo `POSTGRESQL_SETUP_OPTIONS.md` que tiene 3 métodos detallados:**
 
-#### Opción B: Desde SSH (si tienes acceso)
+1. **Script PHP automático** (⭐ RECOMENDADO - Más fácil)
+2. **Acceso remoto con pgAdmin** (para gestión continua)
+3. **SSH + psql** (para usuarios avanzados)
 
-```bash
-psql -U omarvaldez_admin -d omarvaldez_db -f database/schema.sql
-```
+#### Método Rápido (Script PHP):
+
+1. Editar credenciales en `setup-database.php`
+2. Hacer commit y push (GitHub Actions lo sube)
+3. Visitar: `https://omarvaldez.com/setup-database.php?password=admin123`
+4. Click en "Instalar Schema"
+5. ¡Borrar el archivo después!
+
+**Ver instrucciones completas:** `POSTGRESQL_SETUP_OPTIONS.md`
 
 ### Paso 3: Verificar Instalación
 
-Ejecuta este query en phpPgAdmin para verificar:
+Ejecuta este query para verificar (usando cualquiera de los 3 métodos):
 
 ```sql
 SELECT table_name
