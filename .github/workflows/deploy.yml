@@ -12,6 +12,8 @@ on:
 
       - master
 
+      - claude/analyze-omarvaldez-reference-011CUownGP9B36AP6BYNEj3c  # ← Agregar
+
   workflow_dispatch: # Permite ejecutar manualmente
 
  
