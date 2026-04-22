@@ -2,6 +2,7 @@
 /**
  * Gestión de Blog Posts
  * CRUD completo de posts del blog
+ * Último deploy: 2026-04-22 (test automatización)
  */
 
 require_once __DIR__ . '/../api/auth/Auth.php';
