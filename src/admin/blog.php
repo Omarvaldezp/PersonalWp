@@ -8,7 +8,7 @@
 require_once __DIR__ . '/../api/auth/Auth.php';
 
 $auth = new Auth();
-$auth->requireAuth();
+$auth->requireAuthPage();
 $user = $auth->user();
 
 $page_title = 'Blog Posts';

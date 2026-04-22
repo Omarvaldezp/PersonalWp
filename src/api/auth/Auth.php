@@ -111,11 +111,21 @@ class Auth {
     }
 
     /**
-     * Middleware para requerir autenticación
+     * Middleware para requerir autenticación (API - devuelve JSON)
      */
     public function requireAuth() {
         if (!$this->check()) {
             Response::unauthorized('Debes iniciar sesión para acceder a este recurso');
+        }
+    }
+
+    /**
+     * Middleware para requerir autenticación (Páginas - redirige a login)
+     */
+    public function requireAuthPage() {
+        if (!$this->check()) {
+            header('Location: /admin/login.php');
+            exit();
         }
     }
 
@@ -127,6 +137,18 @@ class Auth {
 
         if (!$this->hasRole('admin')) {
             Response::forbidden('No tienes permisos para acceder a este recurso');
+        }
+    }
+
+    /**
+     * Middleware para requerir rol admin (Páginas - redirige a login)
+     */
+    public function requireAdminPage() {
+        $this->requireAuthPage();
+
+        if (!$this->hasRole('admin')) {
+            header('Location: /admin/login.php?error=forbidden');
+            exit();
         }
     }
 
