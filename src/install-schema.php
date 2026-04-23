@@ -96,6 +96,25 @@ require_once __DIR__ . '/api/config/config.php';
                     echo '</div>';
                 }
 
+                // Resetear password del admin
+                if ($_POST['action'] === 'reset_admin_password') {
+                    $newPassword = $_POST['new_password'] ?? 'admin123';
+                    $hash = password_hash($newPassword, PASSWORD_BCRYPT);
+
+                    $stmt = $pdo->prepare("UPDATE usuarios SET password_hash = :hash WHERE username = 'admin'");
+                    $stmt->execute([':hash' => $hash]);
+
+                    if ($stmt->rowCount() > 0) {
+                        echo '<div class="success">';
+                        echo '<h3>✅ Password del admin actualizado</h3>';
+                        echo '<p>Usuario: <code>admin</code></p>';
+                        echo '<p>Nueva contraseña: <code>' . htmlspecialchars($newPassword) . '</code></p>';
+                        echo '</div>';
+                    } else {
+                        echo '<div class="error">⚠️ No se encontró el usuario admin</div>';
+                    }
+                }
+
             } catch (PDOException $e) {
                 echo '<div class="error">';
                 echo '<h3>❌ Error de conexión</h3>';
@@ -131,6 +150,14 @@ User: <?= DB_USER ?></pre>
         <form method="POST">
             <button type="submit" name="action" value="install_seed" class="secondary">
                 🌱 Instalar Datos de Ejemplo
+            </button>
+        </form>
+
+        <h3>🔑 Resetear contraseña del admin</h3>
+        <form method="POST">
+            <input type="text" name="new_password" placeholder="Nueva contraseña" value="admin123" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-right: 10px;">
+            <button type="submit" name="action" value="reset_admin_password" class="secondary">
+                🔑 Resetear Password Admin
             </button>
         </form>
 

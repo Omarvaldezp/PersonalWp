@@ -320,7 +320,7 @@ INSERT INTO usuarios (username, email, password_hash, nombre_completo, rol)
 VALUES (
     'admin',
     'omar@omarvaldez.com',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- admin123
+    '$2y$12$zUHaDWaC8.JYczXrxlGb.u6YC5z9S3C4betgmWPR9.uMDWW5p1Bea', -- admin123
     'Omar Valdez Palazuelos',
     'admin'
 ) ON CONFLICT (username) DO NOTHING;
