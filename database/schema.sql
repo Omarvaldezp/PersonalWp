@@ -3,9 +3,8 @@
 -- Dr. Omar Valdez Palazuelos
 -- ============================================
 
--- Extensiones necesarias
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- Para búsqueda de similitud
+-- Nota: SiteGround PostgreSQL no permite CREATE EXTENSION
+-- Se usa SERIAL en lugar de UUID para IDs (ver tabla sesiones)
 
 -- ============================================
 -- Tabla: usuarios (admin)
@@ -239,7 +238,7 @@ CREATE INDEX idx_newsletter_intereses ON newsletter_suscriptores USING GIN(inter
 -- Tabla: sesiones (para auth)
 -- ============================================
 CREATE TABLE IF NOT EXISTS sesiones (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id SERIAL PRIMARY KEY,
     usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
     token VARCHAR(255) UNIQUE NOT NULL,
     ip_address VARCHAR(45),
