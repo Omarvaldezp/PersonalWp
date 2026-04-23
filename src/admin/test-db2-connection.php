@@ -7,8 +7,8 @@ error_reporting(E_ALL);
 
 $db_host = 'localhost';
 $db_port = '5432';
-$db_name = 'dbguny4ziwyjef'; // La otra DB
-$db_user = 'ur59a0toszauz';  // Mismo usuario
+$db_name = 'dbguny4ziwyjef';
+$db_user = 'uqkt4rfs4dnou';
 $db_password = 'Omarvaldez2022.';
 
 echo "<h1>Test de conexión - Segunda DB</h1>";
