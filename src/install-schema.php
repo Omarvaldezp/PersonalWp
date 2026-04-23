@@ -15,7 +15,7 @@ if (!isset($_GET['password']) || $_GET['password'] !== $SETUP_PASSWORD) {
 }
 
 // Cargar configuración
-require_once __DIR__ . '/src/api/config/config.php';
+require_once __DIR__ . '/api/config/config.php';
 
 ?>
 <!DOCTYPE html>
