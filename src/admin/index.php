@@ -6,7 +6,7 @@
 require_once __DIR__ . '/../api/auth/Auth.php';
 
 $auth = new Auth();
-$auth->requireAuth();
+$auth->requireAuthPage(); // Redirige a login si no está autenticado
 
 $user = $auth->user();
 ?>
