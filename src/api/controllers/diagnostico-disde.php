@@ -21,7 +21,7 @@ try {
         $data = Response::getRequestData();
 
         // Validar datos obligatorios
-        $required = ['nombre', 'correo', 'grado', 'carrera', 'area_form', 'respuestas', 'conocimiento_total', 'detalle'];
+        $required = ['nombre', 'correo', 'grado', 'carrera_licenciatura', 'area_formacion', 'respuestas', 'conocimiento_total', 'detalle'];
         foreach ($required as $field) {
             if (empty($data[$field])) {
                 Response::error("El campo '$field' es requerido", 400);
@@ -77,8 +77,8 @@ try {
             ':nombre' => $data['nombre'],
             ':correo' => $data['correo'],
             ':grado' => $data['grado'],
-            ':carrera' => $data['carrera'],
-            ':area_form' => $data['area_form'],
+            ':carrera' => $data['carrera_licenciatura'],
+            ':area_form' => $data['area_formacion'],
             ':institucion_lic' => $data['institucion_licenciatura'] ?? null,
             ':institucion_maestria' => $data['institucion_maestria'] ?? null,
             ':conocimiento_total' => $data['conocimiento_total'],
