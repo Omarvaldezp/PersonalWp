@@ -169,65 +169,120 @@ try {
 }
 
 /**
- * Enviar email de confirmación con PDF adjunto
+ * Enviar email de confirmación con link a Bienvenida
  */
 function enviarEmailConfirmacion($data) {
     $to = $data['correo'];
     $nombre = $data['nombre'];
-    $puntaje = $data['conocimiento_total'];
 
-    $subject = 'Diagnóstico DISDE - Confirmación de registro';
+    $subject = 'Recibimos tu cuestionario - Curso Propedéutico DISDE';
 
-    // Mensaje (placeholder - el usuario lo definirá después)
-    $message = "Estimado/a $nombre,\n\n";
-    $message .= "Hemos recibido tu cuestionario diagnóstico del Curso Propedéutico DISDE.\n\n";
-    $message .= "Tu puntaje de conocimiento: $puntaje/12\n\n";
-    $message .= "En el archivo adjunto encontrarás información importante sobre el curso.\n\n";
-    $message .= "Próximamente recibirás más instrucciones.\n\n";
-    $message .= "Saludos,\n";
-    $message .= "Dr. Omar Valdez Palazuelos\n";
-    $message .= "Facilitador - Curso Propedéutico DISDE\n";
-    $message .= "Facultad de Contaduría y Administración - UAS";
+    // URL del servidor actual
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $enlaceBienvenida = "$protocol://$host/bienvenida-disde.php";
 
-    // Headers
+    // Plantilla HTML del email
+    $htmlMessage = obtenerPlantillaEmail($nombre, $enlaceBienvenida);
+
+    // Headers para email HTML
     $headers = [
         'From: noreply@omarvaldez.com',
         'Reply-To: omar@omarvaldez.com',
         'X-Mailer: PHP/' . phpversion(),
-        'MIME-Version: 1.0'
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8'
     ];
 
-    // Adjuntar PDF (si existe)
-    $pdfPath = __DIR__ . '/../../uploads/diagnostico-disde-info.pdf';
+    return mail($to, $subject, $htmlMessage, implode("\r\n", $headers));
+}
 
-    if (file_exists($pdfPath)) {
-        // Email con adjunto
-        $boundary = md5(time());
-
-        $headers[] = 'Content-Type: multipart/mixed; boundary="' . $boundary . '"';
-
-        $body = "--$boundary\r\n";
-        $body .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-        $body .= $message . "\r\n\r\n";
-
-        // Adjuntar PDF
-        $fileContent = file_get_contents($pdfPath);
-        $fileContentEncoded = chunk_split(base64_encode($fileContent));
-
-        $body .= "--$boundary\r\n";
-        $body .= "Content-Type: application/pdf; name=\"Informacion_DISDE.pdf\"\r\n";
-        $body .= "Content-Transfer-Encoding: base64\r\n";
-        $body .= "Content-Disposition: attachment; filename=\"Informacion_DISDE.pdf\"\r\n\r\n";
-        $body .= $fileContentEncoded . "\r\n";
-        $body .= "--$boundary--";
-
-        return mail($to, $subject, $body, implode("\r\n", $headers));
-    } else {
-        // Email simple sin adjunto
-        $headers[] = 'Content-Type: text/plain; charset=UTF-8';
-        return mail($to, $subject, $message, implode("\r\n", $headers));
-    }
+/**
+ * Obtener plantilla HTML del email
+ */
+function obtenerPlantillaEmail($nombre, $enlaceSesion0) {
+    return '<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmación · Cuestionario Diagnóstico DISDE</title>
+</head>
+<body style="margin:0; padding:0; background-color:#eef1f5;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#eef1f5; padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px; max-width:600px; background-color:#ffffff; border-radius:12px; overflow:hidden; font-family:Arial, Helvetica, sans-serif; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+          <tr>
+            <td style="background-color:#1B365D; background-image:linear-gradient(135deg,#1B365D 0%,#2E5A9C 100%); padding:32px 30px; text-align:center;">
+              <div style="color:#C9A227; font-size:13px; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;">Universidad Autónoma de Sinaloa · FCA</div>
+              <div style="color:#ffffff; font-size:22px; font-weight:bold; line-height:1.3;">Curso Propedéutico · DISDE</div>
+              <div style="color:#dfe7f2; font-size:14px; margin-top:6px;">Doctorado en Ciencias en Innovación Social y Desarrollo Económico</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#C9A227; padding:12px 30px; text-align:center; color:#1B365D; font-size:15px; font-weight:bold;">
+              Hemos recibido tu cuestionario diagnóstico
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:30px;">
+              <p style="margin:0 0 16px; color:#333333; font-size:15px; line-height:1.7;">
+                Estimado(a) <strong>' . htmlspecialchars($nombre) . '</strong>:
+              </p>
+              <p style="margin:0 0 16px; color:#333333; font-size:15px; line-height:1.7;">
+                Gracias por completar el <strong>cuestionario diagnóstico</strong> del Curso Propedéutico del DISDE. Tus respuestas nos ayudan a conocer tu punto de partida para acompañarte mejor durante estas tres semanas.
+              </p>
+              <p style="margin:0 0 22px; color:#333333; font-size:15px; line-height:1.7;">
+                Antes de comenzar formalmente el curso, te pedimos revisar la <strong>Sesión 0 (Bienvenida)</strong>. Ahí encontrarás la información esencial: las Líneas de Investigación e Incidencia Social (LIES), la ruta de las nueve sesiones, la forma de evaluación, los lineamientos de uso ético de la inteligencia artificial y cómo está organizada el aula.
+              </p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding:6px 0 26px;">
+                    <a href="' . htmlspecialchars($enlaceSesion0) . '" target="_blank"
+                       style="display:inline-block; background-color:#1B365D; color:#ffffff; text-decoration:none; font-size:16px; font-weight:bold; padding:14px 34px; border-radius:8px;">
+                      Ver la Sesión 0 (Bienvenida)
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 22px; color:#666666; font-size:13px; line-height:1.6; text-align:center;">
+                Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
+                <a href="' . htmlspecialchars($enlaceSesion0) . '" target="_blank" style="color:#2E5A9C; word-break:break-all;">' . htmlspecialchars($enlaceSesion0) . '</a>
+              </p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background-color:#E8EEF7; border-left:4px solid #1B365D; border-radius:0 8px 8px 0; padding:16px 18px;">
+                    <p style="margin:0; color:#1B365D; font-size:14px; line-height:1.6;">
+                      <strong>Recomendación:</strong> ten a la mano un tema o problema de interés para investigar; lo iremos afinando desde la primera sesión para construir tu anteproyecto.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:24px 0 0; color:#333333; font-size:15px; line-height:1.7;">
+                Nos vemos en la Sesión 1. ¡Bienvenido(a) al curso!
+              </p>
+              <p style="margin:14px 0 0; color:#333333; font-size:15px; line-height:1.6;">
+                Atentamente,<br>
+                <strong>Dr. Omar Valdez Palazuelos</strong><br>
+                <span style="color:#666666; font-size:13px;">Facilitador del Curso Propedéutico DISDE</span>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color:#1B365D; padding:18px 30px; text-align:center;">
+              <p style="margin:0; color:#dfe7f2; font-size:12px; line-height:1.6;">
+                Facultad de Contaduría y Administración · Universidad Autónoma de Sinaloa<br>
+                Este mensaje fue enviado automáticamente tras registrar tu cuestionario diagnóstico.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>';
 }
 
 /**
