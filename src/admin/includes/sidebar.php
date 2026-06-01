@@ -39,6 +39,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span>📰</span> Newsletter
         </a>
 
+        <a href="diagnostico-disde.php" class="nav-item <?= $current_page === 'diagnostico-disde.php' ? 'active' : '' ?>">
+            <span>📊</span> Diagnóstico DISDE
+        </a>
+
         <hr style="margin: 1rem 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
 
         <a href="#" onclick="logout(); return false;" class="nav-item logout">
