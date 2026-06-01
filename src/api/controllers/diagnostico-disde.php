@@ -57,14 +57,16 @@ try {
         // Insertar en base de datos
         $sql = "INSERT INTO diagnostico_disde_respuestas (
                     nombre, correo, grado_academico, carrera_licenciatura,
-                    area_formacion, institucion, conocimiento_total,
+                    area_formacion, institucion_licenciatura, institucion_maestria,
+                    conocimiento_total,
                     respuestas_area1, respuestas_area2, respuestas_area3,
                     respuestas_area4, respuestas_area5, respuestas_area6,
                     respuestas_completas, resultados_por_area,
                     ip_address, user_agent
                 ) VALUES (
                     :nombre, :correo, :grado, :carrera,
-                    :area_form, :institucion, :conocimiento_total,
+                    :area_form, :institucion_lic, :institucion_maestria,
+                    :conocimiento_total,
                     :resp_area1, :resp_area2, :resp_area3,
                     :resp_area4, :resp_area5, :resp_area6,
                     :respuestas_completas, :resultados_por_area,
@@ -77,7 +79,8 @@ try {
             ':grado' => $data['grado'],
             ':carrera' => $data['carrera'],
             ':area_form' => $data['area_form'],
-            ':institucion' => $data['institucion'] ?? null,
+            ':institucion_lic' => $data['institucion_licenciatura'] ?? null,
+            ':institucion_maestria' => $data['institucion_maestria'] ?? null,
             ':conocimiento_total' => $data['conocimiento_total'],
             ':resp_area1' => json_encode($respuestasPorArea['area1']),
             ':resp_area2' => json_encode($respuestasPorArea['area2']),

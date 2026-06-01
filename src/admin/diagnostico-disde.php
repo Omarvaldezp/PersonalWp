@@ -238,7 +238,8 @@ async function verDetalle(id) {
                     <p><strong>Grado:</strong> ${escapeHtml(r.grado_academico)}</p>
                     <p><strong>Carrera:</strong> ${escapeHtml(r.carrera_licenciatura)}</p>
                     <p><strong>Área de formación:</strong> ${escapeHtml(r.area_formacion)}</p>
-                    <p><strong>Institución:</strong> ${escapeHtml(r.institucion || 'No especificada')}</p>
+                    <p><strong>Institución (Licenciatura):</strong> ${escapeHtml(r.institucion_licenciatura || 'No especificada')}</p>
+                    <p><strong>Institución (Maestría):</strong> ${escapeHtml(r.institucion_maestria || 'No especificada')}</p>
                     <p><strong>Fecha:</strong> ${formatFecha(r.created_at)}</p>
                 </div>
 

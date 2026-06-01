@@ -99,13 +99,19 @@
         <div class="error" data-for="carrera">Indica la carrera de licenciatura que cursaste.</div>
       </div>
       <div class="field">
+        <label class="q" for="institucion_lic">Institución donde cursaste la licenciatura <span class="req">*</span></label>
+        <input type="text" id="institucion_lic" name="institucion_lic" placeholder="Universidad o institución" required>
+        <div class="error" data-for="institucion_lic">Indica la institución de tu licenciatura.</div>
+      </div>
+      <div class="field">
         <label class="q" for="area_form">Área o programa de tu formación (maestría) <span class="req">*</span></label>
         <input type="text" id="area_form" name="area_form" placeholder="Ej. Maestría en Administración / Políticas Públicas / Economía" required>
         <div class="error" data-for="area_form">Indica el área o programa de tu formación.</div>
       </div>
       <div class="field">
-        <label class="q" for="institucion">Institución de procedencia</label>
-        <input type="text" id="institucion" name="institucion" placeholder="Universidad o institución">
+        <label class="q" for="institucion_maestria">Institución donde cursaste/cursas la maestría <span class="req">*</span></label>
+        <input type="text" id="institucion_maestria" name="institucion_maestria" placeholder="Universidad o institución" required>
+        <div class="error" data-for="institucion_maestria">Indica la institución de tu maestría.</div>
       </div>
     </div>
 
@@ -418,7 +424,7 @@ form.addEventListener("submit", function(ev){
   let ok = true;
 
   // Validar datos del participante
-  ["nombre","correo","grado","carrera","area_form"].forEach(function(id){
+  ["nombre","correo","grado","carrera","institucion_lic","area_form","institucion_maestria"].forEach(function(id){
     const el = document.getElementById(id);
     const empty = !el.value.trim();
     const bademail = (id==="correo" && el.value && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value));
@@ -485,8 +491,9 @@ form.addEventListener("submit", function(ev){
     correo: document.getElementById("correo").value.trim(),
     grado: document.getElementById("grado").value,
     carrera_licenciatura: document.getElementById("carrera").value.trim(),
+    institucion_licenciatura: document.getElementById("institucion_lic").value.trim(),
     area_formacion: document.getElementById("area_form").value.trim(),
-    institucion: document.getElementById("institucion").value.trim(),
+    institucion_maestria: document.getElementById("institucion_maestria").value.trim(),
     conocimiento_total: totalCorrect,
     detalle: rows.map(function(r){ return { area:r.area, conocimiento:r.con+"/"+r.conMax, autopercepcion:NIVEL[Math.round(r.autoAvg)] }; }),
     respuestas: {},
