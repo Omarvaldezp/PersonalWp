@@ -5,7 +5,7 @@
 ?>
 
     <!-- Scripts globales -->
-    <script src="assets/admin.js"></script>
+    <script src="/admin/assets/admin.js"></script>
 
     <?php if (isset($extra_js)): ?>
         <?php foreach ($extra_js as $js): ?>

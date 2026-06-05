@@ -12,9 +12,9 @@
     <title><?= $page_title ?? 'Admin Panel' ?> - Dr. Omar Valdez</title>
 
     <!-- Estilos -->
-    <link rel="stylesheet" href="assets/admin.css">
-    <link rel="stylesheet" href="assets/admin-tables.css">
-    <link rel="stylesheet" href="assets/admin-modals.css">
+    <link rel="stylesheet" href="/admin/assets/admin.css">
+    <link rel="stylesheet" href="/admin/assets/admin-tables.css">
+    <link rel="stylesheet" href="/admin/assets/admin-modals.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
