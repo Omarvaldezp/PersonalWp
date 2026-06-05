@@ -3,7 +3,7 @@
  * Admin: Lista de Cursos Académicos (Instancias)
  */
 
-require_once __DIR__ . '/../api/auth/Auth.php';
+require_once __DIR__ . '/../../api/auth/Auth.php';
 
 $auth = new Auth();
 $auth->requireAuthPage();
