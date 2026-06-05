@@ -11,7 +11,6 @@ $user = $auth->user();
 
 $curso_id = isset($_GET['id']) ? (int)$_GET['id'] : null;
 $page_title = $curso_id ? 'Editar Curso' : 'Nuevo Curso';
-$extra_css = ['assets/admin-tables.css'];
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>

@@ -10,7 +10,6 @@ $auth->requireAuthPage();
 $user = $auth->user();
 
 $page_title = 'Cursos Académicos';
-$extra_css = ['assets/admin-tables.css'];
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>

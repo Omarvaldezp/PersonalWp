@@ -16,7 +16,6 @@ if (!$curso_id) {
 }
 
 $page_title = 'Gestión de Inscripciones';
-$extra_css = ['assets/admin-tables.css'];
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>

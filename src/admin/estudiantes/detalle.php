@@ -16,7 +16,6 @@ if (!$estudiante_id) {
 }
 
 $page_title = 'Perfil de Estudiante';
-$extra_css = ['assets/admin-tables.css'];
 ?>
 
 <?php include __DIR__ . '/../includes/header.php'; ?>
