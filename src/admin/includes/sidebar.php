@@ -39,6 +39,22 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <span>📰</span> Newsletter
         </a>
 
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
+        <div style="padding: 0.5rem 1rem; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            Sistema Académico
+        </div>
+
+        <a href="estudiantes/index.php" class="nav-item <?= in_array($current_page, ['index.php', 'detalle.php']) && strpos($_SERVER['PHP_SELF'], 'estudiantes') !== false ? 'active' : '' ?>">
+            <span>👥</span> Estudiantes
+        </a>
+
+        <a href="cursos-academicos/index.php" class="nav-item <?= in_array($current_page, ['index.php', 'crear.php', 'inscripciones.php']) && strpos($_SERVER['PHP_SELF'], 'cursos-academicos') !== false ? 'active' : '' ?>">
+            <span>🎓</span> Cursos Académicos
+        </a>
+
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+
         <a href="diagnostico-disde.php" class="nav-item <?= $current_page === 'diagnostico-disde.php' ? 'active' : '' ?>">
             <span>📊</span> Diagnóstico DISDE
         </a>
