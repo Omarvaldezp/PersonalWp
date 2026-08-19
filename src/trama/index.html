@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CBXB26M1F4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CBXB26M1F4');
+    </script>
+
+    <title>Método TRAMA · De materiales a experiencias de aprendizaje | Dr. Omar Valdez Palazuelos</title>
+
+    <meta name="description" content="Método TRAMA: cinco pasos para convertir el material que ya tienes en una experiencia de aprendizaje lista para Moodle. Curso-taller de 90 minutos para docentes de la FCA-UAS.">
+    <meta name="keywords" content="docencia bimodal Moodle IA, NotebookLM docentes, diseño instruccional bimodal, método TRAMA, UAS bimodalidad, inteligencia artificial docencia">
+    <meta name="author" content="Omar Valdez Palazuelos">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://omarvaldez.com/trama/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Dr. Omar Valdez Palazuelos">
+    <meta property="og:title" content="De materiales a experiencias de aprendizaje · Método TRAMA">
+    <meta property="og:description" content="Un flujo de trabajo con IA para la docencia bimodal. Cinco pasos para llevar a Moodle el material que ya tienes.">
+    <meta property="og:url" content="https://omarvaldez.com/trama/">
+    <meta property="og:image" content="https://omarvaldez.com/img/trama/og-trama.jpg">
+    <meta property="og:locale" content="es_MX">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="De materiales a experiencias de aprendizaje · Método TRAMA">
+    <meta name="twitter:description" content="Un flujo de trabajo con IA para la docencia bimodal. Curso-taller para docentes de la FCA-UAS.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Fuentes: equivalentes web de la tipografía del deck (Cambria / Calibri) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/trama.css">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "De materiales a experiencias de aprendizaje: un flujo de trabajo con IA para la docencia bimodal",
+        "alternateName": "Método TRAMA",
+        "description": "Curso-taller de 90 minutos. Método de cinco pasos para convertir el material docente existente en una experiencia de aprendizaje lista para Moodle, con apoyo de inteligencia artificial.",
+        "inLanguage": "es-MX",
+        "url": "https://omarvaldez.com/trama/",
+        "teaches": [
+            "Diseño instruccional para modelos bimodales",
+            "Uso de asistentes de inteligencia artificial para transformar material docente",
+            "Generación de recursos multimodales con NotebookLM",
+            "Armado de secuencias didácticas en Moodle"
+        ],
+        "educationalLevel": "Educación superior",
+        "audience": {
+            "@type": "EducationalAudience",
+            "educationalRole": "teacher",
+            "audienceType": "Docentes de la Facultad de Contaduría y Administración, UAS"
+        },
+        "provider": {
+            "@type": "EducationalOrganization",
+            "name": "Facultad de Contaduría y Administración, Universidad Autónoma de Sinaloa",
+            "url": "https://omarvaldez.com"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Omar Valdez Palazuelos",
+            "url": "https://omarvaldez.com",
+            "jobTitle": "Profesor-Investigador",
+            "affiliation": {
+                "@type": "EducationalOrganization",
+                "name": "Universidad Autónoma de Sinaloa"
+            }
+        },
+        "hasCourseInstance": {
+            "@type": "CourseInstance",
+            "courseMode": "onsite",
+            "courseWorkload": "PT90M",
+            "startDate": "2026-03-05",
+            "location": {
+                "@type": "Place",
+                "name": "Facultad de Contaduría y Administración, Universidad Autónoma de Sinaloa"
+            },
+            "instructor": {
+                "@type": "Person",
+                "name": "Omar Valdez Palazuelos"
+            }
+        },
+        "isAccessibleForFree": true,
+        "license": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    }
+    </script>
+</head>
+<body class="trama-page">
+
+<!-- Barra de progreso de lectura -->
+<div class="trama-progress" id="tramaProgress"></div>
+
+<!-- ============================================= -->
+<!-- NAVBAR                                        -->
+<!-- ============================================= -->
+<nav class="navbar scrolled" id="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <span class="logo-name" style="color:#0f172a;">Dr. Omar Valdez</span>
+            <span class="logo-sub" style="color:#64748b;">PhD · SNI Nivel I</span>
+        </a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menú">
+            <span style="background:#0f172a;"></span>
+            <span style="background:#0f172a;"></span>
+            <span style="background:#0f172a;"></span>
+        </button>
+        <ul class="nav-links" id="navMenu">
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/#sobre-mi">Sobre Mí</a></li>
+            <li><a href="/#servicios">Servicios</a></li>
+            <li><a href="/#investigacion">Investigación</a></li>
+            <li><a href="/#cursos" class="active">Cursos</a></li>
+            <li><a href="/#blog">Blog</a></li>
+            <li><a href="/#contacto" class="nav-cta">Contacto</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ============================================= -->
+<!-- HERO                                          -->
+<!-- ============================================= -->
+<header class="trama-hero">
+    <div class="trama-wrap">
+        <nav class="trama-crumb" aria-label="Ruta de navegación">
+            <a href="/">Inicio</a>
+            <span>/</span>
+            <a href="/#cursos">Cursos</a>
+            <span>/</span>
+            <span>TRAMA</span>
+        </nav>
+
+        <span class="trama-eyebrow">
+            <i class="fas fa-chalkboard-user"></i>
+            Curso-taller · FCA-UAS
+        </span>
+
+        <h1>De materiales a experiencias de aprendizaje</h1>
+
+        <p class="trama-lead">
+            Un flujo de trabajo con IA para la docencia bimodal. El método <strong>TRAMA</strong> son cinco pasos
+            para convertir el material que usted ya tiene en una experiencia de aprendizaje que funcione en Moodle.
+        </p>
+
+        <div class="trama-facts">
+            <span class="trama-fact"><i class="fas fa-clock"></i> 90 minutos</span>
+            <span class="trama-fact"><i class="fas fa-laptop-code"></i> 48 % de práctica</span>
+            <span class="trama-fact"><i class="fas fa-users"></i> Docentes de la FCA</span>
+            <span class="trama-fact"><i class="fas fa-wallet"></i> Sin herramientas de pago</span>
+            <span class="trama-fact"><i class="fas fa-calendar-day"></i> 5 de marzo de 2026</span>
+        </div>
+
+        <div class="trama-hero-cta">
+            <a href="#materiales" class="trama-btn trama-btn-gold">
+                Materiales del curso <i class="fas fa-arrow-down"></i>
+            </a>
+            <a href="#metodo" class="trama-btn trama-btn-ghost">
+                Ver el método
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================= -->
+<!-- CONTENIDO                                     -->
+<!-- ============================================= -->
+<div class="trama-body">
+    <div class="trama-wrap">
+        <div class="trama-layout">
+
+            <!-- ÍNDICE (escritorio) -->
+            <aside class="trama-toc" id="tramaToc">
+                <p class="trama-toc-title">Contenido</p>
+                <ol>
+                    <li><a href="#problema">El problema</a></li>
+                    <li><a href="#metodo">El método TRAMA</a></li>
+                    <li><a href="#etapa-t">T · Tema</a></li>
+                    <li><a href="#etapa-r">R · Recursos</a></li>
+                    <li><a href="#etapa-a1">A · Adaptación</a></li>
+                    <li><a href="#etapa-m">M · Multimodalidad</a></li>
+                    <li><a href="#etapa-a2">A · Armado</a></li>
+                    <li><a href="#contraste">El contraste</a></li>
+                    <li><a href="#herramientas">Herramientas y costos</a></li>
+                    <li><a href="#checklist">Antes de publicar</a></li>
+                    <li><a href="#sesion">La sesión de 90 minutos</a></li>
+                    <li><a href="#materiales">Materiales del curso</a></li>
+                    <li><a href="#cierre">Cierre</a></li>
+                </ol>
+            </aside>
+
+            <!-- ARTÍCULO -->
+            <article class="trama-article">
+
+                <!-- ÍNDICE (móvil) -->
+                <details class="trama-toc-mobile">
+                    <summary>Contenido del curso</summary>
+                    <ol>
+                        <li><a href="#problema">El problema</a></li>
+                        <li><a href="#metodo">El método TRAMA</a></li>
+                        <li><a href="#etapa-t">T · Tema y decisión bimodal</a></li>
+                        <li><a href="#etapa-r">R · Recursos que ya tengo</a></li>
+                        <li><a href="#etapa-a1">A · Adaptación con IA</a></li>
+                        <li><a href="#etapa-m">M · Multimodalidad</a></li>
+                        <li><a href="#etapa-a2">A · Armado en Moodle</a></li>
+                        <li><a href="#contraste">El contraste</a></li>
+                        <li><a href="#herramientas">Herramientas y costos</a></li>
+                        <li><a href="#checklist">Antes de publicar</a></li>
+                        <li><a href="#sesion">La sesión de 90 minutos</a></li>
+                        <li><a href="#materiales">Materiales del curso</a></li>
+                        <li><a href="#cierre">Cierre</a></li>
+                    </ol>
+                </details>
+
+                <!-- Entrada -->
+                <section id="intro">
+                    <p>
+                        Con la bimodalidad, una parte del trabajo académico de cada materia se va a Moodle.
+                        La pregunta práctica no es si conviene, sino de dónde sale ese contenido sin que se nos
+                        duplique la carga.
+                    </p>
+                    <p>
+                        Este curso-taller responde con un método de cinco pasos llamado <strong>TRAMA</strong>.
+                        No es una introducción a la inteligencia artificial ni otro curso de prompting: es un orden
+                        de trabajo para convertir el material que usted ya tiene en una experiencia de aprendizaje
+                        que funcione en Moodle.
+                    </p>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- EL PROBLEMA -->
+                <section id="problema">
+                    <h2>El problema</h2>
+
+                    <p>
+                        Todo cambio de este tipo tiene el mismo riesgo, y ya se conoce: la plataforma acaba siendo
+                        una bodega de archivos. El maestro sube el PDF de su presentación, escribe "lean el capítulo 4"
+                        y abre una tarea. En los hechos el contenido ya está en línea, pero pedagógicamente no pasó
+                        nada. El alumno recibe archivos sueltos, no una ruta para aprender. El porcentaje se cumple
+                        en el papel y no en la práctica.
+                    </p>
+
+                    <div class="trama-box is-destacado">
+                        <span class="trama-box-label"><i class="fas fa-lightbulb"></i> Idea central</span>
+                        <h4>La distancia entre subir un archivo y diseñar una experiencia</h4>
+                        <p>
+                            Un archivo contesta una sola pregunta: dónde está el material. Una experiencia de
+                            aprendizaje contesta cuatro: qué voy a lograr, en qué orden le entro, cómo sé que sí
+                            entendí, y qué tiene que ver esto con la clase del jueves.
+                        </p>
+                    </div>
+
+                    <p>
+                        Lo que aprieta en el calendario institucional no es la infraestructura ni la normatividad,
+                        sino el tiempo que tiene un maestro para rediseñar contenido. Un profesor con carga completa
+                        no puede producir desde cero el material en línea de todas sus materias.
+                    </p>
+                    <p>
+                        La salida es no partir de cero. Los maestros de esta Facultad ya tienen apuntes,
+                        presentaciones, lecturas escogidas, casos y ejercicios juntados durante años. Ese acervo es
+                        el insumo. La inteligencia artificial no viene a sustituir el criterio didáctico de nadie;
+                        lo que hace es bajar el costo de transformar lo que ese maestro ya construyó.
+                    </p>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- EL MÉTODO -->
+                <section id="metodo">
+                    <h2>El método TRAMA</h2>
+
+                    <p>
+                        El nombre no es casual. Una trama es el hilo que le da coherencia a un relato, y también el
+                        conjunto de hilos cruzados que forman un tejido. Los dos sentidos sirven aquí. Un tema bien
+                        llevado a Moodle se parece más a un tejido con hilo conductor que a un montón de archivos
+                        apilados.
+                    </p>
+
+                    <div class="trama-flow" role="img" aria-label="Las cinco etapas del método TRAMA: Tema, Recursos, Adaptación, Multimodalidad y Armado, que desembocan en un tema publicado en Moodle.">
+                        <div class="trama-node n-navy">
+                            <span class="n-letter">T</span>
+                            <span class="n-name">Tema</span>
+                        </div>
+                        <i class="fas fa-chevron-right trama-arrow" aria-hidden="true"></i>
+                        <div class="trama-node n-navy">
+                            <span class="n-letter">R</span>
+                            <span class="n-name">Recursos</span>
+                        </div>
+                        <i class="fas fa-chevron-right trama-arrow" aria-hidden="true"></i>
+                        <div class="trama-node n-gold">
+                            <span class="n-letter">A</span>
+                            <span class="n-name">Adaptación</span>
+                        </div>
+                        <i class="fas fa-chevron-right trama-arrow" aria-hidden="true"></i>
+                        <div class="trama-node n-gold">
+                            <span class="n-letter">M</span>
+                            <span class="n-name">Multimodalidad</span>
+                        </div>
+                        <i class="fas fa-chevron-right trama-arrow" aria-hidden="true"></i>
+                        <div class="trama-node n-green">
+                            <span class="n-letter">A</span>
+                            <span class="n-name">Armado</span>
+                        </div>
+                        <i class="fas fa-chevron-right trama-arrow" aria-hidden="true"></i>
+                        <div class="trama-node n-out">
+                            <span class="n-name">Tema publicado<br>en Moodle</span>
+                        </div>
+                    </div>
+
+                    <div class="trama-table-wrap">
+                        <table>
+                            <caption>Las cinco etapas</caption>
+                            <thead>
+                                <tr>
+                                    <th class="t-center">Etapa</th>
+                                    <th>Qué hace usted</th>
+                                    <th>Herramienta</th>
+                                    <th>Sale con</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="t-center"><strong>T</strong> · Tema</td>
+                                    <td>Escoge un tema y decide qué parte va en línea</td>
+                                    <td>Ninguna</td>
+                                    <td>Tabla de decisión</td>
+                                </tr>
+                                <tr>
+                                    <td class="t-center"><strong>R</strong> · Recursos</td>
+                                    <td>Junta 3 a 5 archivos que ya tiene</td>
+                                    <td>Su computadora</td>
+                                    <td>Carpeta de fuentes</td>
+                                </tr>
+                                <tr>
+                                    <td class="t-center"><strong>A</strong> · Adaptación</td>
+                                    <td>Corre el prompt y revisa lo que salió</td>
+                                    <td>Asistente de IA</td>
+                                    <td>Contenido en HTML</td>
+                                </tr>
+                                <tr>
+                                    <td class="t-center"><strong>M</strong> · Multimodalidad</td>
+                                    <td>Sube las fuentes y genera un recurso</td>
+                                    <td>NotebookLM</td>
+                                    <td>Audio o video</td>
+                                </tr>
+                                <tr>
+                                    <td class="t-center"><strong>A</strong> · Armado</td>
+                                    <td>Acomoda y escribe las etiquetas de transición</td>
+                                    <td>Moodle</td>
+                                    <td>Tema publicado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <blockquote>
+                        <p>
+                            TRAMA describe un flujo de trabajo, no un catálogo de herramientas. Las plataformas que
+                            hoy lo ejecutan van a cambiar, seguramente en menos de dos años; las cinco etapas no. Si
+                            dentro de un año NotebookLM desaparece o deja de ser gratuito, el método sigue sirviendo
+                            igual y nada más se cambia la herramienta de la etapa M.
+                        </p>
+                    </blockquote>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- ETAPA T -->
+                <section id="etapa-t">
+                    <h2>Etapa T · Tema y decisión bimodal</h2>
+
+                    <p>
+                        Todo empieza con una decisión que ninguna herramienta puede tomar por usted: qué parte del
+                        tema tiene sentido que el alumno trabaje solo, y qué parte se echa a perder si no pasa en el
+                        aula. Es la etapa más rápida y la que más pesa en el resultado. Un tema mal repartido da un
+                        curso bimodal flojo por más bonito que quede el contenido.
+                    </p>
+
+                    <div class="trama-box is-regla">
+                        <span class="trama-box-label"><i class="fas fa-scale-balanced"></i> Regla de decisión</span>
+                        <h3>La Regla de las 3 P</h3>
+                        <p>Pase cada subtema por estas tres preguntas.</p>
+
+                        <ol class="trama-3p">
+                            <li>
+                                <strong>PRESENCIA</strong> — ¿Pide supervisión, equipo del laboratorio, o hay riesgo
+                                si sale mal sin que yo lo vea?
+                            </li>
+                            <li>
+                                <strong>PERSONAS</strong> — ¿Lo que se aprende sale de la interacción: debate,
+                                negociación, coevaluación?
+                            </li>
+                            <li>
+                                <strong>PROBLEMA</strong> — ¿Es donde el alumno se atora y necesita retroalimentación
+                                en el momento?
+                            </li>
+                        </ol>
+
+                        <div class="trama-verdict">
+                            <span class="v-si">Si alguna respuesta es SÍ → sesión presencial.</span>
+                            <span class="v-no">Si las tres son NO → trabajo autónomo en Moodle.</span>
+                        </div>
+                    </div>
+
+                    <p>
+                        La regla no pretende cubrirlo todo ni reemplazar el criterio del maestro. Lo que hace es
+                        poner por escrito algo que casi siempre se decide de oído, y con eso la decisión se toma en
+                        minutos y se puede defender en academia.
+                    </p>
+
+                    <h3>Cómo se aplica en materias del área</h3>
+
+                    <div class="trama-table-wrap">
+                        <table>
+                            <caption>Decisión bimodal por tipo de contenido</caption>
+                            <thead>
+                                <tr>
+                                    <th>Tipo de contenido</th>
+                                    <th class="t-center">3 P</th>
+                                    <th class="t-center">Destino</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Conceptos, definiciones, panorama de un mercado</td>
+                                    <td class="t-center t-3p">No · No · No</td>
+                                    <td class="t-center"><span class="t-tag tag-online">En línea</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Comparativas de herramientas, tarifas o proveedores</td>
+                                    <td class="t-center t-3p">No · No · No</td>
+                                    <td class="t-center"><span class="t-tag tag-online">En línea</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Marco normativo y obligaciones legales</td>
+                                    <td class="t-center t-3p">No · No · No</td>
+                                    <td class="t-center"><span class="t-tag tag-online">En línea</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Configuración de software en el laboratorio</td>
+                                    <td class="t-center t-3p">Sí · No · Sí</td>
+                                    <td class="t-center"><span class="t-tag tag-pres">Presencial</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Discusión de casos con criterios en tensión</td>
+                                    <td class="t-center t-3p">No · Sí · No</td>
+                                    <td class="t-center"><span class="t-tag tag-pres">Presencial</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Presentación y defensa de proyectos</td>
+                                    <td class="t-center t-3p">No · Sí · Sí</td>
+                                    <td class="t-center"><span class="t-tag tag-pres">Presencial</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Práctica de fórmulas con respuesta verificable</td>
+                                    <td class="t-center t-3p">No · No · Sí</td>
+                                    <td class="t-center"><span class="t-tag tag-mixto">Mixto</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- ETAPA R -->
+                <section id="etapa-r">
+                    <h2>Etapa R · Recursos que ya tengo</h2>
+
+                    <p>
+                        Abrir la carpeta donde el maestro guarda lo que ha usado durante años y darse cuenta de que
+                        ahí está la mayor parte del insumo. Presentaciones, apuntes, guías de práctica, capítulos
+                        escaneados, artículos, ligas a estudios del sector, ejercicios resueltos, exámenes pasados,
+                        notas de clase.
+                    </p>
+                    <p>
+                        Quien arranca con la hoja en blanco se tarda semanas; quien arranca con lo que ya tiene,
+                        saca un tema en una tarde.
+                    </p>
+
+                    <div class="trama-box is-nota">
+                        <span class="trama-box-label"><i class="fas fa-circle-info"></i> Nota operativa</span>
+                        <h4>Cuántas fuentes bastan</h4>
+                        <p>
+                            Para el tema de una unidad, con tres a cinco fuentes alcanza, y funcionan mejor que
+                            quince. Cuando se carga demasiado material la IA promedia todo y el resultado pierde el
+                            sello del curso. Escoja poco y bueno, y dele preferencia a lo suyo sobre lo ajeno.
+                        </p>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- ETAPA A · ADAPTACIÓN -->
+                <section id="etapa-a1">
+                    <h2>Etapa A · Adaptación con inteligencia artificial</h2>
+
+                    <p>
+                        Aquí pasa lo importante. El material que estaba hecho para acompañar una exposición se
+                        convierte en material que funciona sin el profesor enfrente, y no es lo mismo. Una
+                        diapositiva con seis viñetas sirve porque el maestro la explica; ese mismo archivo, solo, en
+                        casa del alumno, no enseña nada.
+                    </p>
+
+                    <h3>El prompt principal</h3>
+
+                    <div class="trama-prompt">
+                        <div class="trama-prompt-bar">
+                            <span><i class="fas fa-terminal"></i> Prompt de adaptación</span>
+                            <button class="trama-copy" id="copyPrompt" type="button">
+                                <i class="fas fa-copy"></i> <span>Copiar</span>
+                            </button>
+                        </div>
+                        <pre><code id="promptText">Actúa como diseñador instruccional de educación superior.
+
+CONTEXTO
+Asignatura: [NOMBRE]
+Programa: [LICENCIATURA], [N]º semestre
+Institución: Facultad de Contaduría y Administración, UAS
+Tema: [TEMA]
+Destino: Página de Moodle para estudio autónomo, modelo bimodal
+Perfil: [descripción de sus estudiantes y su nivel previo]
+
+MATERIAL FUENTE
+[adjunte sus archivos]
+
+TAREA
+Redacta el contenido de estudio autónomo del tema. Debe funcionar sin
+que yo esté presente para explicarlo.
+
+ESTRUCTURA OBLIGATORIA
+1. Título del tema
+2. ¿Por qué esto importa? (3-4 líneas ligadas a su ejercicio profesional)
+3. Al terminar podrás... (3 resultados de aprendizaje observables)
+4. Desarrollo en 4 o 5 secciones con subtítulos
+5. Mínimo 2 ejemplos del contexto mexicano actual
+6. Mini-caso de un párrafo con 2 preguntas
+7. Conceptos clave (6-8 términos, una línea cada uno)
+8. Errores frecuentes (3 confusiones típicas de estudiantes)
+9. Autoevaluación (5 reactivos de opción múltiple con respuesta y
+   explicación de por qué)
+10. Para profundizar (3 recursos)
+
+REQUISITOS DE REDACCIÓN
+- Extensión: lectura de 12 a 15 minutos
+- Segunda persona, tono profesional y directo
+- Prosa continua en el desarrollo; nada de listas de viñetas sueltas
+- Explica todo tecnicismo la primera vez que aparezca
+
+FORMATO DE SALIDA
+HTML limpio para pegar en el editor de una Página de Moodle.
+Usa solo: h2, h3, p, ul, ol, li, strong, em, table, blockquote.
+No incluyas html, head, body, ni CSS externo.
+
+RESTRICCIÓN CRÍTICA
+No inventes cifras, nombres de productos, normatividad ni fechas que no
+aparezcan en el material fuente. Si un dato es necesario pero no está
+en las fuentes, escríbelo como [VERIFICAR: ...] para que yo lo complete.</code></pre>
+                    </div>
+
+                    <div class="trama-box is-destacado">
+                        <span class="trama-box-label"><i class="fas fa-key"></i> Lo que hay que cuidar</span>
+                        <h4>Las tres líneas que hacen la diferencia</h4>
+                        <ol>
+                            <li>
+                                <strong>FORMATO DE SALIDA.</strong> Sin ese bloque el resultado llega en Markdown y
+                                hay que reformatearlo a mano. Con él se copia y se pega directo en Moodle. Ahorra
+                                entre veinte y treinta minutos por tema.
+                            </li>
+                            <li>
+                                <strong>RESTRICCIÓN CRÍTICA.</strong> Convierte un riesgo invisible en una marca que
+                                se ve. El maestro sabe qué revisar en lugar de tener que desconfiar de todo el texto.
+                            </li>
+                            <li>
+                                <strong>PERFIL.</strong> Fija el nivel de explicación. Sin esa línea el contenido
+                                sale escrito para un público técnico que no es el del programa.
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- ETAPA M -->
+                <section id="etapa-m">
+                    <h2>Etapa M · Multimodalidad</h2>
+
+                    <p>
+                        Un mismo contenido puede vivir en varios formatos, y cada formato resuelve una situación
+                        distinta. El alumno que se hace una hora de camión puede escuchar el audio; el que entiende
+                        mejor con apoyo visual necesita el esquema; el que llega a clase sin haber leído se pone al
+                        corriente con un video de siete minutos.
+                    </p>
+                    <p>
+                        NotebookLM sirve aquí por una razón concreta: solo trabaja con las fuentes que el maestro
+                        sube, y eso baja bastante el riesgo de que el recurso salga con información que no viene del
+                        curso.
+                    </p>
+
+                    <h3>El paso que casi nadie hace</h3>
+
+                    <p>
+                        Antes de generar nada, pídale un resumen de las fuentes. Si el resumen está bien, se
+                        cargaron bien. Treinta segundos de revisión le ahorran una hora de rehacer un audio de diez
+                        minutos.
+                    </p>
+
+                    <h3>Modelo progresivo</h3>
+
+                    <p>
+                        Nadie tiene que llegar a los cuatro niveles. Cualquiera de los cuatro ya es mejor que subir
+                        un PDF suelto.
+                    </p>
+
+                    <div class="trama-levels">
+                        <div class="trama-level">
+                            <span class="lv-num">1</span>
+                            <h4>Básico</h4>
+                            <p>Contenido estructurado y secuencia armada.</p>
+                            <span class="lv-time"><i class="fas fa-clock"></i> 40 – 60 min</span>
+                        </div>
+                        <div class="trama-level">
+                            <span class="lv-num">2</span>
+                            <h4>Intermedio</h4>
+                            <p>Lo anterior más una actividad evaluable con rúbrica.</p>
+                            <span class="lv-time"><i class="fas fa-clock"></i> 60 – 90 min</span>
+                        </div>
+                        <div class="trama-level">
+                            <span class="lv-num">3</span>
+                            <h4>Enriquecido</h4>
+                            <p>Lo anterior más un recurso visual o un video.</p>
+                            <span class="lv-time"><i class="fas fa-clock"></i> 90 – 120 min</span>
+                        </div>
+                        <div class="trama-level">
+                            <span class="lv-num">4</span>
+                            <h4>Multimodal</h4>
+                            <p>Lo anterior más un audio tipo pódcast.</p>
+                            <span class="lv-time"><i class="fas fa-clock"></i> 2 – 3 horas</span>
+                        </div>
+                    </div>
+
+                    <blockquote>
+                        <p>
+                            Empiece por el nivel 1 y con un tema que ya domine. Deje el nivel 4 para los que se
+                            repiten cada ciclo y donde más reprueban, que son los que se pagan solos.
+                        </p>
+                    </blockquote>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- ETAPA A · ARMADO -->
+                <section id="etapa-a2">
+                    <h2>Etapa A · Armado en Moodle</h2>
+
+                    <p>
+                        Es la etapa que más se brinca la gente y la que convierte un montón de materiales en una
+                        experiencia. Armar no es lo mismo que adjuntar. Armar es decidir el orden, escribir las
+                        transiciones y dejar por escrito para qué sirve todo esto de cara a la clase presencial.
+                    </p>
+
+                    <h3>Patrón de secuencia</h3>
+
+                    <ol class="trama-seq">
+                        <li class="is-key">Etiqueta de apertura</li>
+                        <li>Página de contenido</li>
+                        <li class="is-key">Etiqueta de transición</li>
+                        <li>Video o audio</li>
+                        <li>Actividad evaluable</li>
+                        <li class="is-key">Etiqueta de puente a la presencialidad</li>
+                    </ol>
+
+                    <p>
+                        Antes de cada elemento va una etiqueta corta de dos o tres líneas, escrita de tú al alumno,
+                        que le dice qué va a hacer, cuánto le va a tomar y para qué le sirve. Esas etiquetas son el
+                        hilo de la trama. Sin ellas, la sección de Moodle vuelve a ser una lista de archivos.
+                    </p>
+
+                    <div class="trama-box is-ejemplo">
+                        <span class="trama-box-label"><i class="fas fa-quote-left"></i> Ejemplo</span>
+                        <h4>La etiqueta que más importa</h4>
+                        <blockquote>
+                            <p>
+                                El jueves en el laboratorio vamos a configurar la pasarela que elegiste y a discutir
+                                si el BNPL ayuda o endeuda. Llega con tu matriz llena; sin ella no vas a poder
+                                avanzar.
+                            </p>
+                        </blockquote>
+                        <p>
+                            Esa etiqueta es lo que evita que la bimodalidad se sienta como dos cursos que corren
+                            aparte. Convierte el trabajo en línea en requisito de entrada a la clase, no en un anexo
+                            opcional.
+                        </p>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- CONTRASTE -->
+                <section id="contraste">
+                    <h2>El contraste</h2>
+
+                    <p>
+                        Las dos columnas son el mismo tema, del mismo maestro, con el mismo material de partida.
+                    </p>
+
+                    <div class="trama-compare">
+                        <div class="trama-compare-head">
+                            <div class="c-before">Antes</div>
+                            <div class="c-after">Después</div>
+                        </div>
+
+                        <div class="trama-compare-row">
+                            <div class="c-label">Lo que ve el alumno</div>
+                            <div class="c-pair">
+                                <div>Tres archivos adjuntos</div>
+                                <div>Siete elementos con nombre y duración</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">Lo que sabe al abrir</div>
+                            <div class="c-pair">
+                                <div>Que hay material</div>
+                                <div>Qué va a lograr, en qué orden, cuánto tarda</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">Formatos</div>
+                            <div class="c-pair">
+                                <div>Uno: archivos para leer</div>
+                                <div>Tres: texto, video de 7 min, audio de 10 min</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">La tarea</div>
+                            <div class="c-pair">
+                                <div>Instrucción abierta que se resuelve copiando</div>
+                                <div>Decisión justificada con datos, con rúbrica</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">Comprobación</div>
+                            <div class="c-pair">
+                                <div>Ninguna hasta el examen</div>
+                                <div>Autoevaluación con retroalimentación</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">Vínculo con la clase</div>
+                            <div class="c-pair">
+                                <div>Implícito</div>
+                                <div>Explícito: la clase inicia donde terminó el trabajo</div>
+                            </div>
+                        </div>
+                        <div class="trama-compare-row">
+                            <div class="c-label">Tiempo de clase</div>
+                            <div class="c-pair">
+                                <div>4 sesiones para cubrir el tema</div>
+                                <div>2 sesiones liberadas para práctica</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>
+                        No se produjo contenido nuevo. Lo que cambió fue el proceso de transformación y el orden en
+                        que se presentó.
+                    </p>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- HERRAMIENTAS -->
+                <section id="herramientas">
+                    <h2>Herramientas y costos</h2>
+
+                    <div class="trama-table-wrap">
+                        <table>
+                            <caption>Herramientas del método</caption>
+                            <thead>
+                                <tr>
+                                    <th>Función</th>
+                                    <th>Herramienta</th>
+                                    <th class="t-center">Costo</th>
+                                    <th>Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Transformar contenido</td>
+                                    <td><strong>ChatGPT, Claude o Gemini</strong></td>
+                                    <td class="t-center"><span class="t-tag tag-free">$0</span></td>
+                                    <td>Cualquiera jala. Use la que ya tenga.</td>
+                                </tr>
+                                <tr>
+                                    <td>Producir audio y video</td>
+                                    <td><strong>NotebookLM</strong></td>
+                                    <td class="t-center"><span class="t-tag tag-free">$0</span></td>
+                                    <td>Pide cuenta de Google. Solo trabaja con lo que suba.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alojar video</td>
+                                    <td><strong>YouTube, modo oculto</strong></td>
+                                    <td class="t-center"><span class="t-tag tag-free">$0</span></td>
+                                    <td>No sale en búsquedas ni en su canal.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alojar audio</td>
+                                    <td><strong>Moodle, Drive o Spotify for Creators</strong></td>
+                                    <td class="t-center"><span class="t-tag tag-free">$0</span></td>
+                                    <td>Para 10 minutos, con subirlo a Moodle alcanza.</td>
+                                </tr>
+                                <tr>
+                                    <td>Publicar</td>
+                                    <td><strong>Moodle institucional</strong></td>
+                                    <td class="t-center">Institucional</td>
+                                    <td>—</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>Ninguna parte del método requiere una suscripción de pago.</p>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- CHECKLIST -->
+                <section id="checklist">
+                    <h2>Antes de publicar</h2>
+
+                    <p>Cinco minutos de revisión le ahorran un problema en clase.</p>
+
+                    <div class="trama-check" id="tramaCheck">
+                        <div class="trama-check-head">
+                            <span class="trama-check-count" id="checkCount">0 de 10 revisados</span>
+                            <button class="trama-check-reset" id="checkReset" type="button">
+                                <i class="fas fa-rotate-left"></i> Reiniciar
+                            </button>
+                        </div>
+                        <ul>
+                            <li><label><input type="checkbox" data-ck="1"><span>No queda ninguna marca <code>[VERIFICAR]</code> sin resolver</span></label></li>
+                            <li><label><input type="checkbox" data-ck="2"><span>Toda cifra, fecha o dato normativo está en mis fuentes o lo confirmé yo</span></label></li>
+                            <li><label><input type="checkbox" data-ck="3"><span>Los ejemplos son del contexto de mis alumnos y no de otro país</span></label></li>
+                            <li><label><input type="checkbox" data-ck="4"><span>Los resultados de aprendizaje coinciden con el programa oficial</span></label></li>
+                            <li><label><input type="checkbox" data-ck="5"><span>El nivel de exigencia corresponde al semestre</span></label></li>
+                            <li><label><input type="checkbox" data-ck="6"><span>Las respuestas de la autoevaluación son correctas, las revisé una por una</span></label></li>
+                            <li><label><input type="checkbox" data-ck="7"><span>La actividad no se resuelve copiando del contenido</span></label></li>
+                            <li><label><input type="checkbox" data-ck="8"><span>El nombre de cada recurso dice qué es y cuánto tiempo toma</span></label></li>
+                            <li><label><input type="checkbox" data-ck="9"><span>La etiqueta de puente dice qué pasará en la sesión presencial</span></label></li>
+                            <li class="is-key"><label><input type="checkbox" data-ck="10"><span>Abrí el tema en vista de estudiante y la secuencia se entiende sola</span></label></li>
+                        </ul>
+                    </div>
+
+                    <p>
+                        El último punto es el que más importa. Si en algún momento usted no sabe qué sigue o para
+                        qué, sus alumnos tampoco van a saber. Es el único de la lista que nadie ni nada puede hacer
+                        por usted.
+                    </p>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- SESIÓN -->
+                <section id="sesion">
+                    <h2>La sesión de 90 minutos</h2>
+
+                    <div class="trama-agenda">
+                        <div class="trama-agenda-item">
+                            <div class="trama-agenda-time">00 – 05</div>
+                            <div class="trama-agenda-body">
+                                <h4>Apertura</h4>
+                                <p>Encuadre del reto y verificación de que todos traen material.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item">
+                            <div class="trama-agenda-time">05 – 10</div>
+                            <div class="trama-agenda-body">
+                                <h4>Contraste</h4>
+                                <p>El mismo tema como carpeta y como experiencia.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item">
+                            <div class="trama-agenda-time">10 – 35</div>
+                            <div class="trama-agenda-body">
+                                <h4>Demostración</h4>
+                                <p>TRAMA completo con un tema real de Comercio Electrónico.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item is-practice">
+                            <div class="trama-agenda-time">35 – 42</div>
+                            <div class="trama-agenda-body">
+                                <h4>T + R</h4>
+                                <p>Cada quien escoge tema y junta fuentes.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item is-practice">
+                            <div class="trama-agenda-time">42 – 57</div>
+                            <div class="trama-agenda-body">
+                                <h4>A · Adaptación</h4>
+                                <p>Corre el prompt sobre material propio y revisa.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item is-practice">
+                            <div class="trama-agenda-time">57 – 70</div>
+                            <div class="trama-agenda-body">
+                                <h4>M · Multimodalidad</h4>
+                                <p>NotebookLM y generación de un recurso.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item is-practice">
+                            <div class="trama-agenda-time">70 – 78</div>
+                            <div class="trama-agenda-body">
+                                <h4>A · Armado</h4>
+                                <p>Armado del esqueleto y etiquetas.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item">
+                            <div class="trama-agenda-time">78 – 84</div>
+                            <div class="trama-agenda-body">
+                                <h4>Muestra</h4>
+                                <p>Dos o tres participantes presentan.</p>
+                            </div>
+                        </div>
+                        <div class="trama-agenda-item">
+                            <div class="trama-agenda-time">84 – 90</div>
+                            <div class="trama-agenda-body">
+                                <h4>Cierre</h4>
+                                <p>Niveles, herramientas y compromiso a 30 días.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trama-split">
+                        <div>
+                            <span class="sp-pct">11 %</span>
+                            <span class="sp-name">Exposición · 10 min</span>
+                        </div>
+                        <div>
+                            <span class="sp-pct">28 %</span>
+                            <span class="sp-name">Demostración · 25 min</span>
+                        </div>
+                        <div>
+                            <span class="sp-pct">48 %</span>
+                            <span class="sp-name">Producción · 43 min</span>
+                        </div>
+                        <div>
+                            <span class="sp-pct">13 %</span>
+                            <span class="sp-name">Socialización y cierre · 12 min</span>
+                        </div>
+                    </div>
+
+                    <p>
+                        Más de la mitad de la sesión el participante está trabajando en su propio material. Ese es
+                        el dato que distingue un taller de una conferencia.
+                    </p>
+
+                    <h3>Qué hay que traer</h3>
+
+                    <div class="trama-bring">
+                        <div class="trama-bring-card is-must">
+                            <h4>Indispensable</h4>
+                            <ul>
+                                <li>Computadora con cargador</li>
+                                <li>Un tema real ya elegido</li>
+                                <li>De 2 a 5 archivos de ese tema</li>
+                                <li>Cuenta de Google activa</li>
+                                <li>Cuenta en un asistente de IA con sesión iniciada</li>
+                            </ul>
+                        </div>
+                        <div class="trama-bring-card is-nice">
+                            <h4>Recomendable</h4>
+                            <ul>
+                                <li>Acceso a Moodle con permisos de edición</li>
+                                <li>El programa de la asignatura</li>
+                                <li>Audífonos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- MATERIALES -->
+                <section id="materiales">
+                    <h2>Materiales del curso</h2>
+
+                    <div class="trama-downloads">
+                        <div class="trama-file">
+                            <div class="trama-file-top">
+                                <span class="trama-file-icon is-doc"><i class="fas fa-file-word"></i></span>
+                                <div>
+                                    <h4>1 · Diseño instruccional</h4>
+                                    <span class="trama-file-name">Curso-Taller_TRAMA_01_Diseno_Instruccional.docx</span>
+                                </div>
+                            </div>
+                            <p>
+                                Justificación, objetivos, resultados de aprendizaje, competencias, contenido temático,
+                                agenda minuto a minuto, metodología, requisitos, evaluación y textos de difusión.
+                            </p>
+                            <div class="trama-file-foot">
+                                <span class="trama-file-size">DOCX · 38 KB</span>
+                                <a class="trama-file-btn" href="/trama/descargas/Curso-Taller_TRAMA_01_Diseno_Instruccional.docx" download data-file="01-diseno-instruccional">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="trama-file">
+                            <div class="trama-file-top">
+                                <span class="trama-file-icon is-doc"><i class="fas fa-file-word"></i></span>
+                                <div>
+                                    <h4>2 · Caso demostrativo</h4>
+                                    <span class="trama-file-name">Curso-Taller_TRAMA_02_Caso_Demostrativo.docx</span>
+                                </div>
+                            </div>
+                            <p>
+                                El método aplicado de principio a fin sobre el tema "Ecosistema de pagos digitales en
+                                México", de Comercio Electrónico. Incluye los prompts exactos, el contenido generado,
+                                el HTML crudo, la actividad con rúbrica y la secuencia final en Moodle.
+                            </p>
+                            <div class="trama-file-foot">
+                                <span class="trama-file-size">DOCX · 36 KB</span>
+                                <a class="trama-file-btn" href="/trama/descargas/Curso-Taller_TRAMA_02_Caso_Demostrativo.docx" download data-file="02-caso-demostrativo">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="trama-file">
+                            <div class="trama-file-top">
+                                <span class="trama-file-icon is-doc"><i class="fas fa-file-word"></i></span>
+                                <div>
+                                    <h4>3 · Kit del participante</h4>
+                                    <span class="trama-file-name">Curso-Taller_TRAMA_03_Kit_del_Participante.docx</span>
+                                </div>
+                            </div>
+                            <p>
+                                Guía rápida de una página, plantilla de trabajo para llenar durante la sesión,
+                                biblioteca de cinco prompts y lista de verificación previa a publicar.
+                            </p>
+                            <div class="trama-file-foot">
+                                <span class="trama-file-size">DOCX · 24 KB</span>
+                                <a class="trama-file-btn" href="/trama/descargas/Curso-Taller_TRAMA_03_Kit_del_Participante.docx" download data-file="03-kit-participante">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="trama-file">
+                            <div class="trama-file-top">
+                                <span class="trama-file-icon is-ppt"><i class="fas fa-file-powerpoint"></i></span>
+                                <div>
+                                    <h4>4 · Presentación</h4>
+                                    <span class="trama-file-name">Curso-Taller_TRAMA_04_Presentacion.pptx</span>
+                                </div>
+                            </div>
+                            <p>
+                                19 diapositivas con notas del presentador y control de tiempo.
+                            </p>
+                            <div class="trama-file-foot">
+                                <span class="trama-file-size">PPTX · 953 KB</span>
+                                <a class="trama-file-btn" href="/trama/descargas/Curso-Taller_TRAMA_04_Presentacion.pptx" download data-file="04-presentacion">
+                                    <i class="fas fa-download"></i> Descargar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="trama-rule">
+
+                <!-- CIERRE -->
+                <section id="cierre">
+                    <h2>Cierre</h2>
+
+                    <div class="trama-closing">
+                        <blockquote>
+                            <p>
+                                Ya tengo una manera concreta de tomar los materiales que uso actualmente y
+                                convertirlos, con apoyo de inteligencia artificial, en una experiencia de aprendizaje
+                                adecuada para Moodle y para la bimodalidad.
+                            </p>
+                        </blockquote>
+                        <p class="c-after-quote">
+                            Esa es la frase que cada participante debería poder decir al salir. Si al final la gente
+                            sale entusiasmada con una herramienta pero sin haber transformado un tema, el taller no
+                            sirvió.
+                        </p>
+                        <a href="/#contacto" class="trama-btn trama-btn-gold">
+                            Solicitar este taller <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <p class="trama-license">
+                        <strong>Dr. Omar Valdez Palazuelos</strong> · Facultad de Contaduría y Administración,
+                        Universidad Autónoma de Sinaloa. Este material se comparte bajo licencia
+                        <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>,
+                        de modo que otras facultades puedan reutilizarlo citando la fuente.
+                    </p>
+                </section>
+
+            </article>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- FOOTER                                        -->
+<!-- ============================================= -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div>
+            <h3>Dr. Omar Valdez Palazuelos</h3>
+            <p>Profesor, Investigador y Consultor en Tecnologías Emergentes</p>
+            <div class="footer-badges">
+                <span class="footer-badge">SNI Nivel I</span>
+                <span class="footer-badge">IEEE</span>
+                <span class="footer-badge">IIDISE</span>
+            </div>
+        </div>
+        <div>
+            <h4>Navegación</h4>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/#sobre-mi">Sobre Mí</a></li>
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/#investigacion">Investigación</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Recursos</h4>
+            <ul>
+                <li><a href="/#cursos">Cursos</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contacto">Contacto</a></li>
+                <li><a href="/privacidad.html">Aviso de Privacidad</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Especialización</h4>
+            <ul>
+                <li>Blockchain y Bitcoin</li>
+                <li>Inteligencia Artificial</li>
+                <li>Fintech</li>
+                <li>Marketing Digital</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Omar Valdez Palazuelos. Todos los derechos reservados. · <a href="/privacidad.html" style="color: rgba(255,255,255,0.6);">Aviso de Privacidad</a></p>
+    </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ---------- Menú móvil ---------- */
+    var menuBtn = document.getElementById('mobileMenuBtn');
+    var navMenu = document.getElementById('navMenu');
+    if (menuBtn && navMenu) {
+        menuBtn.addEventListener('click', function () {
+            navMenu.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+    }
+
+    /* ---------- Toast ---------- */
+    function showToast(msg, type) {
+        var t = document.getElementById('toast');
+        if (!t) return;
+        t.textContent = msg;
+        t.className = 'toast ' + (type || 'success');
+        void t.offsetWidth;
+        t.classList.add('show');
+        setTimeout(function () { t.classList.remove('show'); }, 3000);
+    }
+
+    /* ---------- Barra de progreso ---------- */
+    var progress = document.getElementById('tramaProgress');
+    function updateProgress() {
+        var h = document.documentElement;
+        var max = h.scrollHeight - h.clientHeight;
+        var pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+        progress.style.width = pct + '%';
+    }
+
+    /* ---------- Índice: sección activa ---------- */
+    var tocLinks = Array.prototype.slice.call(document.querySelectorAll('#tramaToc a'));
+    var sections = tocLinks
+        .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+        .filter(Boolean);
+
+    function updateToc() {
+        var pos = window.scrollY + 140;
+        var current = -1;
+        for (var i = 0; i < sections.length; i++) {
+            if (sections[i].offsetTop <= pos) current = i;
+        }
+        tocLinks.forEach(function (a, i) { a.classList.toggle('is-active', i === current); });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(function () {
+            updateProgress();
+            updateToc();
+            ticking = false;
+        });
+    }, { passive: true });
+
+    updateProgress();
+    updateToc();
+
+    /* ---------- Copiar el prompt ---------- */
+    var copyBtn = document.getElementById('copyPrompt');
+    var promptText = document.getElementById('promptText');
+    if (copyBtn && promptText) {
+        copyBtn.addEventListener('click', function () {
+            var text = promptText.textContent;
+            var done = function () {
+                copyBtn.classList.add('is-done');
+                copyBtn.querySelector('span').textContent = 'Copiado';
+                copyBtn.querySelector('i').className = 'fas fa-check';
+                showToast('Prompt copiado al portapapeles', 'success');
+                setTimeout(function () {
+                    copyBtn.classList.remove('is-done');
+                    copyBtn.querySelector('span').textContent = 'Copiar';
+                    copyBtn.querySelector('i').className = 'fas fa-copy';
+                }, 2500);
+                if (typeof gtag === 'function') {
+                    gtag('event', 'trama_copy_prompt', {
+                        event_category: 'engagement',
+                        event_label: 'prompt-adaptacion'
+                    });
+                }
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(fallback);
+            } else {
+                fallback();
+            }
+
+            function fallback() {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); done(); } catch (e) { showToast('No se pudo copiar', 'error'); }
+                document.body.removeChild(ta);
+            }
+        });
+    }
+
+    /* ---------- Lista de verificación ---------- */
+    var KEY = 'trama_checklist';
+    var boxes = Array.prototype.slice.call(document.querySelectorAll('#tramaCheck input[type="checkbox"]'));
+    var countEl = document.getElementById('checkCount');
+    var resetBtn = document.getElementById('checkReset');
+
+    function readState() {
+        try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+    }
+    function writeState(state) {
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* modo privado */ }
+    }
+    function refreshCount() {
+        var n = boxes.filter(function (b) { return b.checked; }).length;
+        countEl.textContent = n + ' de ' + boxes.length + ' revisados';
+        countEl.style.color = (n === boxes.length) ? '#2E7D5B' : '#5A6B7C';
+    }
+
+    var saved = readState();
+    boxes.forEach(function (b) {
+        if (saved[b.dataset.ck]) b.checked = true;
+        b.addEventListener('change', function () {
+            var state = readState();
+            if (b.checked) { state[b.dataset.ck] = true; } else { delete state[b.dataset.ck]; }
+            writeState(state);
+            refreshCount();
+            if (boxes.every(function (x) { return x.checked; })) {
+                showToast('Lista completa. El tema está listo para publicarse.', 'success');
+            }
+        });
+    });
+    refreshCount();
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+            boxes.forEach(function (b) { b.checked = false; });
+            writeState({});
+            refreshCount();
+        });
+    }
+
+    /* ---------- Descargas: evento GA4 ---------- */
+    document.querySelectorAll('[data-file]').forEach(function (a) {
+        a.addEventListener('click', function () {
+            if (typeof gtag === 'function') {
+                gtag('event', 'trama_download', {
+                    event_category: 'materiales',
+                    event_label: a.dataset.file
+                });
+            }
+        });
+    });
+
+    /* ---------- Cerrar el índice móvil al navegar ---------- */
+    document.querySelectorAll('.trama-toc-mobile a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            var d = document.querySelector('.trama-toc-mobile');
+            if (d) d.open = false;
+        });
+    });
+})();
+</script>
+
+</body>
+</html>
