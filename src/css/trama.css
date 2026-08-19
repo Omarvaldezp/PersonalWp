@@ -987,79 +987,78 @@
    DESCARGAS
    =================================================================== */
 
-.trama-downloads {
+.trama-kit {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.75rem;
+    align-items: start;
     margin: 1.75rem 0;
-}
-
-.trama-file {
-    display: flex;
-    flex-direction: column;
-    gap: .85rem;
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: var(--tr-radius);
     border: 1px solid var(--tr-line);
+    border-top: 3px solid var(--tr-gold);
     background: #fff;
     box-shadow: var(--tr-shadow);
-    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
-.trama-file:hover {
-    transform: translateY(-3px);
-    border-color: rgba(22, 48, 79, .25);
-    box-shadow: 0 14px 34px rgba(22, 48, 79, .11);
-}
-
-.trama-file-top { display: flex; align-items: center; gap: .85rem; }
-
-.trama-file-icon {
-    flex: 0 0 auto;
-    width: 2.75rem;
-    height: 2.75rem;
+.trama-kit-icon {
     display: grid;
     place-items: center;
-    border-radius: 9px;
-    font-size: 1.15rem;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 12px;
+    background: #2B579A;
     color: #fff;
+    font-size: 1.6rem;
 }
 
-.trama-file-icon.is-doc { background: #2B579A; }
-.trama-file-icon.is-ppt { background: #C43E1C; }
+.trama-kit-tag {
+    display: inline-block;
+    padding: .3rem .7rem;
+    margin-bottom: .75rem;
+    border-radius: 6px;
+    background: rgba(200, 162, 74, .18);
+    color: #8A6D24;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
 
-.trama-file-name { font-size: .78rem; color: var(--tr-muted); font-family: 'SFMono-Regular', Consolas, monospace; word-break: break-all; }
+.trama-kit-body h3 { margin: 0 0 .6rem; font-size: 1.3rem; }
 
-.trama-file h4 { margin: 0 0 .15rem; font-size: 1.02rem; }
+.trama-kit-body > p { font-size: .98rem; line-height: 1.65; color: var(--tr-muted); margin: 0 0 1.25rem; }
 
-.trama-file p { font-size: .91rem; line-height: 1.55; color: var(--tr-muted); margin: 0; flex: 1; }
+.trama-kit-list { list-style: none; margin: 0 0 1.6rem; padding: 0; }
 
-.trama-file-foot {
+.trama-kit-list li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-top: .85rem;
-    border-top: 1px solid var(--tr-line);
+    gap: .7rem;
+    padding: .5rem 0;
+    font-size: .95rem;
+    color: #33445A;
+    border-bottom: 1px solid #F0F4F8;
 }
 
-.trama-file-size { font-size: .8rem; color: var(--tr-muted); }
+.trama-kit-list li:last-child { border-bottom: 0; }
 
-.trama-file-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .55rem 1rem;
-    border-radius: 8px;
-    background: var(--tr-navy);
-    color: #fff;
+.trama-kit-list i {
+    flex: 0 0 auto;
+    width: 1.5rem;
+    color: var(--tr-gold);
     font-size: .85rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background .18s ease;
+    text-align: center;
 }
 
-.trama-file-btn:hover { background: #1d3f66; }
+.trama-kit-foot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.trama-kit-meta { font-size: .85rem; color: var(--tr-muted); }
 
 /* ===================================================================
    CIERRE
@@ -1179,6 +1178,8 @@
     }
 
     .trama-agenda-item { grid-template-columns: 1fr; gap: .3rem; }
+
+    .trama-kit { grid-template-columns: 1fr; gap: 1.25rem; padding: 1.5rem; }
 
     .trama-closing { padding: 2rem 1.5rem; }
 
