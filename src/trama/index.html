@@ -665,6 +665,29 @@ en las fuentes, escríbelo como [VERIFICAR: ...] para que yo lo complete.</code>
                             repiten cada ciclo y donde más reprueban, que son los que se pagan solos.
                         </p>
                     </blockquote>
+
+                    <h3>Cuando el recurso ya está publicado</h3>
+
+                    <p>
+                        Suba el video a YouTube en modo oculto y el audio a Spotify, copie las direcciones y páselas
+                        al <strong>prompt M2</strong> del kit junto con el contenido que ya revisó. Le devuelve una
+                        sola página de Moodle con el texto, el video y el pódcast integrados, en lugar de tres
+                        recursos sueltos que el alumno tiene que ir abriendo por separado.
+                    </p>
+
+                    <div class="trama-box">
+                        <span class="trama-box-label"><i class="fas fa-link"></i> El detalle que rompe el video</span>
+                        <h4>La dirección de compartir no sirve para insertar</h4>
+                        <p>
+                            La dirección que le da el botón de compartir es para mandarla por WhatsApp, no para
+                            incrustarla en una página. Si se pega tal cual, el alumno ve un recuadro vacío. Hay que
+                            convertirla, y de eso se encarga el prompt M2:
+                        </p>
+                        <ul>
+                            <li><code>youtube.com/watch?v=ABC123</code> pasa a <code>youtube.com/embed/ABC123</code></li>
+                            <li><code>open.spotify.com/episode/XYZ789</code> pasa a <code>open.spotify.com/embed/episode/XYZ789</code></li>
+                        </ul>
+                    </div>
                 </section>
 
                 <hr class="trama-rule">
@@ -852,7 +875,7 @@ en las fuentes, escríbelo como [VERIFICAR: ...] para que yo lo complete.</code>
 
                     <div class="trama-check" id="tramaCheck">
                         <div class="trama-check-head">
-                            <span class="trama-check-count" id="checkCount">0 de 10 revisados</span>
+                            <span class="trama-check-count" id="checkCount">0 de 11 revisados</span>
                             <button class="trama-check-reset" id="checkReset" type="button">
                                 <i class="fas fa-rotate-left"></i> Reiniciar
                             </button>
@@ -868,13 +891,21 @@ en las fuentes, escríbelo como [VERIFICAR: ...] para que yo lo complete.</code>
                             <li><label><input type="checkbox" data-ck="8"><span>El nombre de cada recurso dice qué es y cuánto tiempo toma</span></label></li>
                             <li><label><input type="checkbox" data-ck="9"><span>La etiqueta de puente dice qué pasará en la sesión presencial</span></label></li>
                             <li class="is-key"><label><input type="checkbox" data-ck="10"><span>Abrí el tema en vista de estudiante y la secuencia se entiende sola</span></label></li>
+                            <li><label><input type="checkbox" data-ck="11"><span>Abrí el tema en una ventana de incógnito, sin mi sesión: cada video, audio e imagen carga</span></label></li>
                         </ul>
                     </div>
 
                     <p>
-                        El último punto es el que más importa. Si en algún momento usted no sabe qué sigue o para
-                        qué, sus alumnos tampoco van a saber. Es el único de la lista que nadie ni nada puede hacer
-                        por usted.
+                        El de la vista de estudiante es el que más importa. Si en algún momento usted no sabe qué
+                        sigue o para qué, sus alumnos tampoco van a saber. Es el único de la lista que nadie ni nada
+                        puede hacer por usted.
+                    </p>
+
+                    <p>
+                        El de la ventana de incógnito parece redundante y no lo es. La vista de estudiante conserva
+                        su sesión de maestro, así que un video mal enlazado o una imagen subida por dirección se le
+                        ven bien a usted y le fallan al alumno. Son dos revisiones distintas: una es de secuencia,
+                        la otra de que los recursos de verdad carguen.
                     </p>
                 </section>
 
@@ -1017,13 +1048,13 @@ en las fuentes, escríbelo como [VERIFICAR: ...] para que yo lo complete.</code>
                             <h3>Kit del participante</h3>
                             <p>
                                 Guía rápida de una página, plantilla de trabajo para llenar durante la sesión,
-                                biblioteca de cinco prompts y lista de verificación previa a publicar.
+                                biblioteca de seis prompts y lista de verificación previa a publicar.
                             </p>
 
                             <ul class="trama-kit-list">
                                 <li><i class="fas fa-bolt"></i> Guía rápida del método en una página</li>
                                 <li><i class="fas fa-table-list"></i> Plantilla de trabajo para la sesión</li>
-                                <li><i class="fas fa-terminal"></i> Biblioteca de cinco prompts</li>
+                                <li><i class="fas fa-terminal"></i> Biblioteca de seis prompts</li>
                                 <li><i class="fas fa-circle-check"></i> Lista de verificación previa a publicar</li>
                             </ul>
 
