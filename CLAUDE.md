@@ -115,8 +115,24 @@ exclude: |
 - **FTP directo desde la sesión no sirve:** todo el egress pasa por un proxy
   HTTP/HTTPS. El camino de publicación es siempre commit → push → Action.
 - **Base de datos del sistema académico:** PostgreSQL, **no MySQL**. Usa JSONB.
-- Los archivos en la raíz del repo (`*.md`, `database/`) **no se despliegan**;
-  por eso los scripts de migración llevan el SQL embebido.
+- Los archivos en la raíz del repo (`*.md`, `database/`) **no se despliegan**.
+  Antes eso se resolvía con scripts PHP dentro de `src/` que llevaban el SQL
+  embebido; se eliminaron por inseguros. Ver "Cómo correr migraciones".
+
+## Cómo correr migraciones
+
+El SQL vive en `database/migrations/` y `database/*.sql`, y **no se despliega**.
+Ejecútalo desde el panel de SiteGround (phpPgAdmin o acceso `psql`), pegando el
+archivo correspondiente.
+
+**Nunca** vuelvas a poner un script de migración o de diagnóstico dentro de
+`src/`. Todo lo que esté ahí queda publicado en `https://omarvaldez.com/` y es
+alcanzable por cualquiera. Los scripts que se borraron usaban llaves
+`?key=migrate123`, `?key=test123` y `?key=check123` en texto plano; uno de ellos
+imprimía nombres y correos de estudiantes.
+
+Si en algún momento hace falta un script de mantenimiento vía web, debe ir detrás
+de la sesión de admin (`Auth`), no de una llave en el código fuente.
 
 ---
 
@@ -128,17 +144,17 @@ exclude: |
 - Fase 1 del sistema académico: estudiantes, cursos, inscripciones (API + panel)
 - Sección `/trama`: curso-taller de docencia bimodal para la FCA-UAS
   (`src/trama/index.html`, `src/css/trama.css`, kit descargable)
+- Eliminados de `src/` los scripts expuestos con llaves débiles (`migrate-*.php`,
+  `test-db-connection.php`, `check-diagnostico-data.php`). El deploy los borra
+  también del servidor, que es lo que se buscaba. Ver "Cómo correr migraciones".
 
 ### Pendiente, por prioridad
 
-1. **Seguridad:** borrar de `src/` los scripts expuestos con llaves débiles:
-   `migrate-*.php`, `test-db-connection.php`, `check-diagnostico-data.php`.
-   Exponen datos de estudiantes. (Borrarlos del repo sí los borra del servidor,
-   que es justo lo que se quiere en este caso.)
-2. Cerrar el CORS abierto y proteger los endpoints de la API con autenticación
-3. Sincronizar los archivos de producción hacia el repo (sección A)
-4. Sustituir los `alert()` del panel PHP por toasts
-5. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
+1. **Seguridad:** cerrar el CORS abierto y proteger los endpoints de la API con
+   autenticación. Hoy `src/api/` responde a cualquier origen.
+2. Sincronizar los archivos de producción hacia el repo (sección A)
+3. Sustituir los `alert()` del panel PHP por toasts
+4. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
    cuestionarios múltiples, reportes
 
 ---
