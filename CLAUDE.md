@@ -31,7 +31,7 @@ Archivos que **solo existen en el servidor** (`/public_html/`), no en git:
 | `index.html` | Landing real, con carga dinámica desde Supabase |
 | `post.html` | Artículo de blog individual (`?slug=...`) |
 | `css/custom.css` | Estilos de todo el sitio |
-| `js/supabase-config.js` | Config de Supabase y wrapper `window.API` |
+| ~~`js/supabase-config.js`~~ | **Ya está en el repo**, en `src/js/`. El deploy manda sobre él |
 | `js/app.js` | Lógica del landing (formularios, filtros, animaciones) |
 | `admin/index.html` | **Panel de admin del blog**, el que usa Omar para publicar |
 | `privacidad.html`, `img/` | Aviso de privacidad y assets |
