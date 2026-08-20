@@ -87,15 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </form>
 
-            <div class="login-footer">
-                <p>
-                    <small>
-                        Usuario por defecto: <strong>admin</strong> / <strong>admin123</strong>
-                        <br>
-                        <em>⚠️ Cambia la contraseña después del primer login</em>
-                    </small>
-                </p>
-            </div>
+<?php /*
+    Aquí se anunciaban las credenciales por defecto en una página pública.
+    Nunca vuelvas a poner credenciales, usuarios de ejemplo ni pistas de
+    acceso en esta pantalla: los comentarios HTML también se sirven al
+    navegador, así que esta nota va en un comentario de PHP.
+*/ ?>
         </div>
     </div>
 </body>
