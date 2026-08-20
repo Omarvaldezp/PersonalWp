@@ -1,31 +1,22 @@
 # API - Configuración de acceso
 #
+# Deliberadamente SIN reglas de mod_rewrite.
+#
+# La versión anterior de este archivo traía un RewriteEngine con redirección a
+# HTTPS y un bloqueo por RewriteRule, y con ella /api/auth/login.php empezó a
+# responder 404, con lo que el panel dejó de poder cerrar sesión. La
+# redirección a HTTPS ya la hace el .htaccess de la raíz, así que aquí sobra.
+#
+# El bloqueo de los directorios internos se hace ahora con un .htaccess propio
+# dentro de cada uno (config/, models/, utils/), que no puede afectar a las
+# rutas vecinas.
+#
 # Por HTTP solo deben alcanzarse:
-#   - controllers/*.php   los endpoints del panel y del formulario público
+#   - controllers/*.php   endpoints del panel y del formulario público
 #   - auth/login.php      login, logout y consulta del usuario actual
-#
-# config/, models/ y utils/ se cargan desde el sistema de archivos con
-# require_once, nunca por HTTP, así que bloquearlos no afecta a nada.
-# Importa sobre todo config/: si algún día PHP dejara de ejecutarse, config.php
-# se serviría como texto plano con las credenciales de la base de datos.
-#
-# auth/ se deja accesible a propósito: el panel cierra sesión llamando a
-# /api/auth/login.php?action=logout desde el navegador.
 
 Options -Indexes
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-
-    # Forzar HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-    # Directorios que nunca se piden por HTTP
-    RewriteRule ^(config|models|utils)/ - [F,L]
-</IfModule>
-
-# Respaldo por extensión, por si mod_rewrite no estuviera disponible.
 <FilesMatch "\.(sql|md|ini|log|bak)$|\.example\.php$">
     <IfModule mod_authz_core.c>
         Require all denied

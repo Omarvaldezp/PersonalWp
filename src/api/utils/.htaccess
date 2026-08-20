@@ -1,0 +1,13 @@
+# Este directorio se carga desde el sistema de archivos con require_once,
+# nunca por HTTP. Negar el acceso web no afecta a la aplicación.
+#
+# Importa sobre todo en config/: si algún día PHP dejara de ejecutarse,
+# config.php se serviría como texto plano con las credenciales de la base.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

@@ -49,8 +49,8 @@ Fase 1 terminada: `estudiantes`, `cursos_instancias`, `inscripciones`.
 
 `src/.htaccess` declara `DirectoryIndex index.html index.php`, pero
 `src/admin/.htaccess` declara `DirectoryIndex index.php`, y el del subdirectorio
-manda. **Está sin verificar cuál gana en realidad al entrar a `/admin/`**; ver
-el pendiente 1. El panel PHP solo es alcanzable por nombre
+manda. **Gana el panel PHP**: entrar a `/admin/` redirige a `/admin/login.php`.
+El panel del blog solo responde en `/admin/index.html`. Ver el pendiente 1. El panel PHP solo es alcanzable por nombre
 explícito (`/admin/index.php`, `/admin/estudiantes/index.php`). No es un bug que
 haya que "arreglar" sin consultar a Omar: el panel del blog es el que él usa a
 diario.
@@ -157,17 +157,22 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
   dominio externo, define `API_ALLOWED_ORIGINS` en `config.php`.
 - Los controladores dejaron de devolver `$e->getMessage()` al cliente; el
   detalle va a `error_log` y el cliente recibe un mensaje genérico.
-- `src/api/.htaccess` bloquea `config/`, `models/` y `utils/` por HTTP.
-  **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
+- `config/`, `models/` y `utils/` se bloquean por HTTP con un `.htaccess` propio
+  dentro de cada uno. **Nunca metas reglas de `mod_rewrite` bajo `/api/`**: la
+  primera versión de `src/api/.htaccess` las traía y dejó `/api/auth/login.php`
+  respondiendo 404, con lo que el panel no podía cerrar sesión. La redirección
+  a HTTPS ya la hace el `.htaccess` de la raíz.
+- **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
   `/api/auth/login.php?action=logout` desde el navegador.
 
 ### Pendiente, por prioridad
 
-1. **Verificar qué sirve `/admin/`.** `src/admin/.htaccess` declara
-   `DirectoryIndex index.php` desde mayo de 2026 y en Apache eso pisa el
-   `DirectoryIndex` del directorio padre. Si es así, `/admin/` lleva al panel
-   PHP y no al del blog, al revés de lo que decía este archivo. Sin comprobar,
-   porque el sitio está tras el captcha de SiteGround.
+1. **Decidir qué debe servir `/admin/`.** Comprobado en agosto de 2026: entrar
+   a `/admin/` lleva a `/admin/login.php`, o sea al **panel PHP**, no al del
+   blog. Lo causa el `DirectoryIndex index.php` de `src/admin/.htaccess`, que
+   desde mayo de 2026 pisa el del directorio padre. El panel del blog solo es
+   alcanzable escribiendo `/admin/index.html`. Falta que Omar decida cuál de
+   los dos debe quedarse en `/admin/`.
 2. Sincronizar los archivos de producción hacia el repo (sección A)
 3. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
 4. Sustituir los `alert()` del panel PHP por toasts
