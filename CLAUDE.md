@@ -165,6 +165,24 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
 - **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
   `/api/auth/login.php?action=logout` desde el navegador.
 
+### Retiro del PHP, en curso
+
+El panel y la API PHP se retiran; todo queda en el panel del blog (Supabase).
+Los archivos preparados van en `database/supabase/` y `supabase/functions/`.
+El orden importa:
+
+1. `00_roles.sql` — tabla `perfiles` y función `tiene_rol()`. **Va primero**,
+   porque `01_academico.sql` depende de ella. Incluye el paso obligatorio de
+   darte a ti mismo el rol `admin`.
+2. `01_academico.sql` — las cuatro tablas académicas con RLS por rol.
+3. `02_corregir_politicas.sql` — repara los like y acota la baja de suscriptores.
+4. `supabase/functions/diagnostico-correo/` — Edge Function que sustituye al
+   `mail()` del PHP. **Sin ella no se puede apagar el PHP** sin que el
+   estudiante deje de recibir su correo.
+
+Decisiones ya tomadas por Omar: habrá más usuarios del panel (por eso los
+roles), y el correo del diagnóstico se conserva (por eso la Edge Function).
+
 ### Pendiente, por prioridad
 
 1. **Decidir qué debe servir `/admin/`.** Comprobado en agosto de 2026: entrar
