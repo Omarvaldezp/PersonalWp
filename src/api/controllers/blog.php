@@ -17,8 +17,11 @@
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../utils/Response.php';
 require_once __DIR__ . '/../models/Blog.php';
+require_once __DIR__ . '/../auth/guard.php';
 
 // Manejo de errores
+api_require_auth();
+
 try {
     $blog = new Blog();
     $method = $_SERVER['REQUEST_METHOD'];
@@ -210,5 +213,5 @@ try {
     }
 
 } catch (Exception $e) {
-    Response::serverError($e->getMessage());
+    Response::serverError();
 }

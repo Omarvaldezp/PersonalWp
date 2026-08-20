@@ -47,9 +47,10 @@ Fase 1 terminada: `estudiantes`, `cursos_instancias`, `inscripciones`.
 
 ### Conflicto conocido entre A y B
 
-`src/.htaccess` declara `DirectoryIndex index.html index.php`. Como el panel del
-blog es `/admin/index.html` y el panel PHP es `/admin/index.php`, **al entrar a
-`/admin/` gana el del blog**. El panel PHP solo es alcanzable por nombre
+`src/.htaccess` declara `DirectoryIndex index.html index.php`, pero
+`src/admin/.htaccess` declara `DirectoryIndex index.php`, y el del subdirectorio
+manda. **Está sin verificar cuál gana en realidad al entrar a `/admin/`**; ver
+el pendiente 1. El panel PHP solo es alcanzable por nombre
 explícito (`/admin/index.php`, `/admin/estudiantes/index.php`). No es un bug que
 haya que "arreglar" sin consultar a Omar: el panel del blog es el que él usa a
 diario.
@@ -147,14 +148,30 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
 - Eliminados de `src/` los scripts expuestos con llaves débiles (`migrate-*.php`,
   `test-db-connection.php`, `check-diagnostico-data.php`). El deploy los borra
   también del servidor, que es lo que se buscaba. Ver "Cómo correr migraciones".
+- API cerrada. Los nueve controladores de `src/api/controllers/` exigen sesión
+  vía `api_require_auth()` (`src/api/auth/guard.php`). Única excepción: el
+  **POST** de `diagnostico-disde.php`, que recibe el formulario público de
+  `src/diagnosticoDISDE.php`; su GET sí está protegido.
+- CORS cerrado. `src/api/config/cors.php` ya no emite el comodín. Todo lo que
+  consume la API es del mismo origen y no necesita CORS. Para autorizar un
+  dominio externo, define `API_ALLOWED_ORIGINS` en `config.php`.
+- Los controladores dejaron de devolver `$e->getMessage()` al cliente; el
+  detalle va a `error_log` y el cliente recibe un mensaje genérico.
+- `src/api/.htaccess` bloquea `config/`, `models/` y `utils/` por HTTP.
+  **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
+  `/api/auth/login.php?action=logout` desde el navegador.
 
 ### Pendiente, por prioridad
 
-1. **Seguridad:** cerrar el CORS abierto y proteger los endpoints de la API con
-   autenticación. Hoy `src/api/` responde a cualquier origen.
+1. **Verificar qué sirve `/admin/`.** `src/admin/.htaccess` declara
+   `DirectoryIndex index.php` desde mayo de 2026 y en Apache eso pisa el
+   `DirectoryIndex` del directorio padre. Si es así, `/admin/` lleva al panel
+   PHP y no al del blog, al revés de lo que decía este archivo. Sin comprobar,
+   porque el sitio está tras el captcha de SiteGround.
 2. Sincronizar los archivos de producción hacia el repo (sección A)
-3. Sustituir los `alert()` del panel PHP por toasts
-4. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
+3. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
+4. Sustituir los `alert()` del panel PHP por toasts
+5. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
    cuestionarios múltiples, reportes
 
 ---

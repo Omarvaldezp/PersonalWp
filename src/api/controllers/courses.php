@@ -16,6 +16,9 @@
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../utils/Response.php';
 require_once __DIR__ . '/../models/Course.php';
+require_once __DIR__ . '/../auth/guard.php';
+
+api_require_auth();
 
 try {
     $course = new Course();
@@ -141,5 +144,5 @@ try {
     }
 
 } catch (Exception $e) {
-    Response::serverError($e->getMessage());
+    Response::serverError();
 }

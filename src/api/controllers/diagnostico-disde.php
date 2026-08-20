@@ -11,6 +11,7 @@
 require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../utils/Response.php';
+require_once __DIR__ . '/../auth/guard.php';
 
 try {
     $db = Database::getInstance();
@@ -117,6 +118,10 @@ try {
 
     // GET - Obtener respuestas (admin)
     if ($method === 'GET') {
+        // El POST queda abierto: lo usa el formulario público de
+        // diagnosticoDISDE.php. La consulta de respuestas no.
+        api_require_auth();
+
         // Analytics agregado
         if (isset($_GET['analytics'])) {
             $analytics = obtenerAnalytics($db);
@@ -168,7 +173,7 @@ try {
 
 } catch (Exception $e) {
     error_log("Diagnostico DISDE error: " . $e->getMessage());
-    Response::serverError($e->getMessage());
+    Response::serverError();
 }
 
 /**

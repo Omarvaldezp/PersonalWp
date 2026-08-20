@@ -13,6 +13,9 @@ require_once __DIR__ . '/../config/cors.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../utils/Response.php';
 require_once __DIR__ . '/../models/Inscripcion.php';
+require_once __DIR__ . '/../auth/guard.php';
+
+api_require_auth();
 
 try {
     $db = Database::getInstance();
@@ -105,5 +108,5 @@ try {
 
 } catch (Exception $e) {
     error_log("Inscripciones API error: " . $e->getMessage());
-    Response::serverError($e->getMessage());
+    Response::serverError();
 }

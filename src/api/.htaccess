@@ -1,0 +1,37 @@
+# API - Configuración de acceso
+#
+# Por HTTP solo deben alcanzarse:
+#   - controllers/*.php   los endpoints del panel y del formulario público
+#   - auth/login.php      login, logout y consulta del usuario actual
+#
+# config/, models/ y utils/ se cargan desde el sistema de archivos con
+# require_once, nunca por HTTP, así que bloquearlos no afecta a nada.
+# Importa sobre todo config/: si algún día PHP dejara de ejecutarse, config.php
+# se serviría como texto plano con las credenciales de la base de datos.
+#
+# auth/ se deja accesible a propósito: el panel cierra sesión llamando a
+# /api/auth/login.php?action=logout desde el navegador.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Forzar HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Directorios que nunca se piden por HTTP
+    RewriteRule ^(config|models|utils)/ - [F,L]
+</IfModule>
+
+# Respaldo por extensión, por si mod_rewrite no estuviera disponible.
+<FilesMatch "\.(sql|md|ini|log|bak)$|\.example\.php$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
