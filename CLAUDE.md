@@ -208,6 +208,13 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
 - `src/admin/index.html`, el panel del blog, entró al repo. Antes vivía sólo en
   el servidor. **A partir de ahora el deploy manda sobre él**: cualquier cambio
   hecho a mano en el servidor se pierde en el siguiente push.
+- El panel puede borrar una respuesta del seminario, con confirmación que dice
+  el nombre. El desglose por reactivo se va solo, por la llave foránea con
+  ON DELETE CASCADE.
+- `esc()` del panel ahora escapa también las comillas. `textContent` ->
+  `innerHTML` no las toca, y la función se usa dentro de atributos; con un
+  formulario público alimentando la tabla del seminario, un nombre con
+  comillas dobles rompía el renglón entero.
 - Reparado el buscador del panel. `filterTable()` leía el caché con
   `window['cachedPosts']`, pero esas variables se declaran con `let` en el nivel
   superior del script y `let` **no** crea una propiedad de `window`. Devolvía

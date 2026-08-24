@@ -1003,6 +1003,7 @@ function renderSeminarioTabla(filas) {
             <td>
                 <button class="btn btn-ghost btn-sm" onclick="verDiagnostico('${a.id}')" title="Ver la respuesta completa">&#128065;</button>
                 <a class="btn btn-ghost btn-sm" href="mailto:${esc(a.correo)}?subject=${encodeURIComponent('Seminario de Investigación Teórico')}" title="Escribirle"><i class="fas fa-envelope"></i></a>
+                <button class="btn btn-danger btn-sm" onclick="borrarDiagnostico('${a.id}', this.dataset.n)" data-n="${esc(a.nombre)}" title="Eliminar esta respuesta">&#10005;</button>
             </td>
         </tr>`).join('');
 
@@ -1134,6 +1135,25 @@ async function verDiagnostico(id) {
     document.getElementById('modalFooter').innerHTML = `
         <a href="mailto:${esc(r.correo)}?subject=${encodeURIComponent('Seminario de Investigación Teórico')}" class="btn btn-primary"><i class="fas fa-envelope"></i> Escribirle</a>
         <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>`;
+}
+
+// ── Borrar una respuesta ────────────────────────────────────────────────────
+// Sirve sobre todo para limpiar las pruebas antes de que conteste el grupo.
+// No usa deleteRecord() porque su confirmación es genérica y aquí conviene que
+// diga el nombre: son datos de una persona y no hay deshacer.
+//
+// Los renglones de seminario_diagnostico_item se van solos: la llave foránea
+// está declarada con ON DELETE CASCADE.
+async function borrarDiagnostico(id, nombre) {
+    if (!confirm('¿Eliminar la respuesta de ' + nombre + '?\n\nSe borra también su desglose por reactivo. Esto no se puede deshacer.')) return;
+    const { error } = await db.from('seminario_diagnostico').delete().eq('id', id);
+    if (error) {
+        console.error('Error al eliminar el diagnóstico:', error);
+        toast('No se pudo eliminar', 'error');
+        return;
+    }
+    toast('Respuesta eliminada', 'success');
+    loadSeminario();
 }
 
 // ── Exportación ─────────────────────────────────────────────────────────────
@@ -2100,7 +2120,20 @@ async function saveStat() {
 // =============================================
 // UTILITIES
 // =============================================
-function esc(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+// textContent -> innerHTML escapa &, < y >, pero NO las comillas. Como esta
+// función también se usa dentro de atributos —href, title, data-*— y ahora hay
+// un formulario público que alimenta la tabla del seminario, un nombre con
+// comillas dobles rompía el atributo y con él el renglón entero. Se escapan
+// las dos comillas. En texto normal no cambia nada: &quot; se ve como ".
+function esc(str) {
+    if (str === null || str === undefined || str === '') return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 function fmtDate(d) { return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }); }
 function toast(msg, type = 'success') {
     const t = document.getElementById('toast');
