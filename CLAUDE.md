@@ -257,6 +257,22 @@ Confirmado el 24 de agosto de 2026 contra el proyecto: los posts publicados
 traen ids como `cee4f047-8cd1-4995-9154-23d1a44baf92`. Antes de escribir
 cualquier función que reciba un id de `posts`, el tipo es `uuid`.
 
+### Trampa comprobada: un UPDATE con WHERE necesita política de SELECT
+
+`unsubscribe.html` da de baja con `update subscribers ... where email = ...` y
+**no funciona**. Reproducido el 24 de agosto de 2026 con la configuración exacta
+de producción: devuelve `UPDATE 0` y el suscriptor sigue activo.
+
+En Postgres, un UPDATE cuyo WHERE lee una columna necesita ver esa fila, y con
+RLS activo eso lo decide la política de **SELECT**. `anon` no tiene ninguna, así
+que la fila es invisible para el filtro. La política de UPDATE dice
+`using(true)`, pero nunca llega a evaluarse.
+
+Mismo defecto que tenían los like: falla en silencio y la página muestra un
+éxito que no corresponde a nada. Lo resuelve `baja_suscriptor()`, que es
+SECURITY DEFINER; falta cambiar la línea en `unsubscribe.html`, que no está en
+el repo.
+
 ### Pendiente, por prioridad
 
 1. **Decidir qué debe servir `/admin/`.** Comprobado en agosto de 2026: entrar
@@ -266,9 +282,12 @@ cualquier función que reciba un id de `posts`, el tipo es `uuid`.
    alcanzable escribiendo `/admin/index.html`. Falta que Omar decida cuál de
    los dos debe quedarse en `/admin/`.
 2. Sincronizar los archivos de producción hacia el repo (sección A)
-3. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
-4. Sustituir los `alert()` del panel PHP por toasts
-5. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
+3. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
+   `baja_suscriptor()` en vez de escribir directo. Requiere bajar el archivo
+   del servidor. Ver la trampa comprobada más arriba.
+4. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
+5. Sustituir los `alert()` del panel PHP por toasts
+6. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
    cuestionarios múltiples, reportes
 
 ---
