@@ -58,7 +58,11 @@ body {
 ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--sm-muted); }
 
-.sm-container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+/* El aire lateral crece con la pantalla. Con un padding fijo de 1.5rem, a
+   768 y a 834 el texto quedaba pegado a los dos bordes. */
+.sm-container { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+@media (min-width: 600px)  { .sm-container { padding: 0 2rem; } }
+@media (min-width: 1000px) { .sm-container { padding: 0 2.5rem; } }
 
 /* -------------------------------------------------------------- Barra fija */
 .sm-navbar {
@@ -73,10 +77,11 @@ body {
     padding: .7rem 0;
 }
 .sm-navbar .sm-container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.sm-navlinks { flex-shrink: 0; }
 
-.sm-logo { text-decoration: none; display: flex; flex-direction: column; }
-.sm-logo-name { font-weight: 700; font-size: 1.15rem; color: #fff; letter-spacing: -.02em; transition: var(--sm-transition); }
-.sm-logo-sub  { font-size: .7rem; color: rgba(255,255,255,.6); letter-spacing: .05em; transition: var(--sm-transition); }
+.sm-logo { text-decoration: none; display: flex; flex-direction: column; min-width: 0; }
+.sm-logo-name { font-weight: 700; font-size: 1.15rem; color: #fff; letter-spacing: -.02em; white-space: nowrap; transition: var(--sm-transition); }
+.sm-logo-sub  { font-size: .7rem; color: rgba(255,255,255,.6); letter-spacing: .05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: var(--sm-transition); }
 .sm-navbar.scrolled .sm-logo-name { color: var(--sm-ink); }
 .sm-navbar.scrolled .sm-logo-sub  { color: var(--sm-muted); }
 
@@ -95,20 +100,38 @@ body {
 .sm-navbar.scrolled .sm-navlinks a.sm-nav-cta { color: #fff; background: var(--sm-gradient); }
 .sm-navlinks .sm-nav-cta:hover { opacity: .9; transform: translateY(-1px); }
 
-/* En pantallas chicas la barra se reduce al logo y al enlace de regreso: el
-   menú completo vive en el sitio principal, no aquí. */
-@media (max-width: 860px) {
+/* La barra se reduce por etapas. No lleva menú hamburguesa a propósito: son
+   cuatro anclas de una sola página, y el menú completo del sitio vive en la
+   portada principal, a un toque del logotipo. */
+@media (max-width: 980px) {
     .sm-navlinks li:not(.sm-nav-keep) { display: none; }
     .sm-navlinks { gap: .5rem; }
 }
+/* Debajo de 560 el logotipo y dos enlaces ya no caben en un renglón. El
+   logotipo lleva a la portada del sitio, así que «Inicio» sobra. */
+@media (max-width: 560px) {
+    .sm-navbar { padding: .75rem 0; }
+    .sm-navbar.scrolled { padding: .6rem 0; }
+    .sm-nav-inicio { display: none; }
+    .sm-logo-name { font-size: 1.02rem; }
+    .sm-logo-sub  { font-size: .65rem; }
+    .sm-navlinks .sm-nav-cta { padding: .45rem .95rem; font-size: .84rem; }
+    .sm-navbar .sm-container { gap: .75rem; }
+    .sm-navlinks a { padding: .5rem .6rem; font-size: .84rem; }
+}
+/* En el formulario el subtítulo del logotipo es el nombre del curso, largo.
+   Debajo de 400 desaparece para que quepan el nombre y el enlace de vuelta. */
+@media (max-width: 400px) { .sm-logo-sub { display: none; } }
 
 /* --------------------------------------------------------------------- Hero */
 .sm-hero {
     position: relative; overflow: hidden;
     background: var(--sm-dark);
-    padding: 9rem 0 6rem;
+    padding: 8.5rem 0 5.5rem;
     color: #fff;
 }
+@media (max-width: 900px) { .sm-hero { padding: 7rem 0 4rem; } }
+@media (max-width: 560px) { .sm-hero { padding: 5.5rem 0 3rem; } }
 .sm-hero::before {
     content: ''; position: absolute; inset: 0;
     background:
@@ -117,7 +140,9 @@ body {
         radial-gradient(circle at 60% 80%, rgba(37, 99, 235, .08) 0%, transparent 40%);
 }
 .sm-hero-grid {
-    position: absolute; inset: 0; opacity: .04;
+    /* .04 es el valor del sitio, pero allá el hero lleva foto encima. Aquí,
+       sobre fondo liso, la cuadrícula se leía como plantilla sin terminar. */
+    position: absolute; inset: 0; opacity: .022;
     background-image:
         linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
@@ -126,8 +151,9 @@ body {
 .sm-hero .sm-container { position: relative; z-index: 2; }
 /* Dos columnas: el texto a la izquierda y la ficha a la derecha. En una sola
    columna la mitad derecha quedaba vacía y el hero se veía desbalanceado. */
-.sm-hero-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3.5rem; align-items: center; }
-@media (max-width: 900px) { .sm-hero-layout { grid-template-columns: 1fr; gap: 2.5rem; } }
+.sm-hero-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; align-items: center; }
+@media (max-width: 1040px) { .sm-hero-layout { grid-template-columns: 1.2fr .8fr; gap: 2rem; } }
+@media (max-width: 900px)  { .sm-hero-layout { grid-template-columns: 1fr; gap: 2.25rem; } }
 
 /* Ficha del curso, sobre el fondo oscuro */
 .sm-hero-card {
@@ -137,12 +163,19 @@ body {
     backdrop-filter: blur(12px);
     padding: 1.75rem;
     box-shadow: 0 20px 50px -12px rgba(0,0,0,.35);
+    align-self: center;
 }
 .sm-hero-card h2 {
     font-size: .74rem; text-transform: uppercase; letter-spacing: .1em;
     font-weight: 600; color: var(--sm-accent); margin: 0 0 1.25rem;
 }
 .sm-hero-card dl { margin: 0; display: grid; gap: .9rem; }
+/* Cuando la ficha pasa a ancho completo —de 900 para abajo— seis renglones
+   apilados la vuelven una torre. A dos columnas ocupa la mitad del alto. */
+@media (max-width: 900px) and (min-width: 540px) {
+    .sm-hero-card dl { grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+    .sm-hero-card .sm-hr { grid-column: 1 / -1; }
+}
 .sm-hero-card dt {
     font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
     color: rgba(255,255,255,.45); font-weight: 600; margin: 0 0 .15rem;
@@ -178,7 +211,13 @@ body {
 }
 
 /* ------------------------------------------------------------------ Botones */
-.sm-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+.sm-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+/* En móvil los dos botones quedaban de anchos distintos, uno debajo del
+   otro. Parejos y de ancho completo se leen como un par. */
+@media (max-width: 560px) {
+    .sm-actions { flex-direction: column; align-items: stretch; }
+    .sm-actions .sm-btn { justify-content: center; width: 100%; }
+}
 .sm-btn {
     display: inline-flex; align-items: center; gap: .5rem;
     font-family: var(--sm-font); font-weight: 600; font-size: .95rem;
@@ -195,6 +234,8 @@ body {
 
 /* --------------------------------------------------------------- Secciones */
 .sm-section { padding: 5rem 0; scroll-margin-top: 80px; }
+@media (max-width: 900px) { .sm-section { padding: 3.5rem 0; scroll-margin-top: 70px; } }
+@media (max-width: 560px) { .sm-section { padding: 2.75rem 0; } }
 .sm-section + .sm-section { border-top: 1px solid var(--sm-line); }
 .sm-label {
     display: inline-block; font-size: .8rem; font-weight: 600;
@@ -207,7 +248,7 @@ body {
     color: var(--sm-ink); line-height: 1.2; letter-spacing: -.02em;
     margin: 0 0 1rem;
 }
-.sm-desc { font-size: 1.02rem; color: var(--sm-muted); line-height: 1.7; max-width: 640px; margin: 0 0 2.5rem; }
+.sm-desc { font-size: 1.02rem; color: var(--sm-muted); line-height: 1.7; max-width: 640px; margin: 0 0 2.25rem; }
 
 /* Encabezado a la izquierda y cuerpo a la derecha, para las secciones cuyo
    contenido es prosa y en una sola columna dejaba media pantalla en blanco. */
@@ -261,6 +302,18 @@ body {
     margin-bottom: 1.1rem;
 }
 .sm-unidades h3 { margin: 0 0 .4rem; font-size: 1.02rem; font-weight: 700; color: var(--sm-ink); letter-spacing: -.01em; }
+/* En una columna, el número en su propio renglón desperdicia alto. Pegado al
+   título, la sección baja de 2 000 a 1 400 píxeles en un teléfono. */
+@media (max-width: 620px) {
+    .sm-unidades li {
+        display: grid; grid-template-columns: 42px 1fr;
+        column-gap: 1rem; row-gap: .35rem; padding: 1.25rem 1.35rem;
+        max-width: none;
+    }
+    .sm-unidades li::before { margin-bottom: 0; grid-row: 1; }
+    .sm-unidades h3 { grid-column: 2; align-self: center; margin: 0; }
+    .sm-unidades p  { grid-column: 1 / -1; }
+}
 .sm-unidades p  { margin: 0; color: var(--sm-muted); font-size: .92rem; }
 
 /* -------------------------------------------------------------- Calendario */
@@ -294,14 +347,15 @@ body {
 .sm-modo-virtual    { background: var(--sm-soft); color: var(--sm-muted); }
 .sm-modo-presencial { background: rgba(37, 99, 235, .1); color: var(--sm-primary-dark); }
 @media (max-width: 720px) {
-    .sm-sesion { grid-template-columns: 30px 1fr; row-gap: .25rem; padding: 1rem 1.1rem; }
-    .sm-sesion .sm-tema { grid-column: 2; }
-    .sm-sesion .sm-modo { grid-column: 2; justify-self: start; }
+    .sm-sesion { grid-template-columns: 26px 1fr; row-gap: .2rem; padding: .9rem 1rem; column-gap: .75rem; }
+    .sm-sesion .sm-tema { grid-column: 2; font-size: .89rem; }
+    .sm-sesion .sm-modo { grid-column: 2; justify-self: start; margin-top: .2rem; }
+    .sm-sesion .sm-fecha { font-size: .89rem; }
 }
 
 /* ------------------------------------------------------------------ Reglas */
 .sm-reglas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-@media (max-width: 700px) { .sm-reglas { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .sm-reglas { grid-template-columns: 1fr; gap: 1rem; } }
 .sm-regla {
     background: var(--sm-paper); border: 1px solid var(--sm-line);
     border-radius: var(--sm-radius); padding: 1.5rem 1.6rem;
@@ -336,7 +390,7 @@ body {
 .sm-cta h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 .75rem; color: #fff; }
 .sm-cta p  { color: rgba(255,255,255,.72); margin: 0 auto 1.75rem; max-width: 60ch; font-size: 1rem; line-height: 1.7; }
 .sm-cta .sm-mini { font-size: .84rem; color: rgba(255,255,255,.62); margin: 1.25rem auto 0; max-width: 62ch; line-height: 1.6; }
-@media (max-width: 600px) { .sm-cta { padding: 2.25rem 1.5rem; } }
+@media (max-width: 600px) { .sm-cta { padding: 2rem 1.35rem; } }
 
 /* -------------------------------------------------------------------- Nota */
 .sm-section p.sm-nota,
