@@ -106,7 +106,7 @@ body {
 .sm-hero {
     position: relative; overflow: hidden;
     background: var(--sm-dark);
-    padding: 9rem 0 5rem;
+    padding: 9rem 0 6rem;
     color: #fff;
 }
 .sm-hero::before {
@@ -124,6 +124,31 @@ body {
     background-size: 60px 60px;
 }
 .sm-hero .sm-container { position: relative; z-index: 2; }
+/* Dos columnas: el texto a la izquierda y la ficha a la derecha. En una sola
+   columna la mitad derecha quedaba vacía y el hero se veía desbalanceado. */
+.sm-hero-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3.5rem; align-items: center; }
+@media (max-width: 900px) { .sm-hero-layout { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+/* Ficha del curso, sobre el fondo oscuro */
+.sm-hero-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--sm-glass-border);
+    border-radius: var(--sm-radius);
+    backdrop-filter: blur(12px);
+    padding: 1.75rem;
+    box-shadow: 0 20px 50px -12px rgba(0,0,0,.35);
+}
+.sm-hero-card h2 {
+    font-size: .74rem; text-transform: uppercase; letter-spacing: .1em;
+    font-weight: 600; color: var(--sm-accent); margin: 0 0 1.25rem;
+}
+.sm-hero-card dl { margin: 0; display: grid; gap: .9rem; }
+.sm-hero-card dt {
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .07em;
+    color: rgba(255,255,255,.45); font-weight: 600; margin: 0 0 .15rem;
+}
+.sm-hero-card dd { margin: 0; font-size: .9rem; color: rgba(255,255,255,.9); line-height: 1.45; }
+.sm-hero-card .sm-hr { height: 1px; background: rgba(255,255,255,.1); margin: .1rem 0; }
 
 .sm-hero-badge {
     display: inline-flex; align-items: center; gap: .5rem;
@@ -151,16 +176,6 @@ body {
     font-size: 1.12rem; color: rgba(255,255,255,.7);
     max-width: 62ch; line-height: 1.7; margin: 0 0 2rem;
 }
-
-.sm-facts { display: flex; flex-wrap: wrap; gap: .6rem; }
-.sm-fact {
-    display: inline-flex; align-items: center; gap: .5rem;
-    background: var(--sm-glass); border: 1px solid var(--sm-glass-border);
-    border-radius: 99px; padding: .45rem 1rem;
-    font-size: .84rem; color: rgba(255,255,255,.85);
-    backdrop-filter: blur(10px);
-}
-.sm-fact i { color: var(--sm-accent); font-size: .85rem; }
 
 /* ------------------------------------------------------------------ Botones */
 .sm-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
@@ -193,6 +208,16 @@ body {
     margin: 0 0 1rem;
 }
 .sm-desc { font-size: 1.02rem; color: var(--sm-muted); line-height: 1.7; max-width: 640px; margin: 0 0 2.5rem; }
+
+/* Encabezado a la izquierda y cuerpo a la derecha, para las secciones cuyo
+   contenido es prosa y en una sola columna dejaba media pantalla en blanco. */
+.sm-split { display: grid; grid-template-columns: .8fr 1.2fr; gap: 3.5rem; align-items: start; }
+.sm-split .sm-desc { margin-bottom: 0; }
+.sm-split > div:first-child { position: sticky; top: 100px; }
+@media (max-width: 900px) {
+    .sm-split { grid-template-columns: 1fr; gap: 1.5rem; }
+    .sm-split > div:first-child { position: static; }
+}
 .sm-section p { max-width: 68ch; }
 
 /* --------------------------------------------------------- Ficha del curso */
@@ -212,23 +237,30 @@ body {
 @media (max-width: 480px) { .sm-ficha { grid-template-columns: 1fr; } }
 
 /* ---------------------------------------------------------------- Unidades */
-.sm-unidades { list-style: none; margin: 0; padding: 0; counter-reset: u; display: grid; gap: 1rem; }
+/* Cinco tarjetas en flex y no en grid: así la última fila —que sólo lleva
+   dos— queda centrada en vez de estirada, y ninguna tarjeta se convierte en
+   una banda de ancho completo con la mitad derecha vacía. */
+.sm-unidades {
+    list-style: none; margin: 0; padding: 0; counter-reset: u;
+    display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center;
+}
 .sm-unidades li {
     counter-increment: u;
-    display: grid; grid-template-columns: 52px 1fr; gap: 1.25rem;
+    flex: 1 1 290px; max-width: 335px;
     background: var(--sm-paper); border: 1px solid var(--sm-line);
-    border-radius: var(--sm-radius); padding: 1.4rem 1.6rem;
+    border-radius: var(--sm-radius); padding: 1.6rem;
     transition: var(--sm-transition);
 }
 .sm-unidades li:hover { box-shadow: var(--sm-shadow-lg); transform: translateY(-2px); border-color: rgba(37,99,235,.25); }
 .sm-unidades li::before {
     content: counter(u);
     display: flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; border-radius: var(--sm-radius-sm);
+    width: 42px; height: 42px; border-radius: var(--sm-radius-sm);
     background: var(--sm-gradient); color: #fff;
-    font-size: 1.1rem; font-weight: 700;
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 1.1rem;
 }
-.sm-unidades h3 { margin: 0 0 .3rem; font-size: 1.02rem; font-weight: 700; color: var(--sm-ink); letter-spacing: -.01em; }
+.sm-unidades h3 { margin: 0 0 .4rem; font-size: 1.02rem; font-weight: 700; color: var(--sm-ink); letter-spacing: -.01em; }
 .sm-unidades p  { margin: 0; color: var(--sm-muted); font-size: .92rem; }
 
 /* -------------------------------------------------------------- Calendario */
@@ -244,7 +276,7 @@ body {
     border-radius: var(--sm-radius); overflow: hidden;
 }
 .sm-sesion {
-    display: grid; grid-template-columns: 34px 140px 1fr auto;
+    display: grid; grid-template-columns: 30px 165px 1fr auto;
     gap: 1rem; align-items: center;
     padding: .85rem 1.25rem; font-size: .92rem;
 }
@@ -287,7 +319,7 @@ body {
 
 /* ------------------------------------------------------- Llamado al diagnóstico */
 .sm-cta {
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; text-align: center;
     background: var(--sm-dark); color: #fff;
     border-radius: var(--sm-radius);
     padding: 3rem 2.5rem;
@@ -300,18 +332,20 @@ body {
         radial-gradient(circle at 85% 20%, rgba(6, 182, 212, .15) 0%, transparent 45%);
 }
 .sm-cta > * { position: relative; z-index: 2; }
+.sm-cta .sm-actions { justify-content: center; margin-top: 0; }
 .sm-cta h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 .75rem; color: #fff; }
-.sm-cta p  { color: rgba(255,255,255,.72); margin: 0 0 1.75rem; max-width: 62ch; font-size: 1rem; line-height: 1.7; }
-.sm-cta .sm-mini { font-size: .84rem; color: rgba(255,255,255,.62); margin: 1.25rem 0 0; line-height: 1.6; }
+.sm-cta p  { color: rgba(255,255,255,.72); margin: 0 auto 1.75rem; max-width: 60ch; font-size: 1rem; line-height: 1.7; }
+.sm-cta .sm-mini { font-size: .84rem; color: rgba(255,255,255,.62); margin: 1.25rem auto 0; max-width: 62ch; line-height: 1.6; }
 @media (max-width: 600px) { .sm-cta { padding: 2.25rem 1.5rem; } }
 
 /* -------------------------------------------------------------------- Nota */
+.sm-section p.sm-nota,
 .sm-nota {
     background: var(--sm-paper); border: 1px solid var(--sm-line);
     border-left: 3px solid var(--sm-primary);
     border-radius: var(--sm-radius-sm);
     padding: 1.1rem 1.3rem; font-size: .9rem; color: var(--sm-muted);
-    line-height: 1.65; margin-top: 1.5rem;
+    line-height: 1.65; margin-top: 1.5rem; max-width: none;
 }
 
 /* --------------------------------------------------------------------- Pie */
