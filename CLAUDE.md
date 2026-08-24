@@ -71,8 +71,15 @@ con PostgREST publicando las vistas dejaría los datos de los alumnos al alcance
 de cualquiera. Si algún día se agregan vistas sobre datos personales, tienen que
 llevar lo mismo.
 
-`src/css/seminario.css` es una hoja independiente a propósito: no hereda de
-`custom.css`, que no está en el repo.
+`src/css/seminario.css` sigue el lenguaje visual de la landing —Inter, el
+degradado azul-cian, el hero oscuro sobre gris pizarra, radios de 12 y 16— pero
+es una **hoja independiente a propósito**: no hereda de `custom.css`, que no
+está en el repo, así que un cambio allá no puede romper el micro sitio sin que
+nadie se entere. Los tokens del principio son lo único que hay que tocar si
+cambia la paleta del sitio.
+
+`src/trama/`, en cambio, sí carga `custom.css` y usa la paleta azul marino y oro
+del deck del curso-taller. Los dos micro sitios no comparten estilos.
 
 ### Conflicto conocido entre A y B
 

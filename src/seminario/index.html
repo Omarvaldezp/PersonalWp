@@ -29,7 +29,7 @@
     <meta property="og:locale" content="es_MX">
 
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2316304F'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -37,7 +37,7 @@
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Estilos -->
     <link rel="stylesheet" href="/css/seminario.css">
@@ -69,19 +69,34 @@
 </head>
 <body>
 
-<!-- ════════════════════════ REGRESO AL SITIO ════════════════════════ -->
-<div class="sm-topbar">
-    <div class="sm-wrap">
-        <a class="sm-back" href="/"><i class="fas fa-arrow-left"></i> Volver a omarvaldez.com</a>
-        <span class="sm-site">Facultad de Contaduría y Administración · UAS</span>
+<!-- ════════════════════════ BARRA DE NAVEGACIÓN ════════════════════════ -->
+<!-- Misma barra del sitio principal. Los enlaces salen de aquí hacia
+     omarvaldez.com; los de esta página quedan como anclas internas. -->
+<nav class="sm-navbar" id="navbar">
+    <div class="sm-container">
+        <a href="/" class="sm-logo">
+            <span class="sm-logo-name">Dr. Omar Valdez</span>
+            <span class="sm-logo-sub">PhD &middot; SNI Nivel I</span>
+        </a>
+        <ul class="sm-navlinks">
+            <li class="sm-nav-keep"><a href="/">&larr; Inicio</a></li>
+            <li><a href="#curso">El curso</a></li>
+            <li><a href="#contenidos">Contenidos</a></li>
+            <li><a href="#calendario">Calendario</a></li>
+            <li><a href="#reglas">Reglas</a></li>
+            <li class="sm-nav-keep"><a href="/seminario/diagnostico.html" class="sm-nav-cta">Diagnóstico</a></li>
+        </ul>
     </div>
-</div>
+</nav>
 
 <!-- ════════════════════════════ PORTADA ════════════════════════════ -->
 <header class="sm-hero">
-    <div class="sm-wrap">
-        <p class="sm-kicker">Doctorado en Ciencias en Innovación Social y Desarrollo Económico</p>
-        <h1>Seminario de Investigación Teórico</h1>
+    <div class="sm-hero-grid"></div>
+    <div class="sm-container">
+        <span class="sm-hero-badge"><span class="sm-badge-dot"></span> Ciclo agosto &ndash; noviembre 2026 &middot; en curso</span>
+
+        <h1>Seminario de<br><span class="sm-gradient-text">Investigación Teórico</span></h1>
+
         <p class="sm-lead">
             El semestre en el que su tesis deja de ser una intuición y se vuelve un argumento.
             Al terminar, cada uno de ustedes debe tener escrito el Capítulo II: estado del arte,
@@ -89,17 +104,16 @@
         </p>
 
         <div class="sm-facts">
+            <span class="sm-fact"><i class="fas fa-graduation-cap"></i> Doctorado en Ciencias en Innovación Social y Desarrollo Económico</span>
             <span class="sm-fact"><i class="fas fa-layer-group"></i> Tercer semestre</span>
-            <span class="sm-fact"><i class="fas fa-calendar"></i> Agosto – noviembre de 2026</span>
             <span class="sm-fact"><i class="fas fa-chalkboard-user"></i> 12 sesiones, 8 virtuales y 4 presenciales</span>
-            <span class="sm-fact"><i class="fas fa-user-tie"></i> Dr. Omar Valdez Palazuelos</span>
         </div>
 
         <div class="sm-actions">
-            <a class="sm-btn sm-btn-gold" href="/seminario/diagnostico.html">
+            <a class="sm-btn sm-btn-primary" href="/seminario/diagnostico.html">
                 <i class="fas fa-clipboard-list"></i> Responder el diagnóstico inicial
             </a>
-            <a class="sm-btn sm-btn-line" href="#calendario">
+            <a class="sm-btn sm-btn-glass" href="#calendario">
                 <i class="fas fa-calendar-days"></i> Ver el calendario
             </a>
         </div>
@@ -107,10 +121,11 @@
 </header>
 
 <!-- ════════════════════════ FICHA DEL CURSO ════════════════════════ -->
-<section class="sm-section" id="ficha">
-    <div class="sm-wrap">
-        <h2>De qué se trata</h2>
-        <p class="sm-sub">Lo esencial, en una pantalla.</p>
+<section class="sm-section" id="curso">
+    <div class="sm-container">
+        <span class="sm-label">El curso</span>
+        <h2 class="sm-title">De qué se trata</h2>
+        <p class="sm-desc">Lo esencial, en una pantalla.</p>
 
         <p>
             El propósito del seminario es formarlos para desarrollar y aplicar marcos teóricos y
@@ -136,9 +151,10 @@
 
 <!-- ═════════════════════════ CONTENIDOS ═════════════════════════ -->
 <section class="sm-section" id="contenidos">
-    <div class="sm-wrap">
-        <h2>Contenidos</h2>
-        <p class="sm-sub">Cinco unidades, en el orden en que se escribe un capítulo teórico.</p>
+    <div class="sm-container">
+        <span class="sm-label">Contenidos</span>
+        <h2 class="sm-title">Cinco unidades</h2>
+        <p class="sm-desc">En el orden en que se escribe un capítulo teórico.</p>
 
         <ol class="sm-unidades">
             <li>
@@ -182,11 +198,12 @@
 
 <!-- ═════════════════════════ CALENDARIO ═════════════════════════ -->
 <section class="sm-section" id="calendario">
-    <div class="sm-wrap">
-        <h2>Calendario de sesiones</h2>
-        <p class="sm-sub">
-            Doce sesiones en tres bloques. Las cuatro presenciales, marcadas aparte, son los puntos
-            de control del semestre: ahí se presentan avances y se trabaja en taller.
+    <div class="sm-container">
+        <span class="sm-label">Calendario</span>
+        <h2 class="sm-title">Doce sesiones, tres bloques</h2>
+        <p class="sm-desc">
+            Las cuatro presenciales, resaltadas, son los puntos de control del semestre:
+            ahí se presentan avances y se trabaja en taller.
         </p>
 
         <div class="sm-bloque">
@@ -275,62 +292,39 @@
     </div>
 </section>
 
-<!-- ═════════════════════════ EVALUACIÓN ═════════════════════════ -->
-<section class="sm-section" id="evaluacion">
-    <div class="sm-wrap">
-        <h2>Evaluación</h2>
-        <p class="sm-sub">Conforme al programa oficial de la unidad de aprendizaje.</p>
-
-        <ul class="sm-eval">
-            <li><span>Actividades de refuerzo temático</span><span class="sm-pct">25 %</span></li>
-            <li><span>Entrega de avances de investigación</span><span class="sm-pct">20 %</span></li>
-            <li><span>Redacción de capítulos de tesis</span><span class="sm-pct">20 %</span></li>
-            <li><span>Presentaciones en simposios y conferencias</span><span class="sm-pct">15 %</span></li>
-            <li><span>Asistencia y participación</span><span class="sm-pct">10 %</span></li>
-            <li><span>Publicación de artículo o capítulo académico</span><span class="sm-pct">10 %</span></li>
-        </ul>
-    </div>
-</section>
-
 <!-- ═══════════════════ REGLAS DEL PRIMER DÍA ═══════════════════ -->
 <section class="sm-section" id="reglas">
-    <div class="sm-wrap">
-        <h2>Lo que hay que saber desde el primer día</h2>
-        <p class="sm-sub">Nada de esto es negociable a mitad del semestre, así que conviene leerlo ahora.</p>
+    <div class="sm-container">
+        <span class="sm-label">Reglas</span>
+        <h2 class="sm-title">Lo que hay que saber desde el primer día</h2>
+        <p class="sm-desc">Nada de esto es negociable a mitad del semestre, así que conviene leerlo ahora.</p>
 
         <div class="sm-reglas">
             <div class="sm-regla">
+                <div class="sm-regla-icon"><i class="fas fa-user-check"></i></div>
                 <h3>Asistencia mínima del 80 %</h3>
                 <p>Con doce sesiones, se pueden faltar dos como máximo, y ninguna de ellas debería
                    ser presencial. Es requisito reglamentario, no criterio del docente.</p>
             </div>
             <div class="sm-regla">
-                <h3>Calificación mínima aprobatoria: 7</h3>
-                <p>En posgrado no existen evaluaciones extraordinarias. Un 6, o más de dos sietes en
-                   toda la trayectoria, causa la pérdida de la calidad de estudiante.</p>
+                <div class="sm-regla-icon"><i class="fas fa-award"></i></div>
+                <h3>Calificación mínima aprobatoria: 8</h3>
+                <p>En posgrado no existen evaluaciones extraordinarias. Reprobar, o acumular más de dos calificaciones mínimas
+                   en toda la trayectoria, causa la pérdida de la calidad de estudiante.</p>
             </div>
             <div class="sm-regla">
+                <div class="sm-regla-icon"><i class="fas fa-cloud-arrow-up"></i></div>
                 <h3>Las entregas van por Moodle</h3>
                 <p>En tiempo y en el aula del curso, nunca por correo. Una entrega fuera de plazo
                    pierde la retroalimentación, que es el verdadero valor del ejercicio.</p>
             </div>
             <div class="sm-regla">
+                <div class="sm-regla-icon"><i class="fas fa-robot"></i></div>
                 <h3>Uso de inteligencia artificial</h3>
                 <p>El acuerdo del grupo se construye en la sesión presencial del 28 de agosto, a
                    partir de las respuestas del diagnóstico. Hasta entonces rige la norma del
                    programa: la IA puede usarse para buscar información, no para redactar,
                    reflexionar ni concluir por ustedes.</p>
-            </div>
-            <div class="sm-regla">
-                <h3>El estudio independiente es la mayor parte de la carga</h3>
-                <p>Las sesiones sirven para revisar y discutir lo que ya se escribió, no para
-                   escribirlo. La lectura previa se publica en Moodle con al menos una semana
-                   de anticipación.</p>
-            </div>
-            <div class="sm-regla">
-                <h3>Bibliografía con los criterios de su tesis</h3>
-                <p>Mínimo 30 % de fuentes en inglés y 80 % con vigencia no mayor a siete años.
-                   Los mismos criterios que su documento final tendrá que cumplir.</p>
             </div>
         </div>
     </div>
@@ -338,17 +332,17 @@
 
 <!-- ═══════════════════════ DIAGNÓSTICO ═══════════════════════ -->
 <section class="sm-section" id="diagnostico">
-    <div class="sm-wrap">
+    <div class="sm-container">
         <div class="sm-cta">
             <h2>Diagnóstico inicial del seminario</h2>
             <p>
-                Antes de la sesión 2. Toma unos doce minutos y de él depende cómo se ajusta el resto
+                Antes de terminar la sesión 1. Toma unos doce minutos y de él depende cómo se ajusta el resto
                 del semestre: qué se revisa con calma, qué se da por sabido y a quién hay que citar
                 a asesoría desde la primera semana. También es la materia prima del acuerdo de uso
                 de IA que firmaremos como grupo.
             </p>
             <div class="sm-actions" style="margin-top:0">
-                <a class="sm-btn sm-btn-gold" href="/seminario/diagnostico.html">
+                <a class="sm-btn sm-btn-primary" href="/seminario/diagnostico.html">
                     <i class="fas fa-clipboard-list"></i> Responder ahora
                 </a>
             </div>
@@ -363,11 +357,65 @@
 
 <!-- ════════════════════════════ PIE ════════════════════════════ -->
 <footer class="sm-foot">
-    <div class="sm-wrap">
-        <span><strong>Dr. Omar Valdez Palazuelos</strong> · Facultad de Contaduría y Administración, UAS</span>
-        <span><a href="/">omarvaldez.com</a> · <a href="/#contacto">Contacto</a></span>
+    <div class="sm-container">
+        <div class="sm-foot-grid">
+            <div>
+                <h3>Dr. Omar Valdez Palazuelos</h3>
+                <p>Profesor, Investigador y Consultor en Tecnologías Emergentes</p>
+                <div class="sm-foot-badges">
+                    <span class="sm-foot-badge">SNI Nivel I</span>
+                    <span class="sm-foot-badge">IEEE</span>
+                    <span class="sm-foot-badge">IIDISE</span>
+                </div>
+            </div>
+            <div>
+                <h4>Este curso</h4>
+                <ul>
+                    <li><a href="#curso">De qué se trata</a></li>
+                    <li><a href="#contenidos">Contenidos</a></li>
+                    <li><a href="#calendario">Calendario</a></li>
+                    <li><a href="#reglas">Reglas</a></li>
+                    <li><a href="/seminario/diagnostico.html">Diagnóstico inicial</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Sitio principal</h4>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/#investigacion">Investigación</a></li>
+                    <li><a href="/#cursos">Cursos</a></li>
+                    <li><a href="/#blog">Blog</a></li>
+                    <li><a href="/#contacto">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="sm-foot-bottom">
+            Facultad de Contaduría y Administración &middot; Universidad Autónoma de Sinaloa
+        </div>
     </div>
 </footer>
+
+<script>
+(function () {
+    'use strict';
+    // La barra empieza transparente sobre el hero oscuro y se vuelve blanca al
+    // bajar, igual que en el sitio principal.
+    var nav = document.getElementById('navbar');
+    function alScroll() { nav.classList.toggle('scrolled', window.scrollY > 40); }
+    window.addEventListener('scroll', alScroll, { passive: true });
+    alScroll();
+
+    // Desplazamiento suave a las anclas, descontando la altura de la barra.
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            var destino = document.querySelector(a.getAttribute('href'));
+            if (!destino) return;
+            e.preventDefault();
+            window.scrollTo({ top: destino.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+        });
+    });
+})();
+</script>
 
 </body>
 </html>
