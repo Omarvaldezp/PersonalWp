@@ -27,17 +27,19 @@
 
 
 -- ---------------------------------------------------------------------------
--- PASO 0 · Averigua de qué tipo es el id de posts
+-- PASO 0 · El tipo de posts.id ya está confirmado: uuid
 --
--- Corre esto solo y mira el resultado antes de seguir.
--- ---------------------------------------------------------------------------
-select column_name, data_type
-from information_schema.columns
-where table_schema = 'public' and table_name = 'posts' and column_name = 'id';
-
---   Si dice "bigint"  -> el paso 1 funciona tal cual.
---   Si dice "uuid"    -> cambia las dos apariciones de "bigint" por "uuid"
---                        en el paso 1 antes de ejecutarlo.
+-- Este archivo pedía averiguarlo a mano porque cuando lo escribí no podía
+-- consultar el proyecto. Ya se comprobó, el 24 de agosto de 2026: posts.id es
+-- uuid. El paso 1 quedó corregido y funciona tal cual.
+--
+-- Si algún día lo corres contra otro proyecto, verifica primero:
+--
+--     select column_name, data_type
+--     from information_schema.columns
+--     where table_schema = 'public' and table_name = 'posts' and column_name = 'id';
+--
+-- y ajusta el tipo del argumento si no coincide.
 
 
 -- ---------------------------------------------------------------------------
@@ -47,7 +49,7 @@ where table_schema = 'public' and table_name = 'posts' and column_name = 'id';
 -- corrige de paso un segundo defecto del código actual: reactToPost() leía el
 -- valor y luego escribía valor+1, así que dos votos simultáneos perdían uno.
 -- ---------------------------------------------------------------------------
-create or replace function public.reaccionar_post(post_id bigint, tipo text)
+create or replace function public.reaccionar_post(post_id uuid, tipo text)
 returns table (likes integer, dislikes integer)
 language plpgsql
 security definer
@@ -73,8 +75,8 @@ begin
 end;
 $$;
 
-revoke all on function public.reaccionar_post(bigint, text) from public;
-grant execute on function public.reaccionar_post(bigint, text) to anon, authenticated;
+revoke all on function public.reaccionar_post(uuid, text) from public;
+grant execute on function public.reaccionar_post(uuid, text) to anon, authenticated;
 
 comment on function public.reaccionar_post is
     'Suma una reacción a un post publicado. Es la única vía por la que un '

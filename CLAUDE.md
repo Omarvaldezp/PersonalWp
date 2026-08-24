@@ -244,6 +244,19 @@ que puede correrse antes o después de `01_academico.sql`.
 Decisiones ya tomadas por Omar: habrá más usuarios del panel (por eso los
 roles), y el correo del diagnóstico se conserva (por eso la Edge Function).
 
+### Trampa comprobada: `posts.id` es `uuid`, no `bigint`
+
+`02_corregir_politicas.sql` se corrió con el valor por omisión y `reaccionar_post`
+quedó creada esperando `bigint`. Al llamarla, Postgres responde
+`operator does not exist: uuid = bigint`, y como `src/js/supabase-config.js` ya
+usa la función, **los like del blog quedan rotos**. Lo repara
+`05_corregir_reaccionar_post.sql`, que además cierra por permisos las cuatro
+tablas de `01_academico.sql`.
+
+Confirmado el 24 de agosto de 2026 contra el proyecto: los posts publicados
+traen ids como `cee4f047-8cd1-4995-9154-23d1a44baf92`. Antes de escribir
+cualquier función que reciba un id de `posts`, el tipo es `uuid`.
+
 ### Pendiente, por prioridad
 
 1. **Decidir qué debe servir `/admin/`.** Comprobado en agosto de 2026: entrar
