@@ -33,7 +33,7 @@ Archivos que **solo existen en el servidor** (`/public_html/`), no en git:
 | `css/custom.css` | Estilos de todo el sitio |
 | ~~`js/supabase-config.js`~~ | **Ya está en el repo**, en `src/js/`. El deploy manda sobre él |
 | `js/app.js` | Lógica del landing (formularios, filtros, animaciones) |
-| `admin/index.html` | **Panel de admin del blog**, el que usa Omar para publicar |
+| ~~`admin/index.html`~~ | **Ya está en el repo**, en `src/admin/`. El deploy manda sobre él |
 | `privacidad.html`, `img/` | Aviso de privacidad y assets |
 
 Colecciones/tablas en Supabase: posts de blog (con `slug`, `category`,
@@ -44,6 +44,35 @@ investigaciones y stats.
 
 Diagnóstico DISDE y gestión de estudiantes. Vive en `src/api/` y `src/admin/`.
 Fase 1 terminada: `estudiantes`, `cursos_instancias`, `inscripciones`.
+
+### Micro sitios de curso
+
+Dos secciones estáticas dentro de `src/`, independientes de A y de B:
+
+| Ruta | Qué es |
+|---|---|
+| `src/trama/` | Curso-taller de docencia bimodal para la FCA-UAS |
+| `src/seminario/` | Seminario de Investigación Teórico, DISDE, ciclo 2026-2 |
+
+`src/seminario/` tiene dos páginas: `index.html` con la información del curso y
+`diagnostico.html` con el cuestionario inicial. El formulario **no escribe en
+ninguna tabla**: llama a la función `guardar_diagnostico_seminario()` de
+Supabase, que es la única con permiso de escritura. Por eso las tablas del
+diagnóstico no tienen ninguna política para `anon`, ni siquiera de INSERT: la
+llave anónima que está a la vista en `/js/supabase-config.js` no sirve para leer
+ni escribir nada de ahí. El SQL está en
+`database/supabase/04_diagnostico_seminario.sql`.
+
+Las respuestas se ven en el panel del blog, sección **Seminario**, que lee de
+dos vistas (`v_seminario_alumnos` y `v_seminario_reactivos`). Las dos están
+declaradas con `security_invoker = true`; sin eso una vista corre con los
+permisos de quien la creó y **se salta el RLS** de las tablas que consulta, que
+con PostgREST publicando las vistas dejaría los datos de los alumnos al alcance
+de cualquiera. Si algún día se agregan vistas sobre datos personales, tienen que
+llevar lo mismo.
+
+`src/css/seminario.css` es una hoja independiente a propósito: no hereda de
+`custom.css`, que no está en el repo.
 
 ### Conflicto conocido entre A y B
 
@@ -165,6 +194,20 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
 - **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
   `/api/auth/login.php?action=logout` desde el navegador.
 
+- Micro sitio del Seminario de Investigación Teórico (`src/seminario/`), con la
+  información del curso y el diagnóstico inicial conectado a Supabase. Las
+  respuestas se consultan desde el panel del blog, sección Seminario, con
+  promedios por alumno, panorama del grupo por reactivo y exportación a CSV.
+- `src/admin/index.html`, el panel del blog, entró al repo. Antes vivía sólo en
+  el servidor. **A partir de ahora el deploy manda sobre él**: cualquier cambio
+  hecho a mano en el servidor se pierde en el siguiente push.
+- Reparado el buscador del panel. `filterTable()` leía el caché con
+  `window['cachedPosts']`, pero esas variables se declaran con `let` en el nivel
+  superior del script y `let` **no** crea una propiedad de `window`. Devolvía
+  `undefined` siempre, así que escribir en cualquier caja de búsqueda vaciaba la
+  tabla en lugar de filtrarla. Fallaba en todas las secciones, no sólo en la
+  nueva.
+
 ### Retiro del PHP, en curso
 
 El panel y la API PHP se retiran; todo queda en el panel del blog (Supabase).
@@ -179,6 +222,10 @@ El orden importa:
 4. `supabase/functions/diagnostico-correo/` — Edge Function que sustituye al
    `mail()` del PHP. **Sin ella no se puede apagar el PHP** sin que el
    estudiante deje de recibir su correo.
+
+`04_diagnostico_seminario.sql` no forma parte de esta secuencia: es del micro
+sitio del seminario, no del retiro del PHP. Sólo depende de `00_roles.sql`, así
+que puede correrse antes o después de `01_academico.sql`.
 
 Decisiones ya tomadas por Omar: habrá más usuarios del panel (por eso los
 roles), y el correo del diagnóstico se conserva (por eso la Edge Function).

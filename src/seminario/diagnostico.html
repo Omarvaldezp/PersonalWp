@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico inicial · Seminario de Investigación Teórico | Dr. Omar Valdez Palazuelos</title>
+<meta name="description" content="Diagnóstico inicial del Seminario de Investigación Teórico, DISDE, FCA-UAS. Ciclo agosto-noviembre de 2026.">
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://omarvaldez.com/seminario/diagnostico.html">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2316304F'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- La hoja del micro sitio va PRIMERO: define la barra superior y el pie.
+     El bloque <style> de abajo viene después a propósito, para que las reglas
+     del formulario ganen donde las dos tocan lo mismo (botones, campos). -->
+<link rel="stylesheet" href="/css/seminario.css">
+<style>
+/* ============================================================
+   Tokens del formulario, alineados con /css/seminario.css.
+   Sin bloque de modo oscuro: la portada del curso es clara y el
+   formulario vive dentro de ella; dos mitades con esquema distinto
+   se verían partidas.
+   ============================================================ */
+:root{
+  --sem-bg:#ffffff;
+  --sem-surface:#f7f9fc;
+  --sem-surface-2:#edf2f8;
+  --sem-text:#1f2b38;
+  --sem-muted:#5a6b7c;
+  --sem-border:#e1e8f0;
+  --sem-accent:#16304f;
+  --sem-accent-soft:#e6edf6;
+  --sem-on-accent:#ffffff;
+  --sem-ok:#2e7d5b;
+  --sem-warn:#b08326;
+  --sem-radius:10px;
+  --sem-font:'Inter',Calibri,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sem-serif:'Lora',Cambria,Georgia,serif;
+}
+
+#sem-diag *,#sem-diag *::before,#sem-diag *::after{box-sizing:border-box}
+#sem-diag{
+  font-family:var(--sem-font);
+  color:var(--sem-text);
+  background:var(--sem-bg);
+  line-height:1.55;
+  max-width:820px;
+  margin:0 auto;
+  padding:28px 20px 64px;
+  -webkit-font-smoothing:antialiased;
+}
+#sem-diag h1{font-family:var(--sem-serif);font-weight:600;font-size:1.75rem;line-height:1.25;margin:0 0 8px;letter-spacing:-.01em}
+#sem-diag h2{font-size:1.15rem;margin:0 0 4px;font-weight:650;color:var(--sem-accent)}
+#sem-diag p.lede{color:var(--sem-muted);margin:0 0 4px;font-size:.94rem}
+
+/* encabezado */
+.sem-head{border-bottom:1px solid var(--sem-border);padding-bottom:18px;margin-bottom:22px}
+.sem-kicker{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--sem-muted);font-weight:600;margin:0 0 10px}
+.sem-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sem-chip{font-size:.78rem;background:var(--sem-surface-2);border:1px solid var(--sem-border);color:var(--sem-muted);padding:3px 10px;border-radius:999px}
+
+/* barra de progreso */
+.sem-progress{position:sticky;top:0;z-index:5;background:var(--sem-bg);padding:12px 0 14px;margin-bottom:18px;border-bottom:1px solid var(--sem-border)}
+.sem-bar{height:5px;background:var(--sem-surface-2);border-radius:999px;overflow:hidden}
+.sem-bar span{display:block;height:100%;width:0;background:var(--sem-accent);border-radius:999px;transition:width .3s ease}
+.sem-steps{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:.8rem;color:var(--sem-muted)}
+.sem-steps strong{color:var(--sem-text);font-weight:600}
+
+/* secciones */
+.sem-step{display:none;animation:semIn .25s ease}
+.sem-step.active{display:block}
+@keyframes semIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.sem-sechead{margin-bottom:18px}
+
+fieldset{border:0;margin:0;padding:0}
+.sem-q{padding:16px 0;border-bottom:1px solid var(--sem-border)}
+.sem-q:last-child{border-bottom:0}
+.sem-q > label,.sem-q .sem-grid > div > label,.sem-q .sem-qlabel{display:block;font-weight:560;margin-bottom:8px;font-size:.95rem}
+.sem-hint{display:block;font-weight:400;color:var(--sem-muted);font-size:.84rem;margin-top:2px}
+.sem-opt{font-weight:400;color:var(--sem-muted);font-size:.8rem}
+
+input[type=text],input[type=email],input[type=tel],input[type=number],select,textarea{
+  width:100%;font:inherit;font-size:.94rem;color:var(--sem-text);
+  background:var(--sem-surface);border:1px solid var(--sem-border);
+  border-radius:var(--sem-radius);padding:9px 12px;transition:border-color .15s,box-shadow .15s;
+}
+textarea{min-height:88px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sem-accent);box-shadow:0 0 0 3px var(--sem-accent-soft)}
+select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--sem-muted) 50%),linear-gradient(135deg,var(--sem-muted) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+
+.sem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+
+/* opciones tipo tarjeta */
+.sem-choices{display:flex;flex-wrap:wrap;gap:8px}
+.sem-choice{position:relative}
+.sem-choice input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.sem-choice span{display:inline-block;padding:7px 14px;border:1px solid var(--sem-border);border-radius:999px;
+  font-size:.88rem;cursor:pointer;background:var(--sem-surface);transition:all .15s;user-select:none}
+.sem-choice input:checked + span{background:var(--sem-accent);border-color:var(--sem-accent);color:var(--sem-on-accent);font-weight:560}
+.sem-choice input:focus-visible + span{box-shadow:0 0 0 3px var(--sem-accent-soft)}
+
+/* escala likert */
+.sem-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.sem-scale label{position:relative}
+.sem-scale input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.sem-scale span{display:block;text-align:center;padding:9px 4px;border:1px solid var(--sem-border);
+  border-radius:8px;font-size:.85rem;cursor:pointer;background:var(--sem-surface);transition:all .15s}
+.sem-scale input:checked + span{background:var(--sem-accent);border-color:var(--sem-accent);color:var(--sem-on-accent);font-weight:600}
+.sem-scale input:focus-visible + span{box-shadow:0 0 0 3px var(--sem-accent-soft)}
+.sem-scalelegend{display:flex;justify-content:space-between;font-size:.76rem;color:var(--sem-muted);margin-top:5px}
+
+/* matriz de avance */
+.sem-matrix{border:1px solid var(--sem-border);border-radius:var(--sem-radius);overflow:hidden;margin-top:8px}
+.sem-row{display:grid;grid-template-columns:1.35fr 2fr;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--sem-border)}
+.sem-row:last-child{border-bottom:0}
+.sem-row:nth-child(odd){background:var(--sem-surface)}
+.sem-row > span:first-child{font-size:.9rem}
+@media(max-width:620px){.sem-row{grid-template-columns:1fr;gap:6px}}
+
+/* nps */
+.sem-nps{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:6px}
+.sem-nps label{position:relative}
+.sem-nps input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.sem-nps span{display:block;text-align:center;padding:8px 0;border:1px solid var(--sem-border);border-radius:6px;
+  font-size:.82rem;cursor:pointer;background:var(--sem-surface);transition:all .15s}
+.sem-nps input:checked + span{background:var(--sem-accent);border-color:var(--sem-accent);color:var(--sem-on-accent);font-weight:600}
+
+/* navegación */
+.sem-nav{display:flex;justify-content:space-between;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--sem-border)}
+button{font:inherit;font-size:.93rem;font-weight:560;border-radius:var(--sem-radius);padding:11px 22px;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.sem-btn-primary{background:var(--sem-accent);color:var(--sem-on-accent)}
+.sem-btn-primary:hover{filter:brightness(1.1)}
+.sem-btn-ghost{background:transparent;color:var(--sem-muted);border-color:var(--sem-border)}
+.sem-btn-ghost:hover{color:var(--sem-text);border-color:var(--sem-muted)}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+/* avisos */
+.sem-note{background:var(--sem-accent-soft);border:1px solid var(--sem-border);border-left:3px solid var(--sem-accent);
+  border-radius:8px;padding:12px 14px;font-size:.87rem;color:var(--sem-text);margin:14px 0}
+.sem-error{color:#b3261e;font-size:.84rem;margin-top:6px;display:none}
+.sem-q.invalid .sem-error{display:block}
+.sem-q.invalid input,.sem-q.invalid select,.sem-q.invalid textarea{border-color:#b3261e}
+.sem-saved{font-size:.78rem;color:var(--sem-muted);text-align:right;margin-top:10px;min-height:1em}
+
+/* pantalla final */
+.sem-done{display:none;text-align:center;padding:56px 20px}
+.sem-done.active{display:block}
+.sem-done .tick{width:54px;height:54px;border-radius:50%;background:var(--sem-accent);color:var(--sem-on-accent);
+  display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 20px}
+.sem-done h2{font-family:var(--sem-serif);font-size:1.4rem;color:var(--sem-text);margin-bottom:10px}
+.sem-done p{color:var(--sem-muted);max-width:460px;margin:0 auto 18px;font-size:.94rem}
+</style>
+</head>
+<body>
+
+<div class="sm-topbar">
+    <div class="sm-wrap">
+        <a class="sm-back" href="/seminario/"><i class="fas fa-arrow-left"></i> Volver a la página del curso</a>
+        <span class="sm-site"><a href="/">omarvaldez.com</a></span>
+    </div>
+</div>
+
+<div id="sem-diag">
+
+<!-- ═══════════ ENCABEZADO ═══════════ -->
+<header class="sem-head">
+  <p class="sem-kicker">Universidad Autónoma de Sinaloa · FCA · DISDE</p>
+  <h1>Diagnóstico inicial del seminario</h1>
+  <p class="lede">Seminario de Investigación Teórico — Tercer semestre · Agosto–noviembre 2026</p>
+  <div class="sem-meta">
+    <span class="sem-chip">10 secciones</span>
+    <span class="sem-chip">≈ 12 minutos</span>
+    <span class="sem-chip">Se guarda solo en tu navegador hasta que lo envíes</span>
+  </div>
+</header>
+
+<!-- ═══════════ PROGRESO ═══════════ -->
+<div class="sem-progress" id="progressWrap">
+  <div class="sem-bar"><span id="bar"></span></div>
+  <div class="sem-steps">
+    <span id="stepName">Identificación</span>
+    <span>Sección <strong id="stepNum">1</strong> de <strong>10</strong></span>
+  </div>
+</div>
+
+<form id="semForm" novalidate>
+
+<!-- ─────── 1. IDENTIFICACIÓN ─────── -->
+<section class="sem-step active" data-name="Identificación">
+  <div class="sem-sechead">
+    <h2>1. Identificación</h2>
+    <p class="lede">Para poder darte seguimiento individual durante el semestre.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <label for="q_nombre">Nombre completo</label>
+      <input type="text" id="q_nombre" name="nombre" data-required autocomplete="name">
+      <p class="sem-error">Este dato es necesario.</p>
+    </div>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_correo">Correo electrónico</label>
+          <input type="email" id="q_correo" name="correo" data-required autocomplete="email">
+          <p class="sem-error">Escribe un correo válido.</p>
+        </div>
+        <div>
+          <label for="q_tel">Teléfono <span class="sem-opt">(opcional)</span></label>
+          <input type="tel" id="q_tel" name="telefono" autocomplete="tel">
+        </div>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_gen">Generación / año de ingreso</label>
+      <input type="text" id="q_gen" name="generacion" placeholder="p. ej. 2025–2029">
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Situación actual de dedicación</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="radio" name="dedicacion" value="Tiempo completo al doctorado"><span>Tiempo completo al doctorado</span></label>
+        <label class="sem-choice"><input type="radio" name="dedicacion" value="Trabajo y estudio a la par"><span>Trabajo y estudio a la par</span></label>
+        <label class="sem-choice"><input type="radio" name="dedicacion" value="Trabajo de tiempo completo"><span>Trabajo de tiempo completo</span></label>
+        <label class="sem-choice"><input type="radio" name="dedicacion" value="Otra situación"><span>Otra situación</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_horas">Horas reales por semana que puedes dedicar a tu tesis
+        <span class="sem-hint">Sé realista: este dato sirve para calibrar la carga del seminario, no para evaluarte.</span>
+      </label>
+      <input type="number" id="q_horas" name="horas_semana" min="0" max="80" placeholder="p. ej. 12">
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 2. TRAYECTORIA ─────── -->
+<section class="sem-step" data-name="Trayectoria">
+  <div class="sem-sechead">
+    <h2>2. Formación y trayectoria</h2>
+    <p class="lede">De dónde vienes académicamente.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_lic">Área de tu licenciatura</label>
+          <input type="text" id="q_lic" name="licenciatura_area" placeholder="p. ej. Contaduría Pública">
+        </div>
+        <div>
+          <label for="q_lic_inst">Institución donde la cursaste</label>
+          <input type="text" id="q_lic_inst" name="licenciatura_institucion">
+        </div>
+      </div>
+    </div>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_maestria">Área de tu maestría</label>
+          <input type="text" id="q_maestria" name="maestria_area" placeholder="p. ej. Administración">
+        </div>
+        <div>
+          <label for="q_inst">Institución donde la cursaste</label>
+          <input type="text" id="q_inst" name="maestria_institucion">
+        </div>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_exp">Años de experiencia profesional</label>
+      <select id="q_exp" name="experiencia">
+        <option value="">Selecciona…</option>
+        <option>Menos de 3 años</option><option>3 a 5 años</option>
+        <option>6 a 10 años</option><option>11 a 20 años</option><option>Más de 20 años</option>
+      </select>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Producción académica previa <span class="sem-opt">(marca todas las que apliquen)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Ninguna aún"><span>Ninguna aún</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Tesis o tesina de licenciatura"><span>Tesis o tesina de licenciatura</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Tesis de maestría"><span>Tesis de maestría</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Ponencia en congreso"><span>Ponencia en congreso</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Capítulo de libro"><span>Capítulo de libro</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Artículo en revista indexada"><span>Artículo indexado</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Artículo en revista sin indexar"><span>Artículo sin indexar</span></label>
+        <label class="sem-choice"><input type="checkbox" name="produccion" value="Libro"><span>Libro</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Tu nivel de lectura académica en inglés</span>
+      <div class="sem-scale" data-scale="ingles">
+        <label><input type="radio" name="ingles" value="1"><span>1</span></label>
+        <label><input type="radio" name="ingles" value="2"><span>2</span></label>
+        <label><input type="radio" name="ingles" value="3"><span>3</span></label>
+        <label><input type="radio" name="ingles" value="4"><span>4</span></label>
+        <label><input type="radio" name="ingles" value="5"><span>5</span></label>
+      </div>
+      <div class="sem-scalelegend"><span>Me cuesta mucho</span><span>Leo con fluidez</span></div>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 3. PROYECTO ─────── -->
+<section class="sem-step" data-name="Tu proyecto">
+  <div class="sem-sechead">
+    <h2>3. Tu proyecto de tesis</h2>
+    <p class="lede">Aunque todavía esté en construcción, escribe lo que tengas hoy.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <label for="q_titulo">Título provisional de tu tesis</label>
+      <textarea id="q_titulo" name="titulo" placeholder="El que traes hoy, aunque cambie después."></textarea>
+    </div>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_dir">Director de tesis <span class="sem-opt">(o «sin asignar»)</span></label>
+          <input type="text" id="q_dir" name="director">
+        </div>
+        <div>
+          <label for="q_codir">Codirector <span class="sem-opt">(opcional)</span></label>
+          <input type="text" id="q_codir" name="codirector">
+        </div>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_lies">Línea de investigación e incidencia social a la que se adscribe</label>
+      <input type="text" id="q_lies" name="lies">
+    </div>
+    <div class="sem-q">
+      <label for="q_unidad">Unidad de análisis o sujeto de estudio
+        <span class="sem-hint">La organización, sector, comunidad o conjunto de casos que vas a estudiar.</span>
+      </label>
+      <textarea id="q_unidad" name="unidad_analisis"></textarea>
+    </div>
+    <div class="sem-q">
+      <label for="q_pregunta">Tu pregunta central de investigación, tal como la tienes hoy</label>
+      <textarea id="q_pregunta" name="pregunta_central"></textarea>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Enfoque metodológico previsto</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="radio" name="enfoque" value="Cualitativo"><span>Cualitativo</span></label>
+        <label class="sem-choice"><input type="radio" name="enfoque" value="Cuantitativo"><span>Cuantitativo</span></label>
+        <label class="sem-choice"><input type="radio" name="enfoque" value="Mixto"><span>Mixto</span></label>
+        <label class="sem-choice"><input type="radio" name="enfoque" value="Todavía no lo defino"><span>Todavía no lo defino</span></label>
+      </div>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 4. AVANCE ─────── -->
+<section class="sem-step" data-name="Avance por componente">
+  <div class="sem-sechead">
+    <h2>4. Estado de avance, componente por componente</h2>
+    <p class="lede">Responde con honestidad. Este es el dato que más ocupo para ajustar el curso a dónde están realmente.</p>
+  </div>
+  <div class="sem-note">
+    Escala: <strong>0</strong> no iniciado · <strong>1</strong> ideas sueltas · <strong>2</strong> borrador escrito ·
+    <strong>3</strong> revisado por mi director · <strong>4</strong> considerado terminado.
+  </div>
+  <div class="sem-matrix" id="matrizAvance"></div>
+</section>
+
+<!-- ─────── 5. INSUMOS ─────── -->
+<section class="sem-step" data-name="Insumos de investigación">
+  <div class="sem-sechead">
+    <h2>5. Insumos que ya tienes reunidos</h2>
+    <p class="lede">Bibliografía, herramientas y productos comprometidos.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_refs">Referencias reunidas hasta hoy</label>
+          <select id="q_refs" name="referencias_total">
+            <option value="">Selecciona…</option>
+            <option>Menos de 20</option><option>20 a 40</option><option>41 a 60</option>
+            <option>61 a 100</option><option>Más de 100</option>
+          </select>
+          <span class="sem-hint">La guía de tesis exige un mínimo de 60 en el documento final.</span>
+        </div>
+        <div>
+          <label for="q_refsen">Porcentaje aproximado en inglés</label>
+          <select id="q_refsen" name="referencias_ingles">
+            <option value="">Selecciona…</option>
+            <option>Ninguna</option><option>Menos del 10 %</option><option>10 a 30 %</option>
+            <option>Más del 30 %</option><option>No lo sé</option>
+          </select>
+          <span class="sem-hint">La guía exige un mínimo de 30 %.</span>
+        </div>
+      </div>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Gestor de referencias que usas</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="radio" name="gestor" value="Zotero"><span>Zotero</span></label>
+        <label class="sem-choice"><input type="radio" name="gestor" value="Mendeley"><span>Mendeley</span></label>
+        <label class="sem-choice"><input type="radio" name="gestor" value="EndNote"><span>EndNote</span></label>
+        <label class="sem-choice"><input type="radio" name="gestor" value="Word o Google Docs"><span>El de Word o Docs</span></label>
+        <label class="sem-choice"><input type="radio" name="gestor" value="Ninguno, lo hago a mano"><span>Ninguno, a mano</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Bases de datos que has utilizado <span class="sem-opt">(marca todas las que apliquen)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="bases" value="Scopus"><span>Scopus</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="Web of Science"><span>Web of Science</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="SciELO"><span>SciELO</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="Redalyc"><span>Redalyc</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="EBSCO"><span>EBSCO</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="ScienceDirect"><span>ScienceDirect</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="Google Académico"><span>Google Académico</span></label>
+        <label class="sem-choice"><input type="checkbox" name="bases" value="Solo búsquedas abiertas en internet"><span>Solo búsquedas en internet</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_teorias">Teorías que hasta ahora identificas como base o complementarias
+        <span class="sem-hint">Nómbralas aunque no estés seguro. Si aún no tienes ninguna, escríbelo así.</span>
+      </label>
+      <textarea id="q_teorias" name="teorias"></textarea>
+    </div>
+    <div class="sem-q">
+      <div class="sem-grid">
+        <div>
+          <label for="q_coloquios">Coloquios en los que has presentado avances</label>
+          <select id="q_coloquios" name="coloquios">
+            <option value="">Selecciona…</option>
+            <option>Ninguno</option><option>Uno</option><option>Dos</option><option>Tres o más</option>
+          </select>
+        </div>
+        <div>
+          <label for="q_articulo">Estado del artículo para revista indexada</label>
+          <select id="q_articulo" name="articulo">
+            <option value="">Selecciona…</option>
+            <option>Ni siquiera lo he pensado</option>
+            <option>Tengo la idea, no el texto</option>
+            <option>Lo estoy escribiendo</option>
+            <option>Enviado, en dictamen</option>
+            <option>Aceptado o publicado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 6. COMPETENCIAS ─────── -->
+<section class="sem-step" data-name="Autodiagnóstico">
+  <div class="sem-sechead">
+    <h2>6. Autodiagnóstico de competencias</h2>
+    <p class="lede">Qué tan capaz te sientes hoy de hacer cada cosa por tu cuenta. Nadie va a ver tus respuestas individuales.</p>
+  </div>
+  <div class="sem-note">
+    <strong>1</strong> no sabría por dónde empezar · <strong>3</strong> lo hago con ayuda · <strong>5</strong> lo hago solo y con soltura.
+  </div>
+  <div class="sem-matrix" id="matrizCompetencias"></div>
+</section>
+
+<!-- ─────── 7. IA ─────── -->
+<section class="sem-step" data-name="Herramientas de IA">
+  <div class="sem-sechead">
+    <h2>7. Uso de herramientas de inteligencia artificial</h2>
+    <p class="lede">No hay respuesta correcta ni sanción. Necesito saber de dónde partimos para acordar juntos, en la primera sesión presencial, qué usos son legítimos en este seminario y cuáles no.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Con qué frecuencia usas IA generativa en tu trabajo académico?</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="radio" name="ia_frecuencia" value="Nunca"><span>Nunca</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_frecuencia" value="La he probado alguna vez"><span>La he probado</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_frecuencia" value="Ocasionalmente"><span>Ocasionalmente</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_frecuencia" value="Con frecuencia"><span>Con frecuencia</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_frecuencia" value="Todos los días"><span>Todos los días</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Para qué la has usado? <span class="sem-opt">(marca todas las que apliquen)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Buscar fuentes"><span>Buscar fuentes</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Traducir textos"><span>Traducir</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Resumir artículos"><span>Resumir artículos</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Corregir ortografía y estilo"><span>Corregir estilo</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Generar ideas"><span>Generar ideas</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Redactar párrafos de la tesis"><span>Redactar párrafos</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Analizar datos"><span>Analizar datos</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="Formatear referencias"><span>Formatear referencias</span></label>
+        <label class="sem-choice"><input type="checkbox" name="ia_usos" value="No la he usado"><span>No la he usado</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Conocías lo que la guía de tesis del programa establece sobre el uso de IA?</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="radio" name="ia_norma" value="Sí, la conozco"><span>Sí, la conozco</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_norma" value="Sé que existe, no la he leído"><span>Sé que existe</span></label>
+        <label class="sem-choice"><input type="radio" name="ia_norma" value="No sabía que hubiera una norma"><span>No lo sabía</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_ia_op">¿Dónde pondrías tú la línea entre un uso legítimo y uno indebido?
+        <span class="sem-hint">Tu respuesta alimentará el acuerdo de uso que firmaremos como grupo.</span>
+      </label>
+      <textarea id="q_ia_op" name="ia_opinion"></textarea>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 8. MOTIVACIONES ─────── -->
+<section class="sem-step" data-name="Motivaciones">
+  <div class="sem-sechead">
+    <h2>8. Motivaciones y expectativas</h2>
+    <p class="lede">Por qué estás aquí y qué esperas llevarte.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <label for="q_porque">¿Por qué decidiste estudiar este doctorado?</label>
+      <textarea id="q_porque" name="motivacion"></textarea>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Qué quieres hacer al obtener el grado? <span class="sem-opt">(marca hasta dos)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Docencia universitaria"><span>Docencia universitaria</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Investigación y SNII"><span>Investigación y SNII</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Sector público"><span>Sector público</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Consultoría"><span>Consultoría</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Sector privado"><span>Sector privado</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Emprendimiento social"><span>Emprendimiento social</span></label>
+        <label class="sem-choice"><input type="checkbox" name="meta" value="Crecimiento personal"><span>Crecimiento personal</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_espera">¿Qué esperas específicamente de este seminario?
+        <span class="sem-hint">Si hay algo concreto que necesitas resolver este semestre, dilo aquí.</span>
+      </label>
+      <textarea id="q_espera" name="expectativa"></textarea>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Cuál es hoy tu mayor obstáculo? <span class="sem-opt">(marca hasta tres)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Falta de tiempo"><span>Falta de tiempo</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Claridad teórica"><span>Claridad teórica</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Decisiones metodológicas"><span>Decisiones metodológicas</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Redacción académica"><span>Redacción académica</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Acceso a fuentes"><span>Acceso a fuentes</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Acompañamiento del director"><span>Acompañamiento</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Acceso al campo o a los datos"><span>Acceso al campo</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Motivación"><span>Motivación</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Situación económica"><span>Situación económica</span></label>
+        <label class="sem-choice"><input type="checkbox" name="obstaculo" value="Situación personal o de salud"><span>Situación personal</span></label>
+      </div>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 9. SATISFACCIÓN ─────── -->
+<section class="sem-step" data-name="Satisfacción">
+  <div class="sem-sechead">
+    <h2>9. Satisfacción con el programa hasta hoy</h2>
+    <p class="lede">Llevas dos semestres. Esta parte alimenta la mejora del programa y se reporta a la Coordinación de forma agregada, nunca individual.</p>
+  </div>
+  <div class="sem-note"><strong>1</strong> muy insatisfecho · <strong>5</strong> muy satisfecho.</div>
+  <div class="sem-matrix" id="matrizSatisfaccion"></div>
+  <fieldset>
+    <div class="sem-q">
+      <span class="sem-qlabel">¿Qué tan probable es que recomiendes este doctorado a un colega?</span>
+      <div class="sem-nps" id="npsWrap"></div>
+      <div class="sem-scalelegend"><span>0 · Nada probable</span><span>10 · Totalmente</span></div>
+    </div>
+    <div class="sem-q">
+      <label for="q_coment">Si hubiera una sola cosa que cambiarías del programa, ¿cuál sería? <span class="sem-opt">(opcional)</span></label>
+      <textarea id="q_coment" name="comentario_programa"></textarea>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── 10. LOGÍSTICA ─────── -->
+<section class="sem-step" data-name="Logística">
+  <div class="sem-sechead">
+    <h2>10. Logística y cierre</h2>
+    <p class="lede">Últimos datos y ya.</p>
+  </div>
+  <fieldset>
+    <div class="sem-q">
+      <span class="sem-qlabel">Mejor horario para asesorías individuales <span class="sem-opt">(marca todas las que te sirvan)</span></span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="horario" value="Mañana entre semana"><span>Mañana entre semana</span></label>
+        <label class="sem-choice"><input type="checkbox" name="horario" value="Tarde entre semana"><span>Tarde entre semana</span></label>
+        <label class="sem-choice"><input type="checkbox" name="horario" value="Noche entre semana"><span>Noche entre semana</span></label>
+        <label class="sem-choice"><input type="checkbox" name="horario" value="Sábado por la mañana"><span>Sábado por la mañana</span></label>
+      </div>
+    </div>
+    <div class="sem-q">
+      <label for="q_apoyo">¿Requieres alguna adaptación, apoyo o consideración de parte del facilitador de este curso? <span class="sem-opt">(opcional)</span>
+        <span class="sem-hint">Accesibilidad, situación de salud, cuidados familiares, distancia geográfica, lo que sea pertinente.</span>
+      </label>
+      <textarea id="q_apoyo" name="apoyo"></textarea>
+    </div>
+    <div class="sem-q">
+      <label for="q_libre">¿Algo más que quieras que sepa antes de empezar? <span class="sem-opt">(opcional)</span></label>
+      <textarea id="q_libre" name="libre"></textarea>
+    </div>
+    <div class="sem-q">
+      <span class="sem-qlabel">Consentimiento</span>
+      <div class="sem-choices">
+        <label class="sem-choice"><input type="checkbox" name="consentimiento" value="Acepto" data-required><span>Acepto que estos datos se usen para el seguimiento del seminario y, de forma agregada y anónima, para la mejora del programa</span></label>
+      </div>
+      <p class="sem-error">Necesito tu consentimiento para poder registrar la respuesta.</p>
+    </div>
+  </fieldset>
+</section>
+
+<!-- ─────── NAVEGACIÓN ─────── -->
+<div class="sem-nav" id="nav">
+  <button type="button" class="sem-btn-ghost" id="btnPrev">Anterior</button>
+  <button type="button" class="sem-btn-primary" id="btnNext">Siguiente</button>
+</div>
+<p class="sem-saved" id="savedMsg"></p>
+
+</form>
+
+<!-- ─────── PANTALLA FINAL ─────── -->
+<div class="sem-done" id="done">
+  <div class="tick">✓</div>
+  <h2>Listo, quedó registrado</h2>
+  <p id="doneMsg">Gracias. Con esto puedo ajustar el seminario a dónde están realmente. En la primera sesión presencial devolveré al grupo el panorama agregado.</p>
+  <button type="button" class="sem-btn-ghost" id="btnCopy">Descargar copia de mis respuestas</button>
+</div>
+
+</div>
+
+<footer class="sm-foot">
+    <div class="sm-wrap">
+        <span><strong>Dr. Omar Valdez Palazuelos</strong> &middot; Facultad de Contaduría y Administración, UAS</span>
+        <span><a href="/seminario/">Página del curso</a> &middot; <a href="/">omarvaldez.com</a></span>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ══════════════════════════════════════════════════════════
+   CONFIGURACIÓN
+   ══════════════════════════════════════════════════════════
+   Las respuestas no viajan a un endpoint propio: se guardan en
+   Supabase, la misma base que ya usa el resto del sitio.
+
+   El formulario NO escribe en las tablas. Llama a la función
+   guardar_diagnostico_seminario(), que es la única con permiso
+   de escritura. Por eso la llave anónima que está a la vista en
+   /js/supabase-config.js no sirve para leer, modificar ni borrar
+   lo que contestó nadie. Ver database/supabase/04_diagnostico_seminario.sql.
+
+   Si Supabase no responde, el formulario no pierde nada: descarga
+   un archivo .json con las respuestas para hacerlo llegar a mano. */
+const CONFIG = {
+  funcion: "guardar_diagnostico_seminario",
+  claveBorrador: "disde_diag_2026_2",  // clave de autoguardado en el navegador
+  curso: "Seminario de Investigación Teórico",
+  ciclo: "2026-2"
+};
+
+/* El cliente lo crea /js/supabase-config.js con `const db`, que vive en el
+   ámbito global léxico y no en window. De ahí el typeof: preguntar por
+   window.db daría undefined aunque el cliente exista. */
+function clienteSupabase(){
+  try {
+    return (typeof db !== "undefined" && db && typeof db.rpc === "function") ? db : null;
+  } catch(e) { return null; }
+}
+
+/* ── almacenamiento tolerante a fallos ── */
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+
+/* ── matrices generadas por script ── */
+const AVANCE = [
+  ["cap1_contexto","Contextualización del problema"],
+  ["cap1_planteamiento","Planteamiento y preguntas de investigación"],
+  ["cap1_objetivos","Objetivos general y específicos"],
+  ["cap1_hipotesis","Hipótesis o supuestos"],
+  ["cap1_justificacion","Justificación y delimitación"],
+  ["cap2_estado","Estado del arte"],
+  ["cap2_teorica","Marco teórico: teoría base"],
+  ["cap2_conceptual","Marco conceptual"],
+  ["cap3_metodo","Decisiones metodológicas"],
+  ["cap3_instrumento","Diseño del instrumento"]
+];
+const COMPETENCIAS = [
+  ["comp_busqueda","Diseñar una ecuación de búsqueda en Scopus o Web of Science"],
+  ["comp_lectura","Leer críticamente un artículo científico en inglés"],
+  ["comp_distincion","Distinguir marco teórico de marco conceptual"],
+  ["comp_seleccion","Justificar por qué elegí una teoría y no otra"],
+  ["comp_brecha","Identificar y argumentar una brecha en el conocimiento"],
+  ["comp_matriz","Construir una matriz de congruencia"],
+  ["comp_operacion","Operacionalizar un concepto en variables o categorías"],
+  ["comp_sintesis","Sintetizar veinte fuentes en un argumento propio"],
+  ["comp_redaccion","Redactar en estilo académico impersonal"],
+  ["comp_apa","Aplicar normas APA 7 sin consultar a cada rato"],
+  ["comp_software","Usar software de análisis cualitativo o bibliométrico"]
+];
+const SATISFACCION = [
+  ["sat_programa","El programa doctoral en su conjunto"],
+  ["sat_materias","Las unidades de aprendizaje cursadas"],
+  ["sat_director","El acompañamiento de mi director de tesis"],
+  ["sat_coloquios","Los coloquios de investigación"],
+  ["sat_biblio","El acceso a bases de datos y bibliografía"],
+  ["sat_coordinacion","La comunicación de la Coordinación"],
+  ["sat_instalaciones","Instalaciones y recursos tecnológicos"],
+  ["sat_pares","La convivencia y el trabajo con mis compañeros"]
+];
+
+function buildMatrix(containerId, items, min, max){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+  wrap.innerHTML = items.map(([name,label]) => {
+    let opts = "";
+    for(let v=min; v<=max; v++){
+      opts += '<label><input type="radio" name="'+name+'" value="'+v+'"><span>'+v+'</span></label>';
+    }
+    const cols = max - min + 1;
+    return '<div class="sem-row"><span>'+label+'</span>'+
+           '<div class="sem-scale" style="grid-template-columns:repeat('+cols+',1fr)">'+opts+'</div></div>';
+  }).join("");
+}
+buildMatrix("matrizAvance", AVANCE, 0, 4);
+buildMatrix("matrizCompetencias", COMPETENCIAS, 1, 5);
+buildMatrix("matrizSatisfaccion", SATISFACCION, 1, 5);
+
+/* NPS 0–10 */
+const nps = document.getElementById("npsWrap");
+if(nps){
+  let h = "";
+  for(let v=0; v<=10; v++) h += '<label><input type="radio" name="nps" value="'+v+'"><span>'+v+'</span></label>';
+  nps.innerHTML = h;
+}
+
+/* ── navegación por pasos ── */
+const form   = document.getElementById("semForm");
+const steps  = Array.from(document.querySelectorAll(".sem-step"));
+const bar    = document.getElementById("bar");
+const stepNum= document.getElementById("stepNum");
+const stepName=document.getElementById("stepName");
+const btnPrev= document.getElementById("btnPrev");
+const btnNext= document.getElementById("btnNext");
+const savedMsg=document.getElementById("savedMsg");
+let idx = 0;
+
+function render(){
+  steps.forEach((s,i)=> s.classList.toggle("active", i===idx));
+  bar.style.width = ((idx+1)/steps.length*100) + "%";
+  stepNum.textContent = idx+1;
+  stepName.textContent = steps[idx].dataset.name;
+  btnPrev.style.visibility = idx===0 ? "hidden" : "visible";
+  btnNext.textContent = idx===steps.length-1 ? "Enviar respuestas" : "Siguiente";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function validateStep(){
+  let ok = true;
+  steps[idx].querySelectorAll(".sem-q").forEach(q=>{
+    const req = q.querySelector("[data-required]");
+    q.classList.remove("invalid");
+    if(!req) return;
+    let filled;
+    if(req.type === "checkbox") filled = req.checked;
+    else filled = req.value.trim() !== "";
+    if(filled && req.type === "email") filled = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.value.trim());
+    if(!filled){ q.classList.add("invalid"); ok = false; }
+  });
+  return ok;
+}
+
+btnPrev.addEventListener("click", ()=>{ if(idx>0){ idx--; render(); } });
+btnNext.addEventListener("click", ()=>{
+  if(!validateStep()) return;
+  if(idx < steps.length-1){ idx++; render(); }
+  else submit();
+});
+
+/* ── recolección de datos ── */
+function collect(){
+  const data = {
+    _meta: {
+      curso: CONFIG.curso,
+      ciclo: CONFIG.ciclo,
+      enviado_en: new Date().toISOString(),
+      navegador: navigator.userAgent
+    }
+  };
+  const fd = new FormData(form);
+  for(const key of new Set(Array.from(fd.keys()))){
+    const vals = fd.getAll(key);
+    data[key] = vals.length > 1 ? vals : vals[0];
+  }
+  // checkbox groups con una sola marca deben quedar como arreglo
+  ["produccion","bases","ia_usos","meta","obstaculo","horario"].forEach(k=>{
+    if(data[k] && !Array.isArray(data[k])) data[k] = [data[k]];
+    if(!data[k]) data[k] = [];
+  });
+  return data;
+}
+
+/* ── autoguardado ── */
+let saveTimer;
+form.addEventListener("input", ()=>{
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    store.set(CONFIG.claveBorrador, JSON.stringify(collect()));
+    savedMsg.textContent = "Borrador guardado en este navegador · " +
+      new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
+  }, 700);
+});
+
+/* ── restaurar borrador ── */
+(function restore(){
+  const raw = store.get(CONFIG.claveBorrador);
+  if(!raw) return;
+  let d; try { d = JSON.parse(raw); } catch(e){ return; }
+  Object.keys(d).forEach(k=>{
+    if(k === "_meta") return;
+    const vals = Array.isArray(d[k]) ? d[k] : [d[k]];
+    form.querySelectorAll('[name="'+CSS.escape(k)+'"]').forEach(el=>{
+      if(el.type === "checkbox" || el.type === "radio") el.checked = vals.indexOf(el.value) !== -1;
+      else el.value = vals[0] || "";
+    });
+  });
+  savedMsg.textContent = "Se recuperó un borrador guardado en este navegador.";
+})();
+
+/* ── descarga local ── */
+function download(data){
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "diagnostico-" + (data.nombre||"respuesta").toString().replace(/\s+/g,"-").toLowerCase() + ".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+/* ── envío ── */
+let ultimaRespuesta = null;
+
+/* La función de la base lanza errores en español para lo que el estudiante
+   puede corregir (correo mal escrito, falta el consentimiento). Esos se
+   muestran tal cual. Cualquier otra cosa —red caída, permisos, un fallo del
+   servidor— se resume, porque el detalle no le sirve a quien contesta y sí
+   le serviría a quien quisiera hurgar. */
+function motivoLegible(error){
+  const m = (error && error.message) ? String(error.message) : "";
+  if(/correo no es válido|Falta el nombre|Falta el consentimiento|demasiado grande|formato esperado/i.test(m)){
+    return m.replace(/^.*?:\s*/, "");
+  }
+  console.error("Error al guardar el diagnóstico:", error);
+  return "El servidor no pudo registrar la respuesta.";
+}
+
+async function submit(){
+  btnNext.disabled = true;
+  btnNext.textContent = "Enviando…";
+  const data = collect();
+  ultimaRespuesta = data;
+  let enviado = false, corregida = false, motivo = "";
+
+  const cliente = clienteSupabase();
+  if(!cliente){
+    motivo = "No se pudo cargar la conexión con el servidor.";
+  } else {
+    try {
+      const { data: res, error } = await cliente.rpc(CONFIG.funcion, { datos: data });
+      if(error){
+        motivo = motivoLegible(error);
+      } else {
+        enviado = true;
+        corregida = !!(res && res.nuevo === false);
+      }
+    } catch(e){
+      console.error("Error de red al guardar el diagnóstico:", e);
+      motivo = "No se pudo conectar con el servidor.";
+    }
+  }
+
+  document.getElementById("progressWrap").style.display = "none";
+  form.style.display = "none";
+  document.getElementById("done").classList.add("active");
+
+  if(enviado){
+    store.del(CONFIG.claveBorrador);
+    if(corregida){
+      document.getElementById("doneMsg").textContent =
+        "Ya tenías una respuesta registrada con este correo y la reemplazamos por esta. " +
+        "Es la que se toma en cuenta.";
+    }
+  } else {
+    document.getElementById("doneMsg").textContent =
+      "Tus respuestas quedaron guardadas en este navegador, pero no se enviaron. " +
+      motivo + " Descarga la copia con el botón de abajo y hazla llegar al profesor.";
+    download(data);
+  }
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.getElementById("btnCopy").addEventListener("click", ()=>{
+  download(ultimaRespuesta || collect());
+});
+
+render();
+})();
+</script>
+</body>
+</html>

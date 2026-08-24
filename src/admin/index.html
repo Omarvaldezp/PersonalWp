@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | OmarValdez.com</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Quill.js WYSIWYG Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+/* =============================================
+   Admin Panel Styles — Enhanced
+   ============================================= */
+:root {
+    --bg: #f1f5f9; --sidebar: #0f172a; --card: #fff;
+    --primary: #2563eb; --primary-light: #dbeafe; --accent: #06b6d4;
+    --danger: #ef4444; --danger-light: #fee2e2;
+    --success: #059669; --success-light: #d1fae5;
+    --warning: #f59e0b; --warning-light: #fef3c7;
+    --text: #1e293b; --text-light: #64748b; --border: #e2e8f0;
+    --radius: 12px; --transition: 0.2s ease;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+button { font-family: 'Inter', sans-serif; cursor: pointer; }
+input, select, textarea { font-family: 'Inter', sans-serif; }
+
+/* --- Login Screen --- */
+.login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+.login-box {
+    background: #fff; border-radius: var(--radius); padding: 2.5rem;
+    width: 100%; max-width: 400px; box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+}
+.login-box h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+.login-box p { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1.5rem; }
+.login-box .form-group { margin-bottom: 1rem; }
+.login-box label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-light); }
+.login-box input {
+    width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 0.9rem; outline: none; transition: var(--transition);
+}
+.login-box input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.login-btn {
+    width: 100%; padding: 0.75rem; background: var(--primary); color: #fff;
+    border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+    margin-top: 0.5rem; transition: var(--transition);
+}
+.login-btn:hover { background: #1d4ed8; }
+.login-error { color: var(--danger); font-size: 0.82rem; margin-top: 0.75rem; display: none; }
+
+/* --- App Layout --- */
+.app { display: none; min-height: 100vh; }
+.app.active { display: flex; }
+.login-screen.hidden { display: none; }
+
+/* Sidebar */
+.sidebar {
+    width: 240px; background: var(--sidebar); color: #fff;
+    padding: 1.5rem 0; display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+    transition: transform 0.3s ease;
+}
+.sidebar-brand { padding: 0 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-brand h2 { font-size: 1rem; font-weight: 700; }
+.sidebar-brand span { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+.sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+.nav-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.7rem 1.25rem; color: rgba(255,255,255,0.6);
+    text-decoration: none; font-size: 0.88rem; font-weight: 500;
+    transition: var(--transition); cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-item.active { color: #fff; background: rgba(37,99,235,0.3); border-right: 3px solid var(--primary); }
+.nav-item .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+.nav-badge { background: var(--danger); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 99px; margin-left: auto; }
+.nav-item.logout { margin-top: auto; color: rgba(255,255,255,0.4); border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; }
+
+/* Mobile toggle */
+.mobile-toggle {
+    display: none; position: fixed; top: 1rem; left: 1rem; z-index: 200;
+    width: 40px; height: 40px; border-radius: 10px; background: var(--sidebar);
+    color: #fff; border: none; font-size: 1.2rem; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.sidebar-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 99;
+}
+
+/* Main Content */
+.main { margin-left: 240px; flex: 1; padding: 2rem; min-height: 100vh; }
+.page-header { margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.page-header div { }
+.page-header h1 { font-size: 1.5rem; font-weight: 700; }
+.page-header p { color: var(--text-light); font-size: 0.88rem; }
+
+/* Dashboard Stats */
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.dash-card {
+    background: var(--card); border-radius: var(--radius); padding: 1.5rem;
+    border: 1px solid var(--border); display: flex; align-items: flex-start; gap: 1rem;
+}
+.dash-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+.dash-card .label { font-size: 0.78rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.25rem; }
+.dash-card .value { font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
+.dash-card .sub { font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem; }
+
+/* Welcome banner */
+.welcome-banner {
+    background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff;
+    border-radius: var(--radius); padding: 1.75rem 2rem; margin-bottom: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.welcome-banner h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+.welcome-banner p { font-size: 0.88rem; opacity: 0.85; }
+.welcome-banner a { color: #fff; text-decoration: none; font-weight: 600; font-size: 0.88rem; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 8px; transition: var(--transition); }
+.welcome-banner a:hover { background: rgba(255,255,255,0.3); }
+
+/* Recent Activity */
+.activity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.activity-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); }
+.activity-card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.activity-card-header .badge { font-size: 0.72rem; }
+.activity-list { padding: 0.5rem 0; max-height: 300px; overflow-y: auto; }
+.activity-item {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.25rem;
+    font-size: 0.85rem; border-bottom: 1px solid #f8fafc; transition: var(--transition);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-item:hover { background: #f8fafc; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.activity-item .time { margin-left: auto; font-size: 0.75rem; color: var(--text-light); white-space: nowrap; }
+.activity-empty { padding: 2rem; text-align: center; color: var(--text-light); font-size: 0.85rem; }
+
+/* Section panel */
+.section-panel { display: none; }
+.section-panel.active { display: block; }
+
+/* Toolbar */
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem; }
+.toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.search-input {
+    padding: 0.55rem 0.9rem 0.55rem 2.2rem; border-radius: 8px; border: 1.5px solid var(--border);
+    font-size: 0.85rem; outline: none; transition: var(--transition); width: 240px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E") no-repeat 0.75rem center;
+}
+.search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+/* ---- Diagnóstico del seminario ---- */
+.sem-select { background-image: none; padding-left: 0.9rem; width: auto; min-width: 130px; }
+.sem-panorama { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.sem-grupo { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; }
+.sem-grupo h3 { font-size: 0.95rem; margin: 0 0 0.2rem; }
+.sem-grupo .sem-grupo-sub { font-size: 0.78rem; color: var(--text-light); margin: 0 0 1rem; }
+.sem-reactivo { display: grid; grid-template-columns: 1fr 42px; gap: 0.5rem 0.75rem; align-items: center; padding: 0.45rem 0; font-size: 0.82rem; }
+.sem-reactivo + .sem-reactivo { border-top: 1px solid #f1f5f9; }
+.sem-reactivo .sem-val { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sem-reactivo .sem-pista { grid-column: 1 / -1; height: 4px; background: #eef2f7; border-radius: 999px; overflow: hidden; }
+.sem-reactivo .sem-pista span { display: block; height: 100%; border-radius: 999px; }
+.sem-detalle dl { margin: 0; }
+.sem-detalle h4 { margin: 1.4rem 0 0.5rem; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); }
+.sem-detalle h4:first-child { margin-top: 0; }
+.sem-campo { display: grid; grid-template-columns: 210px 1fr; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.88rem; }
+.sem-campo:last-child { border-bottom: 0; }
+.sem-campo > span:first-child { color: var(--text-light); }
+.sem-campo .sem-libre { white-space: pre-wrap; }
+@media (max-width: 640px) { .sem-campo { grid-template-columns: 1fr; gap: 0.15rem; } }
+.result-count { font-size: 0.78rem; color: var(--text-light); padding: 0.4rem 0.75rem; background: #f8fafc; border-radius: 6px; }
+
+/* Buttons */
+.btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.6rem 1.1rem; border-radius: 8px; font-size: 0.85rem;
+    font-weight: 600; border: none; transition: var(--transition);
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #047857; }
+.btn-warning { background: var(--warning); color: #fff; }
+.btn-ghost { background: transparent; color: var(--text-light); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: #f8fafc; color: var(--text); }
+.btn-sm { padding: 0.4rem 0.7rem; font-size: 0.78rem; }
+.btn-link { background: none; border: none; color: var(--primary); font-size: 0.78rem; font-weight: 600; padding: 0.4rem 0.5rem; text-decoration: none; }
+.btn-link:hover { text-decoration: underline; }
+
+/* Table */
+.table-wrap {
+    background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; }
+thead { background: #f8fafc; }
+th {
+    padding: 0.75rem 1rem; text-align: left; font-size: 0.78rem;
+    font-weight: 600; color: var(--text-light); text-transform: uppercase;
+    letter-spacing: 0.05em; border-bottom: 1px solid var(--border);
+}
+td {
+    padding: 0.75rem 1rem; font-size: 0.88rem; border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+tr:hover { background: #f8fafc; }
+.badge {
+    display: inline-block; padding: 0.2rem 0.6rem; border-radius: 99px;
+    font-size: 0.72rem; font-weight: 600;
+}
+.badge-green { background: var(--success-light); color: var(--success); }
+.badge-red { background: var(--danger-light); color: var(--danger); }
+.badge-yellow { background: var(--warning-light); color: #92400e; }
+.badge-blue { background: var(--primary-light); color: var(--primary); }
+.actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+/* Modal */
+.modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+    background: #fff; border-radius: var(--radius); width: 100%; max-width: 780px;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+}
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border);
+}
+.modal-header h2 { font-size: 1.15rem; }
+.modal-close {
+    background: none; border: none; font-size: 1.5rem; color: var(--text-light);
+    cursor: pointer; line-height: 1;
+}
+.modal-body { padding: 1.5rem; }
+.modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.5rem; }
+
+/* Contact detail modal */
+.contact-detail { padding: 0.5rem 0; }
+.contact-detail .detail-row { display: flex; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; }
+.contact-detail .detail-row:last-child { border-bottom: none; }
+.contact-detail .detail-label { font-size: 0.78rem; font-weight: 600; color: var(--text-light); min-width: 80px; text-transform: uppercase; letter-spacing: 0.05em; }
+.contact-detail .detail-value { font-size: 0.92rem; color: var(--text); line-height: 1.6; word-break: break-word; }
+.contact-detail .message-body { background: #f8fafc; border-radius: 8px; padding: 1rem; margin-top: 0.5rem; white-space: pre-wrap; line-height: 1.7; }
+
+/* Form inside modal */
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-light); margin-bottom: 0.4rem; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 0.88rem; outline: none; transition: var(--transition);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.form-group textarea { resize: vertical; min-height: 100px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-check { display: flex; align-items: center; gap: 0.5rem; }
+.form-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+.form-check label { font-size: 0.88rem; color: var(--text); margin-bottom: 0; }
+.form-hint { font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem; }
+.char-count { font-size: 0.72rem; color: var(--text-light); text-align: right; margin-top: 0.2rem; }
+.char-count.warn { color: var(--warning); }
+.char-count.danger { color: var(--danger); }
+
+/* Toast */
+.toast {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+    padding: 0.85rem 1.25rem; border-radius: 10px; color: #fff;
+    font-size: 0.88rem; font-weight: 500; transform: translateY(120%);
+    opacity: 0; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+/* Empty state */
+.empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
+.empty-state .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+/* Loading */
+.loading-row td { text-align: center; padding: 2rem; color: var(--text-light); }
+.spinner-sm { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Image Upload */
+.upload-area {
+    border: 2px dashed var(--border); border-radius: 8px; padding: 1.25rem;
+    text-align: center; cursor: pointer; transition: var(--transition);
+    background: #fafbfc; position: relative;
+}
+.upload-area:hover { border-color: var(--primary); background: var(--primary-light); }
+.upload-area.uploading { opacity: 0.6; pointer-events: none; }
+.upload-area input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-area .upload-text { font-size: 0.82rem; color: var(--text-light); }
+.upload-area .upload-text strong { color: var(--primary); }
+.upload-preview { margin-top: 0.75rem; position: relative; display: inline-block; }
+.upload-preview img { max-height: 120px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.upload-preview .remove-img {
+    position: absolute; top: -8px; right: -8px; width: 24px; height: 24px;
+    border-radius: 50%; background: var(--danger); color: #fff; border: none;
+    font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Quill Editor */
+.ql-container { font-family: 'Inter', sans-serif; font-size: 0.92rem; }
+.ql-editor { min-height: 250px; max-height: 50vh; overflow-y: auto; }
+.ql-toolbar.ql-snow {
+    border-radius: 8px 8px 0 0; border-color: var(--border);
+    position: sticky; top: 0; z-index: 10;
+    background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.ql-container.ql-snow { border-radius: 0 0 8px 8px; border-color: var(--border); }
+#quillEditor { background: #fff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-overlay.active { display: block; }
+    .mobile-toggle { display: flex; }
+    .main { margin-left: 0; padding: 1rem; padding-top: 4rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: 1fr 1fr; }
+    .activity-grid { grid-template-columns: 1fr; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar-left, .toolbar-right { width: 100%; }
+    .search-input { width: 100%; }
+    .welcome-banner { flex-direction: column; gap: 1rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" id="mobileToggle">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ============================================= -->
+<!-- LOGIN SCREEN                                  -->
+<!-- ============================================= -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <h1>Admin Panel</h1>
+        <p>OmarValdez.com — Gestión de contenido</p>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" required placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="login-btn">Iniciar Sesión</button>
+            <div class="login-error" id="loginError"></div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================= -->
+<!-- APP LAYOUT                                    -->
+<!-- ============================================= -->
+<div class="app" id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h2>Admin Panel</h2>
+            <span>OmarValdez.com</span>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="dashboard"><span class="icon"><i class="fas fa-chart-bar"></i></span><span>Dashboard</span></button>
+            <button class="nav-item" data-section="posts"><span class="icon"><i class="fas fa-edit"></i></span><span>Blog</span></button>
+            <button class="nav-item" data-section="courses"><span class="icon"><i class="fas fa-graduation-cap"></i></span><span>Cursos</span></button>
+            <button class="nav-item" data-section="research"><span class="icon"><i class="fas fa-flask"></i></span><span>Investigación</span></button>
+            <button class="nav-item" data-section="seminario"><span class="icon"><i class="fas fa-user-graduate"></i></span><span>Seminario</span><span class="nav-badge" id="semBadge" style="display:none;"></span></button>
+            <button class="nav-item" data-section="contacts"><span class="icon"><i class="fas fa-envelope"></i></span><span>Contactos</span><span class="nav-badge" id="unreadBadge" style="display:none;"></span></button>
+            <button class="nav-item" data-section="subscribers"><span class="icon"><i class="fas fa-users"></i></span><span>Suscriptores</span></button>
+            <button class="nav-item" data-section="newsletter"><span class="icon"><i class="fas fa-paper-plane"></i></span><span>Newsletter</span></button>
+            <button class="nav-item" data-section="analytics"><span class="icon"><i class="fas fa-chart-line"></i></span><span>Analytics</span></button>
+            <button class="nav-item" data-section="stats"><span class="icon"><i class="fas fa-cog"></i></span><span>Estadísticas</span></button>
+        </nav>
+        <button class="nav-item logout" id="logoutBtn"><span class="icon"><i class="fas fa-sign-out-alt"></i></span><span>Cerrar Sesión</span></button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- DASHBOARD -->
+        <div class="section-panel active" id="sec-dashboard">
+            <div class="welcome-banner" id="welcomeBanner">
+                <div>
+                    <h2>Bienvenido al Panel de Administración</h2>
+                    <p>Gestiona tu sitio web desde aquí.</p>
+                </div>
+                <a href="/" target="_blank">Ver Sitio →</a>
+            </div>
+            <div class="dash-grid" id="dashStats"></div>
+            <div class="activity-grid" id="activityGrid"></div>
+        </div>
+
+        <!-- BLOG POSTS -->
+        <div class="section-panel" id="sec-posts">
+            <div class="page-header"><div><h1>Blog Posts</h1><p>Gestiona los artículos del blog</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="openModal('post')">+ Nuevo Post</button>
+                    <input type="text" class="search-input" id="searchPosts" placeholder="Buscar posts..." oninput="filterTable('posts')">
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countPosts"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Título</th><th>Categoría</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="postsTable"><tr class="loading-row"><td colspan="5"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- COURSES -->
+        <div class="section-panel" id="sec-courses">
+            <div class="page-header"><div><h1>Cursos</h1><p>Gestiona los cursos disponibles</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="openModal('course')">+ Nuevo Curso</button>
+                    <input type="text" class="search-input" id="searchCourses" placeholder="Buscar cursos..." oninput="filterTable('courses')">
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countCourses"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Título</th><th>Orden</th><th>Featured</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="coursesTable"><tr class="loading-row"><td colspan="5"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- RESEARCH -->
+        <div class="section-panel" id="sec-research">
+            <div class="page-header"><div><h1>Investigación</h1><p>Gestiona publicaciones de investigación</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="openModal('research')">+ Nueva Publicación</button>
+                    <input type="text" class="search-input" id="searchResearch" placeholder="Buscar publicaciones..." oninput="filterTable('research')">
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countResearch"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Título / Revista</th><th>Autores</th><th>Año</th><th>Tipo</th><th>DOI</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="researchTable"><tr class="loading-row"><td colspan="7"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- SEMINARIO — diagnóstico inicial -->
+        <div class="section-panel" id="sec-seminario">
+            <div class="page-header"><div><h1>Diagnóstico del seminario</h1><p>Respuestas del diagnóstico inicial del Seminario de Investigación Teórico</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <select class="search-input sem-select" id="semCiclo" onchange="renderSeminario()"></select>
+                    <input type="text" class="search-input" id="searchSeminario" placeholder="Buscar por nombre o correo..." oninput="filterTable('seminario')">
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-ghost btn-sm" onclick="exportSeminario()">&#11015; Exportar CSV</button>
+                    <span class="result-count" id="countSeminario"></span>
+                </div>
+            </div>
+            <div class="dash-grid" id="semResumen"></div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Alumno</th><th>Dedicación</th><th>Avance</th><th>Competencias</th><th>Satisfacción</th><th>Recibido</th><th>Acciones</th></tr></thead>
+                <tbody id="seminarioTable"><tr class="loading-row"><td colspan="7"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+            <div class="sem-panorama" id="semPanorama"></div>
+        </div>
+
+        <!-- CONTACTS -->
+        <div class="section-panel" id="sec-contacts">
+            <div class="page-header"><div><h1>Contactos</h1><p>Mensajes recibidos del formulario</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-success btn-sm" onclick="bulkMarkRead()"><i class="fas fa-check"></i> Marcar todo leído</button>
+                    <input type="text" class="search-input" id="searchContacts" placeholder="Buscar contactos..." oninput="filterTable('contacts')">
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countContacts"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Nombre</th><th>Email</th><th>Tipo</th><th>Mensaje</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="contactsTable"><tr class="loading-row"><td colspan="7"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- SUBSCRIBERS -->
+        <div class="section-panel" id="sec-subscribers">
+            <div class="page-header"><div><h1>Suscriptores</h1><p>Lista de suscriptores al newsletter</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-ghost btn-sm" onclick="exportSubscribers()">⬇ Exportar CSV</button>
+                    <input type="text" class="search-input" id="searchSubscribers" placeholder="Buscar suscriptores..." oninput="filterTable('subscribers')">
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countSubscribers"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Email</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="subscribersTable"><tr class="loading-row"><td colspan="4"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+        <!-- NEWSLETTER -->
+        <div class="section-panel" id="sec-newsletter">
+            <div class="page-header"><div><h1>Newsletter</h1><p>Crea y envía campañas a tus suscriptores</p></div></div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="openModal('newsletter')">+ Nueva Campaña</button>
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countNewsletters"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Asunto</th><th>Estado</th><th>Destinatarios</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="newslettersTable"><tr class="loading-row"><td colspan="5"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+            <div style="margin-top:1.5rem; padding:1.25rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border);">
+                <h3 style="font-size:0.92rem; margin-bottom:0.75rem;"><i class="fas fa-cog"></i> Configuración de envío</h3>
+                <p style="font-size:0.82rem; color:var(--text-light); line-height:1.7;">
+                    Para enviar newsletters necesitas configurar <strong>Resend</strong> y una <strong>Supabase Edge Function</strong>.
+                    <a href="https://resend.com" target="_blank" style="color:var(--primary);">Crear cuenta en Resend</a> (gratis hasta 100 emails/día).
+                    Consulta el archivo <code>supabase/functions/send-newsletter/index.ts</code> para instrucciones de deploy.
+                </p>
+            </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div class="section-panel" id="sec-analytics">
+            <div class="page-header"><div><h1>Analytics</h1><p>Estadísticas de tu sitio y audiencia</p></div></div>
+            <div id="analyticsConfig" style="margin-bottom:1.5rem;"></div>
+            <div class="dash-grid" id="analyticsStats"></div>
+            <div class="activity-grid" id="analyticsCharts" style="margin-top:1.5rem;"></div>
+        </div>
+
+        <!-- STATS -->
+        <div class="section-panel" id="sec-stats">
+            <div class="page-header"><div><h1>Estadísticas del Sitio</h1><p>Edita los números que se muestran en la sección "Sobre Mí"</p></div></div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Clave</th><th>Valor</th><th>Etiqueta</th><th>Acciones</th></tr></thead>
+                <tbody id="statsTable"><tr class="loading-row"><td colspan="4"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============================================= -->
+<!-- MODAL                                         -->
+<!-- ============================================= -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nuevo</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter">
+            <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-primary" id="modalSave">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================= -->
+<!-- JAVASCRIPT                                    -->
+<!-- ============================================= -->
+<script>
+// --- Supabase Config ---
+const SUPABASE_URL = 'https://mogmgtnkyazpsgslucrx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vZ21ndG5reWF6cHNnc2x1Y3J4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NDI0MTIsImV4cCI6MjA4NjQxODQxMn0.msfLGeM2tlAHlL101tA4tFiGqmoenHcgJWN_cUl3lKc';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentEditId = null;
+let currentEditType = null;
+let quillEditor = null;
+
+// Data caches for search
+let cachedPosts = [];
+let cachedCourses = [];
+let cachedResearch = [];
+let cachedContacts = [];
+let cachedSubscribers = [];
+let cachedNewsletters = [];
+let cachedSeminario = [];      // filas de v_seminario_alumnos
+let cachedSemReactivos = [];   // filas de v_seminario_reactivos
+
+// =============================================
+// AUTH
+// =============================================
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+    errEl.style.display = 'none';
+
+    const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+        errEl.textContent = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+        errEl.style.display = 'block';
+    } else {
+        showApp();
+    }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await db.auth.signOut();
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('loginScreen').classList.remove('hidden');
+});
+
+// Check session on load
+(async () => {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) showApp();
+})();
+
+function showApp() {
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('app').classList.add('active');
+    loadDashboard();
+}
+
+// =============================================
+// MOBILE SIDEBAR
+// =============================================
+document.getElementById('mobileToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+});
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+});
+
+// =============================================
+// NAVIGATION
+// =============================================
+document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.section-panel').forEach(s => s.classList.remove('active'));
+        document.getElementById('sec-' + btn.dataset.section).classList.add('active');
+
+        // Close mobile sidebar
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+
+        const loaders = {
+            dashboard: loadDashboard,
+            posts: loadPosts,
+            courses: loadCourses,
+            research: loadResearch,
+            seminario: loadSeminario,
+            contacts: loadContacts,
+            subscribers: loadSubscribers,
+            newsletter: loadNewsletters,
+            analytics: loadAnalytics,
+            stats: loadStats
+        };
+        if (loaders[btn.dataset.section]) loaders[btn.dataset.section]();
+    });
+});
+
+// =============================================
+// DASHBOARD (Enhanced)
+// =============================================
+async function loadDashboard() {
+    const [posts, courses, contacts, subscribers] = await Promise.all([
+        db.from('posts').select('id, title, published, created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(5),
+        db.from('courses').select('id', { count: 'exact' }),
+        db.from('contacts').select('id, name, email, type, read, created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(5),
+        db.from('subscribers').select('id, email, active, created_at', { count: 'exact' }).order('created_at', { ascending: false }).limit(5)
+    ]);
+    const unread = contacts.data ? contacts.data.filter(c => !c.read).length : 0;
+    const totalUnread = contacts.data ? contacts.data.filter(c => !c.read).length : 0;
+    const activeSubs = subscribers.count || 0;
+    const publishedPosts = posts.data ? posts.data.filter(p => p.published).length : 0;
+
+    // Update unread badge in sidebar
+    const badge = document.getElementById('unreadBadge');
+    if (totalUnread > 0) { badge.textContent = totalUnread; badge.style.display = 'inline'; }
+    else { badge.style.display = 'none'; }
+
+    document.getElementById('dashStats').innerHTML = `
+        <div class="dash-card">
+            <div class="dash-icon" style="background: var(--primary-light);"><i class="fas fa-edit"></i></div>
+            <div><div class="label">Blog Posts</div><div class="value">${posts.count || 0}</div><div class="sub">${publishedPosts} publicados</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: #fae8ff;"><i class="fas fa-graduation-cap"></i></div>
+            <div><div class="label">Cursos</div><div class="value">${courses.count || 0}</div><div class="sub">activos</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: ${unread > 0 ? 'var(--warning-light)' : 'var(--success-light)'};">${unread > 0 ? '<i class="fas fa-bell"></i>' : '<i class="fas fa-envelope"></i>'}</div>
+            <div><div class="label">Contactos</div><div class="value">${contacts.count || 0}</div><div class="sub">${unread > 0 ? unread + ' sin leer' : 'todos leídos'}</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: #d1fae5;"><i class="fas fa-users"></i></div>
+            <div><div class="label">Suscriptores</div><div class="value">${activeSubs}</div><div class="sub">registrados</div></div>
+        </div>
+    `;
+
+    // Recent Activity
+    let activityHtml = '<div class="activity-card"><div class="activity-card-header">Contactos Recientes';
+    if (unread > 0) activityHtml += ` <span class="badge badge-yellow">${unread} nuevos</span>`;
+    activityHtml += '</div><div class="activity-list">';
+    if (contacts.data && contacts.data.length) {
+        activityHtml += contacts.data.map(c => `
+            <div class="activity-item">
+                <span class="activity-dot" style="background: ${c.read ? 'var(--success)' : 'var(--warning)'};"></span>
+                <span><strong>${esc(c.name)}</strong> — ${esc(c.type || 'Mensaje')}</span>
+                <span class="time">${timeAgo(c.created_at)}</span>
+            </div>`).join('');
+    } else { activityHtml += '<div class="activity-empty">No hay contactos recientes</div>'; }
+    activityHtml += '</div></div>';
+
+    activityHtml += '<div class="activity-card"><div class="activity-card-header">Últimos Posts</div><div class="activity-list">';
+    if (posts.data && posts.data.length) {
+        activityHtml += posts.data.map(p => `
+            <div class="activity-item">
+                <span class="activity-dot" style="background: ${p.published ? 'var(--success)' : 'var(--text-light)'};"></span>
+                <span>${esc(p.title)}</span>
+                <span class="time">${timeAgo(p.created_at)}</span>
+            </div>`).join('');
+    } else { activityHtml += '<div class="activity-empty">No hay posts aún</div>'; }
+    activityHtml += '</div></div>';
+
+    document.getElementById('activityGrid').innerHTML = activityHtml;
+}
+
+// =============================================
+// BLOG POSTS
+// =============================================
+async function loadPosts() {
+    const { data } = await db.from('posts').select('*').order('created_at', { ascending: false });
+    cachedPosts = data || [];
+    renderPosts(cachedPosts);
+}
+
+function renderPosts(data) {
+    const tbody = document.getElementById('postsTable');
+    document.getElementById('countPosts').textContent = data.length + ' posts';
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fas fa-edit"></i></div>No hay posts</div></td></tr>'; return; }
+    tbody.innerHTML = data.map(p => `<tr>
+        <td><strong>${esc(p.title)}</strong><br><span style="font-size:0.75rem;color:var(--text-light);">/${esc(p.slug)}</span></td>
+        <td><span class="badge badge-blue">${esc(p.category)}</span></td>
+        <td>${p.published ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-yellow">Borrador</span>'}${p.featured ? ' <span class="badge badge-blue">★</span>' : ''}</td>
+        <td>${fmtDate(p.created_at)}</td>
+        <td class="actions">
+            <a href="/post.html?slug=${encodeURIComponent(p.slug)}" target="_blank" class="btn-link" title="Vista previa">👁 Ver</a>
+            <button class="btn btn-ghost btn-sm" onclick="editPost('${p.id}')">Editar</button>
+            <button class="btn btn-ghost btn-sm" onclick="duplicatePost('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="togglePublish('${p.id}', ${p.published})">${p.published ? '⏸' : '▶'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('posts', '${p.id}', loadPosts)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function editPost(id) {
+    const { data } = await db.from('posts').select('*').eq('id', id).single();
+    if (data) openModal('post', data);
+}
+
+async function togglePublish(id, current) {
+    await db.from('posts').update({ published: !current, updated_at: new Date().toISOString() }).eq('id', id);
+    toast(current ? 'Post despublicado' : 'Post publicado', 'success');
+    loadPosts();
+}
+
+async function duplicatePost(id) {
+    const { data } = await db.from('posts').select('*').eq('id', id).single();
+    if (!data) return;
+    const newPost = {
+        title: data.title + ' (copia)',
+        slug: data.slug + '-copia-' + Date.now().toString(36),
+        category: data.category,
+        excerpt: data.excerpt,
+        content: data.content,
+        image_url: data.image_url,
+        published: false,
+        featured: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    };
+    const { error } = await db.from('posts').insert([newPost]);
+    if (error) { toast('Error al duplicar: ' + error.message, 'error'); return; }
+    toast('Post duplicado como borrador', 'success');
+    loadPosts();
+}
+
+// =============================================
+// COURSES
+// =============================================
+async function loadCourses() {
+    const { data } = await db.from('courses').select('*').order('sort_order');
+    cachedCourses = data || [];
+    renderCourses(cachedCourses);
+}
+
+function renderCourses(data) {
+    const tbody = document.getElementById('coursesTable');
+    document.getElementById('countCourses').textContent = data.length + ' cursos';
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fas fa-graduation-cap"></i></div>No hay cursos</div></td></tr>'; return; }
+    tbody.innerHTML = data.map(c => `<tr>
+        <td><strong>${c.icon || '<i class="fas fa-book"></i>'} ${esc(c.title)}</strong>${c.badge ? `<br><span class="badge badge-blue">${esc(c.badge)}</span>` : ''}</td>
+        <td>${c.sort_order}</td>
+        <td>${c.featured ? '<span class="badge badge-blue">Featured</span>' : '—'}</td>
+        <td>${c.active ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Inactivo</span>'}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="editCourse('${c.id}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('courses', '${c.id}', loadCourses)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function editCourse(id) {
+    const { data } = await db.from('courses').select('*').eq('id', id).single();
+    if (data) openModal('course', data);
+}
+
+// =============================================
+// RESEARCH
+// =============================================
+async function loadResearch() {
+    const { data } = await db.from('research').select('*').order('year', { ascending: false });
+    cachedResearch = data || [];
+    renderResearch(cachedResearch);
+}
+
+function renderResearch(data) {
+    const tbody = document.getElementById('researchTable');
+    document.getElementById('countResearch').textContent = data.length + ' publicaciones';
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon"><i class="fas fa-flask"></i></div>No hay publicaciones</div></td></tr>'; return; }
+    const catLabels = { marketing: 'Marketing', ecommerce: 'E-Commerce', innovacion: 'Innovación', gestion: 'Gestión', salud: 'Salud', blockchain: 'Blockchain', ia: 'IA', fintech: 'Fintech' };
+    tbody.innerHTML = data.map(r => `<tr>
+        <td>
+            <strong>${esc(r.title)}</strong>
+            <br><span style="font-size:0.8rem;color:#64748b;">${esc(r.journal || '')} ${r.volume_issue ? '· ' + esc(r.volume_issue) : ''}</span>
+            ${r.featured ? '<br><span class="badge" style="background:#fef3c7;color:#92400e;font-size:0.7rem;"><i class="fas fa-star"></i> Destacado</span>' : ''}
+        </td>
+        <td style="font-size:0.8rem;max-width:180px;">${esc(r.authors || '—')}</td>
+        <td>${r.year}</td>
+        <td><span class="badge badge-blue">${esc(r.type)}</span></td>
+        <td>${r.doi ? `<a href="https://doi.org/${esc(r.doi)}" target="_blank" class="btn-link" style="padding:0;font-size:0.75rem;"><i class="fas fa-external-link-alt"></i> ${esc(r.doi)}</a>` : '<span style="color:#94a3b8;">—</span>'}</td>
+        <td>${r.active !== false ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Oculto</span>'}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="editResearch('${r.id}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('research', '${r.id}', loadResearch)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function editResearch(id) {
+    const { data } = await db.from('research').select('*').eq('id', id).single();
+    if (data) openModal('research', data);
+}
+
+// =============================================
+// SEMINARIO — diagnóstico inicial
+//
+// Lee de dos vistas de Supabase, no de las tablas:
+//   v_seminario_alumnos    una fila por alumno con sus tres promedios
+//   v_seminario_reactivos  promedio por reactivo, para el panorama del grupo
+//
+// Las dos vistas están declaradas con security_invoker, así que respetan el
+// RLS: sólo devuelven algo a quien tenga el rol admin. Si aquí no aparece
+// nada y sabes que hay respuestas, lo primero que hay que revisar es el
+// perfil del usuario con el que entraste. Ver 00_roles.sql.
+// =============================================
+
+// Escalas de cada matriz, para dibujar las barras en su proporción correcta.
+const SEM_ESCALA = {
+    avance:       { max: 4, titulo: 'Avance de la tesis',        pie: '0 no iniciado &middot; 4 terminado' },
+    competencia:  { max: 5, titulo: 'Competencias declaradas',   pie: '1 no sabría por dónde empezar &middot; 5 lo hago solo' },
+    satisfaccion: { max: 5, titulo: 'Satisfacción con el programa', pie: '1 muy insatisfecho &middot; 5 muy satisfecho' }
+};
+
+async function loadSeminario() {
+    const [alumnos, reactivos] = await Promise.all([
+        db.from('v_seminario_alumnos').select('*').order('created_at', { ascending: false }),
+        db.from('v_seminario_reactivos').select('*')
+    ]);
+
+    if (alumnos.error) {
+        console.error('Seminario:', alumnos.error);
+        document.getElementById('seminarioTable').innerHTML =
+            '<tr><td colspan="7"><div class="empty-state"><div class="icon"><i class="fas fa-database"></i></div>' +
+            'No se pudo leer el diagnóstico. Revisa que hayas corrido <code>04_diagnostico_seminario.sql</code> ' +
+            'y que tu usuario tenga el rol admin.</div></td></tr>';
+        document.getElementById('semResumen').innerHTML = '';
+        document.getElementById('semPanorama').innerHTML = '';
+        return;
+    }
+
+    cachedSeminario    = alumnos.data || [];
+    cachedSemReactivos = reactivos.data || [];
+
+    // Selector de ciclo. Con un solo ciclo no estorba; con dos evita que el
+    // panorama del grupo mezcle generaciones en el mismo promedio.
+    const sel = document.getElementById('semCiclo');
+    const ciclos = [...new Set(cachedSeminario.map(a => a.ciclo))].sort().reverse();
+    const previo = sel.value;
+    sel.innerHTML = ciclos.map(c => `<option value="${esc(c)}">Ciclo ${esc(c)}</option>`).join('');
+    if (ciclos.includes(previo)) sel.value = previo;
+
+    renderSeminario();
+}
+
+function semCicloActual() {
+    const sel = document.getElementById('semCiclo');
+    return sel && sel.value ? sel.value : null;
+}
+
+function renderSeminario() {
+    renderSeminarioTabla(cachedSeminario);
+}
+
+function renderSeminarioTabla(filas) {
+    const ciclo = semCicloActual();
+    const datos = ciclo ? filas.filter(a => a.ciclo === ciclo) : filas;
+
+    // Resumen de arriba
+    const n = datos.length;
+    const prom = (campo) => {
+        const v = datos.map(a => a[campo]).filter(x => x !== null && x !== undefined).map(Number);
+        return v.length ? (v.reduce((a, b) => a + b, 0) / v.length).toFixed(2) : '—';
+    };
+    const conNps = datos.filter(a => a.nps !== null && a.nps !== undefined);
+    const nps = conNps.length
+        ? Math.round(100 * (conNps.filter(a => a.nps >= 9).length - conNps.filter(a => a.nps <= 6).length) / conNps.length)
+        : null;
+    const rezagados = datos.filter(a => a.avance !== null && Number(a.avance) < 1.5).length;
+
+    document.getElementById('semResumen').innerHTML = `
+        <div class="dash-card">
+            <div class="dash-icon" style="background: var(--primary-light);"><i class="fas fa-clipboard-check"></i></div>
+            <div><div class="label">Respuestas</div><div class="value">${n}</div><div class="sub">ciclo ${esc(ciclo || '—')}</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: #fef3c7;"><i class="fas fa-chart-simple"></i></div>
+            <div><div class="label">Avance promedio</div><div class="value">${prom('avance')}</div><div class="sub">de 4</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: ${rezagados > 0 ? 'var(--warning-light)' : 'var(--success-light)'};"><i class="fas fa-user-clock"></i></div>
+            <div><div class="label">Por debajo de 1.5</div><div class="value">${rezagados}</div><div class="sub">${rezagados === 1 ? 'necesita asesoría' : 'necesitan asesoría'}</div></div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-icon" style="background: #d1fae5;"><i class="fas fa-heart"></i></div>
+            <div><div class="label">NPS del programa</div><div class="value">${nps === null ? '—' : nps}</div><div class="sub">${conNps.length} de ${n} contestaron</div></div>
+        </div>`;
+
+    // Tabla
+    const tbody = document.getElementById('seminarioTable');
+    document.getElementById('countSeminario').textContent = n + (n === 1 ? ' respuesta' : ' respuestas');
+
+    if (!n) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon"><i class="fas fa-user-graduate"></i></div>' +
+            'Todavía no hay respuestas</div></td></tr>';
+        document.getElementById('semPanorama').innerHTML = '';
+        return;
+    }
+
+    tbody.innerHTML = datos.map(a => `
+        <tr>
+            <td>
+                <strong>${esc(a.nombre)}</strong><br>
+                <a href="mailto:${esc(a.correo)}" style="font-size:0.8rem;color:var(--primary);">${esc(a.correo)}</a>
+                ${a.envios > 1 ? ' <span class="badge badge-blue" title="La corrigió después de enviarla">corregida</span>' : ''}
+            </td>
+            <td>${esc(a.dedicacion) || '—'}${a.horas_semana != null ? `<br><span style="font-size:0.78rem;color:var(--text-light);">${a.horas_semana} h/semana</span>` : ''}</td>
+            <td>${semCelda(a.avance, 4)}</td>
+            <td>${semCelda(a.competencia, 5)}</td>
+            <td>${semCelda(a.satisfaccion, 5)}</td>
+            <td style="white-space:nowrap;">${timeAgo(a.created_at)}</td>
+            <td>
+                <button class="btn btn-ghost btn-sm" onclick="verDiagnostico('${a.id}')" title="Ver la respuesta completa">&#128065;</button>
+                <a class="btn btn-ghost btn-sm" href="mailto:${esc(a.correo)}?subject=${encodeURIComponent('Seminario de Investigación Teórico')}" title="Escribirle"><i class="fas fa-envelope"></i></a>
+            </td>
+        </tr>`).join('');
+
+    renderSemPanorama(ciclo);
+}
+
+// Un número con color. Verde arriba, ámbar en medio, rojo abajo: el punto es
+// poder barrer la columna con la vista y ver a quién hay que citar.
+function semCelda(valor, max) {
+    if (valor === null || valor === undefined) return '<span style="color:var(--text-light);">—</span>';
+    const v = Number(valor);
+    const r = v / max;
+    const color = r >= 0.7 ? 'var(--success)' : r >= 0.4 ? 'var(--warning)' : 'var(--danger)';
+    return `<strong style="color:${color};font-variant-numeric:tabular-nums;">${v.toFixed(2)}</strong>
+            <span style="color:var(--text-light);font-size:0.78rem;"> / ${max}</span>`;
+}
+
+function renderSemPanorama(ciclo) {
+    const filas = cachedSemReactivos.filter(r => !ciclo || r.ciclo === ciclo);
+    if (!filas.length) { document.getElementById('semPanorama').innerHTML = ''; return; }
+
+    const html = Object.keys(SEM_ESCALA).map(grupo => {
+        const cfg = SEM_ESCALA[grupo];
+        // Ascendente a propósito: arriba lo más flojo, que es donde hay que
+        // cargar el curso.
+        const items = filas.filter(r => r.grupo === grupo)
+                           .sort((a, b) => Number(a.promedio) - Number(b.promedio));
+        if (!items.length) return '';
+        return `
+        <div class="sem-grupo">
+            <h3>${cfg.titulo}</h3>
+            <p class="sem-grupo-sub">Promedio del grupo, de lo más flojo a lo más resuelto. ${cfg.pie}</p>
+            ${items.map(r => {
+                const v = Number(r.promedio), pct = Math.max(2, Math.round(100 * v / cfg.max));
+                const color = (v / cfg.max) >= 0.7 ? 'var(--success)' : (v / cfg.max) >= 0.4 ? 'var(--warning)' : 'var(--danger)';
+                return `<div class="sem-reactivo">
+                    <span>${esc(r.etiqueta)}</span>
+                    <span class="sem-val" style="color:${color};">${v.toFixed(2)}</span>
+                    <span class="sem-pista"><span style="width:${pct}%;background:${color};"></span></span>
+                </div>`;
+            }).join('')}
+        </div>`;
+    }).join('');
+
+    document.getElementById('semPanorama').innerHTML = html;
+}
+
+// ── Ficha completa de un alumno ─────────────────────────────────────────────
+// La tabla y las vistas sólo traen lo que se usa para listar. Los textos
+// largos —pregunta de investigación, opinión sobre la IA, lo que pidió como
+// apoyo— viven en payload y se piden aquí, cuando hacen falta.
+const SEM_ETIQUETAS = {
+    generacion: 'Generación', dedicacion: 'Dedicación', horas_semana: 'Horas por semana',
+    licenciatura_area: 'Área de licenciatura', licenciatura_institucion: 'Institución de licenciatura',
+    maestria_area: 'Área de maestría', maestria_institucion: 'Institución de maestría',
+    experiencia: 'Experiencia profesional', produccion: 'Producción académica previa',
+    ingles: 'Lectura académica en inglés (1 a 5)',
+    titulo: 'Título provisional', director: 'Director', codirector: 'Codirector',
+    lies: 'Línea de investigación', unidad_analisis: 'Unidad de análisis',
+    pregunta_central: 'Pregunta central', enfoque: 'Enfoque metodológico',
+    referencias_total: 'Referencias reunidas', referencias_ingles: 'Porcentaje en inglés',
+    gestor: 'Gestor de referencias', bases: 'Bases de datos usadas', teorias: 'Teorías identificadas',
+    coloquios: 'Coloquios presentados', articulo: 'Estado del artículo',
+    ia_frecuencia: 'Frecuencia de uso de IA', ia_usos: 'Para qué la usa',
+    ia_norma: 'Conocimiento de la norma', ia_opinion: 'Dónde pondría la línea',
+    motivacion: 'Por qué el doctorado', meta: 'Qué quiere hacer al graduarse',
+    expectativa: 'Qué espera del seminario', obstaculo: 'Mayor obstáculo',
+    nps: 'Recomendaría el programa (0 a 10)', comentario_programa: 'Qué cambiaría del programa',
+    horario: 'Horarios para asesoría', apoyo: 'Apoyo o adaptación que requiere',
+    libre: 'Algo más que quiera decir'
+};
+
+const SEM_BLOQUES = [
+    ['Identificación',  ['generacion', 'dedicacion', 'horas_semana']],
+    ['Trayectoria',     ['licenciatura_area', 'licenciatura_institucion', 'maestria_area', 'maestria_institucion', 'experiencia', 'produccion', 'ingles']],
+    ['Proyecto de tesis', ['titulo', 'director', 'codirector', 'lies', 'unidad_analisis', 'pregunta_central', 'enfoque']],
+    ['Insumos',         ['referencias_total', 'referencias_ingles', 'gestor', 'bases', 'teorias', 'coloquios', 'articulo']],
+    ['Inteligencia artificial', ['ia_frecuencia', 'ia_usos', 'ia_norma', 'ia_opinion']],
+    ['Motivaciones',    ['motivacion', 'meta', 'expectativa', 'obstaculo']],
+    ['Programa',        ['nps', 'comentario_programa']],
+    ['Logística',       ['horario', 'apoyo', 'libre']]
+];
+
+function semValor(v) {
+    if (v === null || v === undefined) return null;
+    if (Array.isArray(v)) return v.length ? v.join(' · ') : null;
+    const t = String(v).trim();
+    return t === '' ? null : t;
+}
+
+async function verDiagnostico(id) {
+    document.getElementById('modalTitle').textContent = 'Diagnóstico';
+    document.getElementById('modalBody').innerHTML = '<div class="empty-state"><span class="spinner-sm"></span> Cargando...</div>';
+    document.getElementById('modalFooter').innerHTML = '<button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>';
+    document.getElementById('modalOverlay').classList.add('active');
+    currentEditType = 'seminario-view';
+
+    const { data: r, error } = await db.from('seminario_diagnostico').select('*').eq('id', id).single();
+    if (error || !r) {
+        document.getElementById('modalBody').innerHTML = '<div class="empty-state">No se pudo cargar la respuesta.</div>';
+        return;
+    }
+
+    document.getElementById('modalTitle').textContent = 'Diagnóstico de ' + r.nombre;
+    const p = r.payload || {};
+    const resumen = cachedSeminario.find(a => String(a.id) === String(id)) || {};
+
+    let html = `<div class="sem-detalle">
+        <div class="sem-campo"><span>Nombre</span><span><strong>${esc(r.nombre)}</strong></span></div>
+        <div class="sem-campo"><span>Correo</span><span><a href="mailto:${esc(r.correo)}" style="color:var(--primary);">${esc(r.correo)}</a></span></div>
+        ${r.telefono ? `<div class="sem-campo"><span>Teléfono</span><span>${esc(r.telefono)}</span></div>` : ''}
+        <div class="sem-campo"><span>Recibido</span><span>${new Date(r.created_at).toLocaleString('es-MX', { dateStyle: 'full', timeStyle: 'short' })}${r.envios > 1 ? ` &middot; corregida ${r.envios - 1} ${r.envios === 2 ? 'vez' : 'veces'}` : ''}</span></div>
+        <div class="sem-campo"><span>Promedios</span><span>
+            Avance ${semCelda(resumen.avance, 4)} &nbsp; Competencias ${semCelda(resumen.competencia, 5)} &nbsp; Satisfacción ${semCelda(resumen.satisfaccion, 5)}
+        </span></div>`;
+
+    SEM_BLOQUES.forEach(([titulo, campos]) => {
+        const filas = campos.map(k => {
+            const v = semValor(p[k]);
+            if (v === null) return '';
+            const largo = v.length > 90 || v.includes('\n');
+            return `<div class="sem-campo"><span>${SEM_ETIQUETAS[k] || k}</span><span class="${largo ? 'sem-libre' : ''}">${esc(v)}</span></div>`;
+        }).filter(Boolean).join('');
+        if (filas) html += `<h4>${titulo}</h4>${filas}`;
+    });
+
+    html += '</div>';
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modalFooter').innerHTML = `
+        <a href="mailto:${esc(r.correo)}?subject=${encodeURIComponent('Seminario de Investigación Teórico')}" class="btn btn-primary"><i class="fas fa-envelope"></i> Escribirle</a>
+        <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>`;
+}
+
+// ── Exportación ─────────────────────────────────────────────────────────────
+// Una fila por alumno con todos los reactivos en columnas, que es lo que hace
+// falta para abrirlo en una hoja de cálculo y cruzarlo con lo demás.
+async function exportSeminario() {
+    const ciclo = semCicloActual();
+    const datos = cachedSeminario.filter(a => !ciclo || a.ciclo === ciclo);
+    if (!datos.length) { toast('No hay respuestas para exportar', 'error'); return; }
+
+    const { data: items, error } = await db
+        .from('seminario_diagnostico_item')
+        .select('respuesta_id, grupo, clave, valor')
+        .in('respuesta_id', datos.map(a => a.id));
+    if (error) { toast('No se pudo leer el desglose', 'error'); return; }
+
+    const porAlumno = {};
+    (items || []).forEach(i => {
+        (porAlumno[i.respuesta_id] = porAlumno[i.respuesta_id] || {})[i.clave] = i.valor;
+    });
+
+    const claves = [...new Set((items || []).map(i => i.clave))].sort();
+    const cabeceras = ['Nombre', 'Correo', 'Ciclo', 'Dedicación', 'Horas/semana', 'Enfoque',
+                       'Uso de IA', 'NPS', 'Avance', 'Competencias', 'Satisfacción', 'Recibido', ...claves];
+
+    const filas = datos.map(a => [
+        a.nombre, a.correo, a.ciclo, a.dedicacion || '', a.horas_semana ?? '', a.enfoque || '',
+        a.ia_frecuencia || '', a.nps ?? '', a.avance ?? '', a.competencia ?? '', a.satisfaccion ?? '',
+        new Date(a.created_at).toLocaleDateString('es-MX'),
+        ...claves.map(k => (porAlumno[a.id] || {})[k] ?? '')
+    ]);
+
+    const csv = [cabeceras, ...filas]
+        .map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `diagnostico_seminario_${ciclo || 'todos'}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV descargado correctamente', 'success');
+}
+
+// =============================================
+// CONTACTS (Enhanced)
+// =============================================
+async function loadContacts() {
+    const { data } = await db.from('contacts').select('*').order('created_at', { ascending: false });
+    cachedContacts = data || [];
+    renderContacts(cachedContacts);
+
+    // Update sidebar badge
+    const unread = cachedContacts.filter(c => !c.read).length;
+    const badge = document.getElementById('unreadBadge');
+    if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; }
+    else { badge.style.display = 'none'; }
+}
+
+function renderContacts(data) {
+    const tbody = document.getElementById('contactsTable');
+    const unread = data.filter(c => !c.read).length;
+    document.getElementById('countContacts').textContent = data.length + ' contactos' + (unread > 0 ? ` (${unread} nuevos)` : '');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon"><i class="fas fa-envelope"></i></div>No hay mensajes</div></td></tr>'; return; }
+    tbody.innerHTML = data.map(c => `<tr style="${!c.read ? 'background: #fffbeb;' : ''}">
+        <td><strong>${esc(c.name)}</strong></td>
+        <td><a href="mailto:${esc(c.email)}" style="color:var(--primary);text-decoration:none;">${esc(c.email)}</a></td>
+        <td>${esc(c.type || '—')}</td>
+        <td title="${esc(c.message)}" style="cursor:pointer;" onclick="viewContact('${c.id}')">${esc(c.message.substring(0, 40))}${c.message.length > 40 ? '...' : ''}</td>
+        <td>${c.read ? '<span class="badge badge-green">Leído</span>' : '<span class="badge badge-yellow">Nuevo</span>'}</td>
+        <td>${fmtDate(c.created_at)}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="viewContact('${c.id}')" title="Ver mensaje completo">👁</button>
+            ${!c.read ? `<button class="btn btn-success btn-sm" onclick="markRead('${c.id}')"><i class="fas fa-check"></i></button>` : ''}
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('contacts', '${c.id}', loadContacts)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+function viewContact(id) {
+    const c = cachedContacts.find(x => x.id === id);
+    if (!c) return;
+    const typeLabels = { consultoria: 'Consultoría Empresarial', cursos: 'Cursos y Capacitación', investigacion: 'Colaboración en Investigación', conferencia: 'Conferencia / Seminario', otro: 'Otro' };
+    document.getElementById('modalTitle').textContent = 'Mensaje de ' + c.name;
+    document.getElementById('modalBody').innerHTML = `
+        <div class="contact-detail">
+            <div class="detail-row"><span class="detail-label">Nombre</span><span class="detail-value">${esc(c.name)}</span></div>
+            <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value"><a href="mailto:${esc(c.email)}" style="color:var(--primary);">${esc(c.email)}</a></span></div>
+            <div class="detail-row"><span class="detail-label">Tipo</span><span class="detail-value">${typeLabels[c.type] || esc(c.type || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Fecha</span><span class="detail-value">${new Date(c.created_at).toLocaleString('es-MX', { dateStyle: 'full', timeStyle: 'short' })}</span></div>
+            <div class="detail-row"><span class="detail-label">Estado</span><span class="detail-value">${c.read ? '<span class="badge badge-green">Leído</span>' : '<span class="badge badge-yellow">Nuevo</span>'}</span></div>
+            <div class="detail-row" style="flex-direction:column;">
+                <span class="detail-label">Mensaje</span>
+                <div class="message-body">${esc(c.message)}</div>
+            </div>
+        </div>`;
+    document.getElementById('modalFooter').innerHTML = `
+        ${!c.read ? `<button class="btn btn-success" onclick="markRead('${c.id}'); closeModal();"><i class="fas fa-check"></i> Marcar como leído</button>` : ''}
+        <a href="mailto:${esc(c.email)}?subject=Re: ${encodeURIComponent(typeLabels[c.type] || 'Consulta')} - OmarValdez.com" class="btn btn-primary"><i class="fas fa-reply"></i> Responder por Email</a>
+        <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+    currentEditType = 'contact-view';
+
+    // Mark as read automatically
+    if (!c.read) {
+        markRead(c.id);
+    }
+}
+
+async function markRead(id) {
+    await db.from('contacts').update({ read: true }).eq('id', id);
+    const c = cachedContacts.find(x => x.id === id);
+    if (c) c.read = true;
+    renderContacts(cachedContacts);
+    // Update badge
+    const unread = cachedContacts.filter(x => !x.read).length;
+    const badge = document.getElementById('unreadBadge');
+    if (unread > 0) { badge.textContent = unread; badge.style.display = 'inline'; }
+    else { badge.style.display = 'none'; }
+}
+
+async function bulkMarkRead() {
+    const unread = cachedContacts.filter(c => !c.read);
+    if (!unread.length) { toast('No hay mensajes sin leer', 'success'); return; }
+    const ids = unread.map(c => c.id);
+    const { error } = await db.from('contacts').update({ read: true }).in('id', ids);
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast(`${ids.length} mensajes marcados como leídos`, 'success');
+    loadContacts();
+}
+
+// =============================================
+// SUBSCRIBERS (Enhanced)
+// =============================================
+async function loadSubscribers() {
+    const { data } = await db.from('subscribers').select('*').order('created_at', { ascending: false });
+    cachedSubscribers = data || [];
+    renderSubscribers(cachedSubscribers);
+}
+
+function renderSubscribers(data) {
+    const tbody = document.getElementById('subscribersTable');
+    const active = data.filter(s => s.active).length;
+    document.getElementById('countSubscribers').textContent = `${data.length} total · ${active} activos`;
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="icon"><i class="fas fa-users"></i></div>No hay suscriptores</div></td></tr>'; return; }
+    tbody.innerHTML = data.map(s => `<tr>
+        <td>${esc(s.email)}</td>
+        <td>${s.active ? '<span class="badge badge-green">Activo</span>' : '<span class="badge badge-red">Inactivo</span>'}</td>
+        <td>${fmtDate(s.created_at)}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="toggleSub('${s.id}', ${s.active})">${s.active ? '⏸ Desactivar' : '▶ Activar'}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('subscribers', '${s.id}', loadSubscribers)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function toggleSub(id, active) {
+    await db.from('subscribers').update({ active: !active }).eq('id', id);
+    toast(active ? 'Suscriptor desactivado' : 'Suscriptor activado', 'success');
+    loadSubscribers();
+}
+
+function exportSubscribers() {
+    if (!cachedSubscribers.length) { toast('No hay suscriptores para exportar', 'error'); return; }
+    const headers = ['Email', 'Estado', 'Fecha de Registro'];
+    const rows = cachedSubscribers.map(s => [
+        s.email,
+        s.active ? 'Activo' : 'Inactivo',
+        new Date(s.created_at).toLocaleDateString('es-MX')
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `suscriptores_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV descargado correctamente', 'success');
+}
+
+// =============================================
+// STATS
+// =============================================
+async function loadStats() {
+    const { data } = await db.from('site_stats').select('*').order('sort_order');
+    const tbody = document.getElementById('statsTable');
+    if (!data || !data.length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="icon"><i class="fas fa-cog"></i></div>No hay stats</div></td></tr>'; return; }
+    tbody.innerHTML = data.map(s => `<tr>
+        <td><strong>${esc(s.key)}</strong></td>
+        <td><span style="font-size:1.25rem; font-weight:700; color:var(--primary);">${esc(s.value)}</span></td>
+        <td>${esc(s.label)}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="editStat('${s.id}')">Editar</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function editStat(id) {
+    const { data } = await db.from('site_stats').select('*').eq('id', id).single();
+    if (data) openModal('stat', data);
+}
+
+// =============================================
+// NEWSLETTER
+// =============================================
+async function loadNewsletters() {
+    try {
+        const { data, error } = await db.from('newsletters').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        cachedNewsletters = data || [];
+        renderNewsletters(cachedNewsletters);
+    } catch (err) {
+        document.getElementById('newslettersTable').innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fas fa-paper-plane"></i></div>Ejecuta el SQL de newsletter-setup.sql primero</div></td></tr>';
+        document.getElementById('countNewsletters').textContent = '';
+    }
+}
+
+function renderNewsletters(data) {
+    const tbody = document.getElementById('newslettersTable');
+    document.getElementById('countNewsletters').textContent = data.length + ' campañas';
+    if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fas fa-paper-plane"></i></div>No hay campañas. Crea tu primer newsletter.</div></td></tr>';
+        return;
+    }
+    const statusMap = { draft: '<span class="badge badge-yellow">Borrador</span>', sending: '<span class="badge badge-blue">Enviando...</span>', sent: '<span class="badge badge-green">Enviado</span>', failed: '<span class="badge badge-red">Error</span>' };
+    tbody.innerHTML = data.map(n => `<tr>
+        <td><strong>${esc(n.subject)}</strong>${n.preview_text ? `<br><span style="font-size:0.75rem;color:var(--text-light);">${esc(n.preview_text.substring(0, 60))}</span>` : ''}</td>
+        <td>${statusMap[n.status] || n.status}</td>
+        <td>${n.recipients_count || '—'}</td>
+        <td>${n.sent_at ? fmtDate(n.sent_at) : fmtDate(n.created_at)}</td>
+        <td class="actions">
+            <button class="btn btn-ghost btn-sm" onclick="previewNewsletter('${n.id}')" title="Vista previa">👁</button>
+            ${n.status === 'draft' ? `
+                <button class="btn btn-ghost btn-sm" onclick="editNewsletter('${n.id}')">Editar</button>
+                <button class="btn btn-primary btn-sm" onclick="confirmSendNewsletter('${n.id}')">📤 Enviar</button>
+            ` : ''}
+            ${n.status === 'failed' ? `
+                <button class="btn btn-warning btn-sm" onclick="retryNewsletter('${n.id}')">🔄 Reintentar</button>
+                <button class="btn btn-ghost btn-sm" onclick="editNewsletter('${n.id}')">Editar</button>
+            ` : ''}
+            ${n.status === 'sending' ? `
+                <button class="btn btn-ghost btn-sm" onclick="retryNewsletter('${n.id}')">↩ Volver a borrador</button>
+            ` : ''}
+            ${n.status === 'sent' ? `<button class="btn btn-ghost btn-sm" onclick="duplicateNewsletter('${n.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>` : ''}
+            <button class="btn btn-danger btn-sm" onclick="deleteRecord('newsletters', '${n.id}', loadNewsletters)">✕</button>
+        </td>
+    </tr>`).join('');
+}
+
+async function editNewsletter(id) {
+    const { data } = await db.from('newsletters').select('*').eq('id', id).single();
+    if (data) openModal('newsletter', data);
+}
+
+function previewNewsletter(id) {
+    const n = cachedNewsletters.find(x => x.id === id);
+    if (!n) return;
+    const emailHtml = generateEmailHtml(n.content);
+    document.getElementById('modalTitle').textContent = 'Vista Previa: ' + n.subject;
+    document.getElementById('modalBody').innerHTML = `
+        <div style="background:#f1f5f9;padding:1.5rem;border-radius:8px;max-height:60vh;overflow-y:auto;">
+            <iframe id="emailPreviewFrame" style="width:100%;min-height:400px;border:none;background:#fff;border-radius:6px;"></iframe>
+        </div>`;
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="copyEmailHtml('${id}')"><i class="fas fa-copy"></i> Copiar HTML</button>
+        <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>`;
+    document.getElementById('modalOverlay').classList.add('active');
+    currentEditType = 'newsletter-preview';
+    setTimeout(() => {
+        const frame = document.getElementById('emailPreviewFrame');
+        if (frame) frame.srcdoc = emailHtml.replace(/\{\{email_b64\}\}/g, btoa('preview@example.com'));
+    }, 50);
+}
+
+function copyEmailHtml(id) {
+    const n = cachedNewsletters.find(x => x.id === id);
+    if (!n) return;
+    const html = generateEmailHtml(n.content);
+    navigator.clipboard.writeText(html).then(() => toast('HTML copiado al portapapeles', 'success'));
+}
+
+function confirmSendNewsletter(id) {
+    const n = cachedNewsletters.find(x => x.id === id);
+    if (!n) return;
+    const activeCount = cachedSubscribers.length ? cachedSubscribers.filter(s => s.active).length : '?';
+    document.getElementById('modalTitle').textContent = 'Confirmar Envío';
+    document.getElementById('modalBody').innerHTML = `
+        <div style="text-align:center;padding:1.5rem;">
+            <div style="font-size:3rem;margin-bottom:1rem;">📤</div>
+            <h3 style="margin-bottom:0.5rem;">¿Enviar esta campaña?</h3>
+            <p style="color:var(--text-light);margin-bottom:1.5rem;">Se enviará "<strong>${esc(n.subject)}</strong>" a <strong>${activeCount}</strong> suscriptores activos.</p>
+            <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+                <button class="btn btn-ghost" onclick="sendTestNewsletter('${n.id}')">🧪 Enviar Prueba</button>
+                <button class="btn btn-primary" onclick="sendNewsletter('${n.id}')">📤 Enviar a Todos</button>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-light);margin-top:1rem;">La prueba se envía solo a tu email de administrador.</p>
+        </div>`;
+    document.getElementById('modalFooter').innerHTML = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>`;
+    document.getElementById('modalOverlay').classList.add('active');
+    currentEditType = 'newsletter-confirm';
+}
+
+async function sendTestNewsletter(id) {
+    toast('Enviando prueba...', 'success');
+    try {
+        const { data, error } = await db.functions.invoke('send-newsletter', {
+            body: { newsletter_id: id, test_mode: true }
+        });
+        if (error) throw error;
+        console.log('Send test response:', data);
+        if (data?.error) {
+            toast('Error de Resend: ' + data.error, 'error');
+        } else if (data?.sent_count === 0) {
+            toast('Error: No se pudo enviar. Revisa la API Key de Resend y el dominio.', 'error');
+        } else {
+            toast(`Prueba enviada a tu email (${data?.sent_count || 0} email)`, 'success');
+        }
+    } catch (err) {
+        toast('Error: ' + (err.message || 'Verifica la Edge Function'), 'error');
+        console.error('Send test error:', err);
+    }
+}
+
+async function sendNewsletter(id) {
+    toast('Iniciando envío de campaña...', 'success');
+    closeModal();
+    await db.from('newsletters').update({ status: 'sending', updated_at: new Date().toISOString() }).eq('id', id);
+    loadNewsletters();
+    try {
+        const { data, error } = await db.functions.invoke('send-newsletter', {
+            body: { newsletter_id: id, test_mode: false }
+        });
+        if (error) throw error;
+        console.log('Send all response:', data);
+        if (data?.error) {
+            throw new Error(data.error);
+        }
+        toast(`Campaña enviada a ${data?.sent_count || 0} de ${data?.total_recipients || '?'} suscriptores`, 'success');
+    } catch (err) {
+        toast('Error al enviar: ' + (err.message || 'Verifica la Edge Function'), 'error');
+        await db.from('newsletters').update({ status: 'failed', updated_at: new Date().toISOString() }).eq('id', id);
+        console.error('Send error:', err);
+    }
+    loadNewsletters();
+}
+
+async function duplicateNewsletter(id) {
+    const { data } = await db.from('newsletters').select('*').eq('id', id).single();
+    if (!data) return;
+    const { error } = await db.from('newsletters').insert([{
+        subject: data.subject + ' (copia)',
+        preview_text: data.preview_text,
+        content: data.content,
+        status: 'draft',
+        created_at: new Date().toISOString()
+    }]);
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast('Campaña duplicada como borrador', 'success');
+    loadNewsletters();
+}
+
+async function retryNewsletter(id) {
+    const { error } = await db.from('newsletters').update({
+        status: 'draft',
+        recipients_count: 0,
+        sent_at: null,
+        updated_at: new Date().toISOString()
+    }).eq('id', id);
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast('Campaña devuelta a borrador. Puedes editarla y reenviarla.', 'success');
+    loadNewsletters();
+}
+
+async function saveNewsletter() {
+    const quillContent = quillEditor ? quillEditor.root.innerHTML : '';
+    const quillText = quillEditor ? quillEditor.getText().trim() : '';
+    const record = {
+        subject: document.getElementById('f_nl_subject').value,
+        preview_text: document.getElementById('f_nl_preview').value || null,
+        content: quillContent,
+        status: 'draft',
+        updated_at: new Date().toISOString()
+    };
+    if (!record.subject || !quillText) { toast('Completa el asunto y contenido', 'error'); return; }
+    let error;
+    if (currentEditId) {
+        ({ error } = await db.from('newsletters').update(record).eq('id', currentEditId));
+    } else {
+        record.created_at = new Date().toISOString();
+        ({ error } = await db.from('newsletters').insert([record]));
+    }
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast(currentEditId ? 'Campaña actualizada' : 'Campaña guardada como borrador', 'success');
+    closeModal(); loadNewsletters();
+}
+
+function generateEmailHtml(content) {
+    return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:30px 0;"><tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+<tr><td style="background:linear-gradient(135deg,#2563eb,#06b6d4);padding:35px 40px;text-align:center;">
+<h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Dr. Omar Valdez Palazuelos</h1>
+<p style="color:rgba(255,255,255,0.8);margin:8px 0 0;font-size:14px;">Newsletter Académico</p></td></tr>
+<tr><td style="padding:40px 45px;font-size:16px;line-height:1.8;color:#1e293b;">${content}</td></tr>
+<tr><td style="padding:0 45px;"><div style="border-top:1px solid #e2e8f0;"></div></td></tr>
+<tr><td style="padding:25px 45px 35px;text-align:center;font-size:13px;color:#94a3b8;">
+<p style="margin:0 0 6px;">Dr. Omar Valdez Palazuelos</p>
+<p style="margin:0 0 12px;"><a href="https://omarvaldez.com" style="color:#2563eb;text-decoration:none;">omarvaldez.com</a> · <a href="https://www.linkedin.com/in/phd-omarvaldez" style="color:#2563eb;text-decoration:none;">LinkedIn</a> · <a href="https://scholar.google.com/citations?user=OXXlj1IAAAAJ&hl=es&oi=ao" style="color:#2563eb;text-decoration:none;">Google Scholar</a></p>
+<p style="margin:0;font-size:11px;"><a href="https://omarvaldez.com/unsubscribe.html?e={{email_b64}}" style="color:#94a3b8;text-decoration:underline;">Cancelar suscripción</a></p>
+</td></tr></table></td></tr></table></body></html>`;
+}
+
+// =============================================
+// ANALYTICS (with Chart.js)
+// =============================================
+let chartInstances = {};
+
+async function loadAnalytics() {
+    // Destroy previous chart instances
+    Object.values(chartInstances).forEach(c => c.destroy());
+    chartInstances = {};
+
+    const [subs, contacts, posts, nls] = await Promise.all([
+        db.from('subscribers').select('created_at, active'),
+        db.from('contacts').select('created_at, type, read'),
+        db.from('posts').select('created_at, published, category'),
+        db.from('newsletters').select('id, status, recipients_count, sent_at').then(r => r).catch(() => ({ data: [] }))
+    ]);
+
+    const subsData = subs.data || [];
+    const contactsData = contacts.data || [];
+    const postsData = posts.data || [];
+    const nlData = nls.data || [];
+
+    // GA4 Config card
+    const ga4Id = localStorage.getItem('ga4_measurement_id') || '';
+    document.getElementById('analyticsConfig').innerHTML = `
+        <div style="background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:200px;">
+                <span style="font-size:1.5rem;"><i class="fas fa-chart-bar"></i></span>
+                <div>
+                    <div style="font-weight:600;font-size:0.92rem;">Google Analytics 4</div>
+                    <div style="font-size:0.78rem;color:var(--text-light);">${ga4Id ? 'ID: ' + esc(ga4Id) : 'Configura tu Measurement ID para tracking de tráfico'}</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <input type="text" id="ga4Input" value="${esc(ga4Id)}" placeholder="G-XXXXXXXXXX" style="padding:0.5rem 0.75rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.85rem;width:160px;">
+                <button class="btn btn-ghost btn-sm" onclick="saveGA4Id()">Guardar</button>
+                ${ga4Id ? `<a href="https://analytics.google.com/" target="_blank" class="btn btn-primary btn-sm">Abrir GA4 →</a>` : ''}
+            </div>
+        </div>`;
+
+    // Summary stats
+    const activeSubs = subsData.filter(s => s.active).length;
+    const totalContacts = contactsData.length;
+    const unreadContacts = contactsData.filter(c => !c.read).length;
+    const publishedPosts = postsData.filter(p => p.published).length;
+    const sentNls = nlData.filter(n => n.status === 'sent').length;
+    const totalEmails = nlData.reduce((sum, n) => sum + (n.recipients_count || 0), 0);
+
+    document.getElementById('analyticsStats').innerHTML = `
+        <div class="dash-card"><div class="dash-icon" style="background:#d1fae5;"><i class="fas fa-users"></i></div><div><div class="label">Suscriptores Activos</div><div class="value">${activeSubs}</div><div class="sub">de ${subsData.length} total</div></div></div>
+        <div class="dash-card"><div class="dash-icon" style="background:var(--primary-light);"><i class="fas fa-paper-plane"></i></div><div><div class="label">Newsletters Enviados</div><div class="value">${sentNls}</div><div class="sub">${totalEmails} emails enviados</div></div></div>
+        <div class="dash-card"><div class="dash-icon" style="background:#fae8ff;"><i class="fas fa-edit"></i></div><div><div class="label">Posts Publicados</div><div class="value">${publishedPosts}</div><div class="sub">de ${postsData.length} total</div></div></div>
+        <div class="dash-card"><div class="dash-icon" style="background:var(--warning-light);"><i class="fas fa-envelope"></i></div><div><div class="label">Contactos</div><div class="value">${totalContacts}</div><div class="sub">${unreadContacts} sin leer</div></div></div>`;
+
+    // Charts
+    document.getElementById('analyticsCharts').innerHTML = `
+        <div class="activity-card">
+            <div class="activity-card-header">Crecimiento de Suscriptores</div>
+            <div style="padding:1.25rem;height:280px;"><canvas id="chartSubscribers"></canvas></div>
+        </div>
+        <div class="activity-card">
+            <div class="activity-card-header">Contactos por Tipo</div>
+            <div style="padding:1.25rem;height:280px;"><canvas id="chartContacts"></canvas></div>
+        </div>`;
+
+    // Subscribers growth chart (cumulative line)
+    const subsByMonth = groupByMonth(subsData.map(s => s.created_at));
+    const subLabels = Object.keys(subsByMonth).slice(-12);
+    let cumulative = 0;
+    // Count subs before the window
+    const allMonths = Object.keys(subsByMonth);
+    const beforeWindow = allMonths.slice(0, allMonths.length - Math.min(12, allMonths.length));
+    beforeWindow.forEach(m => { cumulative += subsByMonth[m]; });
+    const subCumData = subLabels.map(m => { cumulative += subsByMonth[m]; return cumulative; });
+
+    const ctxSubs = document.getElementById('chartSubscribers');
+    if (ctxSubs && subLabels.length) {
+        chartInstances.subs = new Chart(ctxSubs, {
+            type: 'line',
+            data: {
+                labels: subLabels.map(formatMonthLabel),
+                datasets: [{
+                    label: 'Suscriptores',
+                    data: subCumData,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#2563eb',
+                    borderWidth: 2.5
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
+        });
+    }
+
+    // Contacts by type chart (doughnut)
+    const typeLabels = { consultoria: 'Consultoría', cursos: 'Cursos', investigacion: 'Investigación', conferencia: 'Conferencia', otro: 'Otro' };
+    const contactsByType = {};
+    contactsData.forEach(c => { const t = c.type || 'otro'; contactsByType[t] = (contactsByType[t] || 0) + 1; });
+
+    const ctxContacts = document.getElementById('chartContacts');
+    if (ctxContacts && Object.keys(contactsByType).length) {
+        chartInstances.contacts = new Chart(ctxContacts, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(contactsByType).map(k => typeLabels[k] || k),
+                datasets: [{
+                    data: Object.values(contactsByType),
+                    backgroundColor: ['#2563eb', '#06b6d4', '#8b5cf6', '#f59e0b', '#64748b', '#ec4899'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 12 }, padding: 12 } } } }
+        });
+    }
+}
+
+function groupByMonth(dates) {
+    const months = {};
+    dates.forEach(d => {
+        const date = new Date(d);
+        const key = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+        months[key] = (months[key] || 0) + 1;
+    });
+    // Sort by key
+    const sorted = {};
+    Object.keys(months).sort().forEach(k => { sorted[k] = months[k]; });
+    return sorted;
+}
+
+function formatMonthLabel(m) {
+    const [y, mo] = m.split('-');
+    return new Date(y, mo - 1).toLocaleDateString('es-MX', { month: 'short', year: '2-digit' });
+}
+
+function saveGA4Id() {
+    const val = document.getElementById('ga4Input').value.trim();
+    if (val) {
+        localStorage.setItem('ga4_measurement_id', val);
+        toast('GA4 Measurement ID guardado. Recuerda agregarlo en las páginas públicas.', 'success');
+    } else {
+        localStorage.removeItem('ga4_measurement_id');
+        toast('GA4 ID eliminado', 'success');
+    }
+    loadAnalytics();
+}
+
+// =============================================
+// SEARCH / FILTER
+// =============================================
+function filterTable(section) {
+    // El caché se lee con una función y no con window['cachedPosts'].
+    // Las variables de arriba están declaradas con `let`, y `let` en el nivel
+    // superior de un script NO crea una propiedad de window: window[...] daba
+    // undefined siempre, así que el buscador vaciaba la tabla en lugar de
+    // filtrarla, en todas las secciones.
+    const searchMap = {
+        posts: { input: 'searchPosts', cache: () => cachedPosts, render: renderPosts, fields: ['title', 'slug', 'category', 'excerpt'] },
+        courses: { input: 'searchCourses', cache: () => cachedCourses, render: renderCourses, fields: ['title', 'description', 'badge'] },
+        research: { input: 'searchResearch', cache: () => cachedResearch, render: renderResearch, fields: ['title', 'description', 'category', 'type', 'authors', 'journal', 'doi'] },
+        contacts: { input: 'searchContacts', cache: () => cachedContacts, render: renderContacts, fields: ['name', 'email', 'type', 'message'] },
+        subscribers: { input: 'searchSubscribers', cache: () => cachedSubscribers, render: renderSubscribers, fields: ['email'] },
+        seminario: { input: 'searchSeminario', cache: () => cachedSeminario, render: renderSeminarioTabla, fields: ['nombre', 'correo', 'dedicacion', 'enfoque'] }
+    };
+    const cfg = searchMap[section];
+    if (!cfg) return;
+    const query = document.getElementById(cfg.input).value.toLowerCase().trim();
+    const allData = cfg.cache() || [];
+    if (!query) { cfg.render(allData); return; }
+    const filtered = allData.filter(item =>
+        cfg.fields.some(f => item[f] && String(item[f]).toLowerCase().includes(query))
+    );
+    cfg.render(filtered);
+}
+
+// =============================================
+// DELETE RECORD (Generic)
+// =============================================
+async function deleteRecord(table, id, callback) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este registro? Esta acción no se puede deshacer.')) return;
+    const { error } = await db.from(table).delete().eq('id', id);
+    if (error) { toast('Error al eliminar', 'error'); return; }
+    toast('Eliminado correctamente', 'success');
+    callback();
+}
+
+// =============================================
+// MODAL SYSTEM (Enhanced)
+// =============================================
+function openModal(type, data = null) {
+    currentEditType = type;
+    currentEditId = data ? data.id : null;
+    const isEdit = !!data;
+
+    // Restore default footer
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSave">Guardar</button>
+    `;
+
+    const forms = {
+        post: () => {
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Post' : 'Nuevo Post';
+            return `
+                <div class="form-group"><label>Título</label><input id="f_title" value="${esc(data?.title || '')}" maxlength="120" oninput="updateCharCount('f_title', 70, 'cc_title')"><div class="char-count" id="cc_title"></div></div>
+                <div class="form-group"><label>Slug (URL)</label><input id="f_slug" value="${esc(data?.slug || '')}" placeholder="mi-articulo-sobre-blockchain"><div class="form-hint">Se genera automáticamente desde el título.</div></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Categoría</label>
+                        <select id="f_category">
+                            <option value="blockchain" ${data?.category === 'blockchain' ? 'selected' : ''}>Blockchain</option>
+                            <option value="ia" ${data?.category === 'ia' ? 'selected' : ''}>IA</option>
+                            <option value="fintech" ${data?.category === 'fintech' ? 'selected' : ''}>Fintech</option>
+                            <option value="marketing" ${data?.category === 'marketing' ? 'selected' : ''}>Marketing</option>
+                            <option value="ecommerce" ${data?.category === 'ecommerce' ? 'selected' : ''}>eCommerce</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Imagen de portada</label>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="f_image_file" accept="image/*">
+                            <div class="upload-text"><strong>Clic para subir</strong> o arrastra una imagen</div>
+                            <div class="upload-preview" id="imagePreview" style="${data?.image_url ? '' : 'display:none;'}">
+                                ${data?.image_url ? `<img src="${esc(data.image_url)}" alt="Preview">` : ''}
+                                <button type="button" class="remove-img" onclick="removeImage(event)">&times;</button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="f_image" value="${esc(data?.image_url || '')}">
+                    </div>
+                </div>
+                <div class="form-group"><label>Extracto (SEO)</label><textarea id="f_excerpt" rows="2" maxlength="300" oninput="updateCharCount('f_excerpt', 160, 'cc_excerpt')">${esc(data?.excerpt || '')}</textarea><div class="char-count" id="cc_excerpt"></div></div>
+                <div class="form-group"><label>Contenido</label>
+                    <div id="quillEditor"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Fecha de publicación</label><input type="datetime-local" id="f_date" value="${data?.created_at ? new Date(data.created_at).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16)}"></div>
+                    <div class="form-group" style="display:flex; gap:1.5rem; align-items:flex-end; padding-bottom:0.7rem;">
+                        <div class="form-check"><input type="checkbox" id="f_published" ${data?.published ? 'checked' : ''}><label for="f_published">Publicado</label></div>
+                        <div class="form-check"><input type="checkbox" id="f_featured" ${data?.featured ? 'checked' : ''}><label for="f_featured">Featured</label></div>
+                    </div>
+                </div>`;
+        },
+        course: () => {
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Curso' : 'Nuevo Curso';
+            return `
+                <div class="form-row">
+                    <div class="form-group"><label>Título</label><input id="f_title" value="${esc(data?.title || '')}"></div>
+                    <div class="form-group"><label>Icono (emoji)</label><input id="f_icon" value="${data?.icon || '📚'}" maxlength="4"></div>
+                </div>
+                <div class="form-group"><label>Descripción</label><textarea id="f_desc" rows="3">${esc(data?.description || '')}</textarea></div>
+                <div class="form-group"><label>Temas (separados por coma)</label><input id="f_topics" value="${data?.topics ? data.topics.join(', ') : ''}"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Orden</label><input type="number" id="f_order" value="${data?.sort_order || 0}"></div>
+                    <div class="form-group"><label>Badge</label><input id="f_badge" value="${esc(data?.badge || '')}" placeholder="Popular, Nuevo..."></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Texto del botón (CTA)</label><input id="f_cta_text" value="${esc(data?.cta_text || '')}" placeholder="Más Información"></div>
+                    <div class="form-group"><label>URL del botón (CTA)</label><input id="f_cta_url" value="${esc(data?.cta_url || '')}" placeholder="#contacto o https://..."></div>
+                </div>
+                <div style="display:flex; gap:1.5rem; margin-top:0.5rem;">
+                    <div class="form-check"><input type="checkbox" id="f_featured" ${data?.featured ? 'checked' : ''}><label for="f_featured">Featured</label></div>
+                    <div class="form-check"><input type="checkbox" id="f_active" ${data?.active !== false ? 'checked' : ''}><label for="f_active">Activo</label></div>
+                </div>`;
+        },
+        research: () => {
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Publicación' : 'Nueva Publicación';
+            return `
+                <div class="form-group"><label>Título</label><input id="f_title" value="${esc(data?.title || '')}"></div>
+                <div class="form-group"><label>Autores <span style="font-weight:400;color:#94a3b8;">(formato APA: Apellido, N.)</span></label><input id="f_authors" value="${esc(data?.authors || '')}" placeholder="Valdez Palazuelos, O., & Sánchez Beltrán, L. A."></div>
+                <div class="form-group"><label>Resumen / Abstract</label><textarea id="f_desc" rows="3">${esc(data?.description || '')}</textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Categoría</label>
+                        <select id="f_category">
+                            <option value="marketing" ${data?.category === 'marketing' ? 'selected' : ''}>Marketing Digital</option>
+                            <option value="ecommerce" ${data?.category === 'ecommerce' ? 'selected' : ''}>Comercio Electrónico</option>
+                            <option value="innovacion" ${data?.category === 'innovacion' ? 'selected' : ''}>Innovación y Tecnología</option>
+                            <option value="gestion" ${data?.category === 'gestion' ? 'selected' : ''}>Gestión Empresarial</option>
+                            <option value="salud" ${data?.category === 'salud' ? 'selected' : ''}>Sector Salud</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Año</label><input type="number" id="f_year" value="${data?.year || new Date().getFullYear()}"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Tipo</label>
+                        <select id="f_type">
+                            <option value="Artículo" ${data?.type === 'Artículo' ? 'selected' : ''}>Artículo</option>
+                            <option value="Capítulo de Libro" ${data?.type === 'Capítulo de Libro' ? 'selected' : ''}>Capítulo de Libro</option>
+                            <option value="Libro" ${data?.type === 'Libro' ? 'selected' : ''}>Libro</option>
+                            <option value="Ponencia" ${data?.type === 'Ponencia' ? 'selected' : ''}>Ponencia</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Orden</label><input type="number" id="f_order" value="${data?.sort_order || 0}"></div>
+                </div>
+                <div class="form-group"><label>Revista / Editorial</label><input id="f_journal" value="${esc(data?.journal || '')}" placeholder="Revista Venezolana de Gerencia"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>DOI</label><input id="f_doi" value="${esc(data?.doi || '')}" placeholder="10.34140/BJBV7N3-029"></div>
+                    <div class="form-group"><label>Volumen / Número</label><input id="f_volissue" value="${esc(data?.volume_issue || '')}" placeholder="Vol. 7, No. 3"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>ISSN</label><input id="f_issn" value="${esc(data?.issn || '')}" placeholder="2596-1934"></div>
+                    <div class="form-group"><label>ISBN</label><input id="f_isbn" value="${esc(data?.isbn || '')}" placeholder="978-607-8856-69-5"></div>
+                </div>
+                <div class="form-group"><label>Cita APA 7</label><textarea id="f_apa" rows="3" placeholder="Se genera automáticamente si se deja vacío">${esc(data?.citation_apa || '')}</textarea><div class="form-hint">Formato completo de la referencia APA 7.</div></div>
+                <div class="form-row">
+                    <div class="form-group"><label>URL del Artículo</label><input id="f_exturl" value="${esc(data?.external_url || '')}" placeholder="https://doi.org/..."></div>
+                    <div class="form-group"><label>PDF URL</label><input id="f_pdf" value="${esc(data?.pdf_url || '')}" placeholder="https://..."></div>
+                </div>
+                <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+                    <div class="form-check"><input type="checkbox" id="f_active" ${data?.active !== false ? 'checked' : ''}><label for="f_active">Activo</label></div>
+                    <div class="form-check"><input type="checkbox" id="f_featured" ${data?.featured ? 'checked' : ''}><label for="f_featured"><i class="fas fa-star"></i> Destacado</label></div>
+                </div>`;
+        },
+        newsletter: () => {
+            document.getElementById('modalTitle').textContent = isEdit ? 'Editar Campaña' : 'Nueva Campaña';
+            return `
+                <div class="form-group"><label>Asunto</label><input id="f_nl_subject" value="${esc(data?.subject || '')}" placeholder="Novedades en Blockchain y IA - Febrero 2026"></div>
+                <div class="form-group"><label>Texto de vista previa</label><input id="f_nl_preview" value="${esc(data?.preview_text || '')}" placeholder="Las últimas novedades en investigación..."><div class="form-hint">Se muestra en la bandeja de entrada antes de abrir el email.</div></div>
+                <div class="form-group"><label>Contenido del Newsletter</label>
+                    <div id="quillEditor"></div>
+                </div>`;
+        },
+        stat: () => {
+            document.getElementById('modalTitle').textContent = 'Editar Estadística';
+            return `
+                <div class="form-group"><label>Clave</label><input id="f_key" value="${esc(data?.key || '')}" readonly style="background:#f1f5f9;"></div>
+                <div class="form-group"><label>Valor</label><input id="f_value" value="${esc(data?.value || '')}"><div class="form-hint">Ejemplo: 15+, 50+, 1000+</div></div>
+                <div class="form-group"><label>Etiqueta</label><input id="f_label" value="${esc(data?.label || '')}"><div class="form-hint">Texto que se muestra debajo del número.</div></div>`;
+        }
+    };
+
+    if (!forms[type]) return;
+    document.getElementById('modalBody').innerHTML = forms[type]();
+    document.getElementById('modalOverlay').classList.add('active');
+
+    // Re-bind save
+    document.getElementById('modalSave').onclick = async () => {
+        const savers = { post: savePost, course: saveCourse, research: saveResearch, newsletter: saveNewsletter, stat: saveStat };
+        if (savers[currentEditType]) await savers[currentEditType]();
+    };
+
+    // Post-specific setup
+    if (type === 'post') {
+        const titleInput = document.getElementById('f_title');
+        const slugInput = document.getElementById('f_slug');
+        titleInput.addEventListener('input', () => {
+            if (!isEdit || !slugInput.value) {
+                slugInput.value = titleInput.value.toLowerCase()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+            }
+        });
+
+        // Char counts
+        updateCharCount('f_title', 70, 'cc_title');
+        updateCharCount('f_excerpt', 160, 'cc_excerpt');
+
+        // Initialize Quill WYSIWYG editor
+        quillEditor = new Quill('#quillEditor', {
+            theme: 'snow',
+            placeholder: 'Escribe el contenido del artículo...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
+            }
+        });
+
+        if (data?.content) {
+            if (data.content.includes('<') && data.content.includes('>')) {
+                quillEditor.root.innerHTML = data.content;
+            } else {
+                quillEditor.setText(data.content);
+            }
+        }
+
+        // Image upload for posts
+        const fileInput = document.getElementById('f_image_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const area = document.getElementById('uploadArea');
+                area.classList.add('uploading');
+                area.querySelector('.upload-text').innerHTML = '<strong>Subiendo...</strong>';
+
+                try {
+                    const imageUrl = await uploadImageToStorage(file);
+                    if (imageUrl) {
+                        document.getElementById('f_image').value = imageUrl;
+                        const preview = document.getElementById('imagePreview');
+                        preview.innerHTML = `<img src="${imageUrl}" alt="Preview"><button type="button" class="remove-img" onclick="removeImage(event)">&times;</button>`;
+                        preview.style.display = 'inline-block';
+                        toast('Imagen subida correctamente', 'success');
+                    } else {
+                        toast('Error al subir imagen', 'error');
+                    }
+                } catch (err) {
+                    toast('Error: ' + err.message, 'error');
+                }
+
+                area.classList.remove('uploading');
+                area.querySelector('.upload-text').innerHTML = '<strong>Clic para subir</strong> o arrastra una imagen';
+            });
+        }
+    }
+
+    // Newsletter-specific setup (Quill for email content)
+    if (type === 'newsletter') {
+        quillEditor = new Quill('#quillEditor', {
+            theme: 'snow',
+            placeholder: 'Escribe el contenido del newsletter...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['blockquote'],
+                    ['link'],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
+            }
+        });
+        if (data?.content) {
+            if (data.content.includes('<') && data.content.includes('>')) {
+                quillEditor.root.innerHTML = data.content;
+            } else {
+                quillEditor.setText(data.content);
+            }
+        }
+    }
+}
+
+// =============================================
+// SAVE FUNCTIONS
+// =============================================
+async function savePost() {
+    const quillContent = quillEditor ? quillEditor.root.innerHTML : '';
+    const quillText = quillEditor ? quillEditor.getText().trim() : '';
+    const dateVal = document.getElementById('f_date').value;
+    const record = {
+        title: document.getElementById('f_title').value,
+        slug: document.getElementById('f_slug').value,
+        category: document.getElementById('f_category').value,
+        image_url: document.getElementById('f_image').value || null,
+        excerpt: document.getElementById('f_excerpt').value,
+        content: quillContent,
+        published: document.getElementById('f_published').checked,
+        featured: document.getElementById('f_featured').checked,
+        created_at: dateVal ? new Date(dateVal).toISOString() : new Date().toISOString(),
+        updated_at: new Date().toISOString()
+    };
+    if (!record.title || !record.slug || !quillText) { toast('Completa título, slug y contenido', 'error'); return; }
+
+    let error;
+    if (currentEditId) {
+        ({ error } = await db.from('posts').update(record).eq('id', currentEditId));
+    } else {
+        ({ error } = await db.from('posts').insert([record]));
+    }
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast(currentEditId ? 'Post actualizado' : 'Post creado', 'success');
+    closeModal(); loadPosts();
+}
+
+async function saveCourse() {
+    const topicsRaw = document.getElementById('f_topics').value;
+    const record = {
+        title: document.getElementById('f_title').value,
+        icon: document.getElementById('f_icon').value || '📚',
+        description: document.getElementById('f_desc').value,
+        topics: topicsRaw ? topicsRaw.split(',').map(t => t.trim()) : [],
+        sort_order: parseInt(document.getElementById('f_order').value) || 0,
+        badge: document.getElementById('f_badge').value || null,
+        cta_text: document.getElementById('f_cta_text').value || null,
+        cta_url: document.getElementById('f_cta_url').value || null,
+        featured: document.getElementById('f_featured').checked,
+        active: document.getElementById('f_active').checked
+    };
+    if (!record.title) { toast('El título es obligatorio', 'error'); return; }
+
+    let error;
+    if (currentEditId) {
+        ({ error } = await db.from('courses').update(record).eq('id', currentEditId));
+    } else {
+        ({ error } = await db.from('courses').insert([record]));
+    }
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast(currentEditId ? 'Curso actualizado' : 'Curso creado', 'success');
+    closeModal(); loadCourses();
+}
+
+async function saveResearch() {
+    const record = {
+        title: document.getElementById('f_title').value,
+        authors: document.getElementById('f_authors').value || null,
+        description: document.getElementById('f_desc').value,
+        category: document.getElementById('f_category').value,
+        year: parseInt(document.getElementById('f_year').value),
+        type: document.getElementById('f_type').value,
+        journal: document.getElementById('f_journal').value || null,
+        doi: document.getElementById('f_doi').value || null,
+        volume_issue: document.getElementById('f_volissue').value || null,
+        issn: document.getElementById('f_issn').value || null,
+        isbn: document.getElementById('f_isbn').value || null,
+        citation_apa: document.getElementById('f_apa').value || null,
+        pdf_url: document.getElementById('f_pdf').value || null,
+        external_url: document.getElementById('f_exturl').value || null,
+        sort_order: parseInt(document.getElementById('f_order').value) || 0,
+        active: document.getElementById('f_active').checked,
+        featured: document.getElementById('f_featured').checked
+    };
+    // Auto-generar URL del artículo desde DOI si no se proporcionó
+    if (record.doi && !record.external_url) {
+        record.external_url = 'https://doi.org/' + record.doi;
+    }
+    if (!record.title) { toast('El título es obligatorio', 'error'); return; }
+
+    let error;
+    if (currentEditId) {
+        ({ error } = await db.from('research').update(record).eq('id', currentEditId));
+    } else {
+        ({ error } = await db.from('research').insert([record]));
+    }
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast(currentEditId ? 'Publicación actualizada' : 'Publicación creada', 'success');
+    closeModal(); loadResearch();
+}
+
+async function saveStat() {
+    const record = {
+        value: document.getElementById('f_value').value,
+        label: document.getElementById('f_label').value
+    };
+    const { error } = await db.from('site_stats').update(record).eq('id', currentEditId);
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    toast('Estadística actualizada', 'success');
+    closeModal(); loadStats();
+}
+
+// =============================================
+// UTILITIES
+// =============================================
+function esc(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function fmtDate(d) { return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }); }
+function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast ' + type;
+    void t.offsetWidth; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'ahora';
+    if (mins < 60) return mins + ' min';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h';
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return days + 'd';
+    return fmtDate(dateStr);
+}
+
+function updateCharCount(inputId, recommended, countId) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(countId);
+    if (!input || !counter) return;
+    const len = input.value.length;
+    counter.textContent = `${len} caracteres${recommended ? ` (recomendado: ${recommended})` : ''}`;
+    counter.className = 'char-count' + (len > recommended * 1.5 ? ' danger' : len > recommended ? ' warn' : '');
+}
+
+// =============================================
+// IMAGE UPLOAD
+// =============================================
+async function uploadImageToStorage(file) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `blog/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+
+    const { data, error } = await db.storage
+        .from('images')
+        .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+    if (error) { console.error('Upload error:', error); return null; }
+
+    const { data: urlData } = db.storage.from('images').getPublicUrl(fileName);
+    return urlData.publicUrl;
+}
+
+function removeImage(e) {
+    e.stopPropagation();
+    document.getElementById('f_image').value = '';
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('imagePreview').innerHTML = '';
+    const fileInput = document.getElementById('f_image_file');
+    if (fileInput) fileInput.value = '';
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    currentEditId = null;
+    currentEditType = null;
+    quillEditor = null;
+    // Reset footer to default
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSave">Guardar</button>
+    `;
+}
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeModal();
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
