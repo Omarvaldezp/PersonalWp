@@ -123,6 +123,19 @@ create policy perfil_admin_todo on public.perfiles
     with check (public.tiene_rol('admin'));
 
 
+-- ---------------------------------------------------------------------------
+-- Cerrar la tabla también a nivel de permisos, no sólo de RLS
+--
+-- Sin esto, la llave anónima puede consultar perfiles: RLS le devuelve cero
+-- filas, así que hoy no se filtra nada. Pero eso depende de que las políticas
+-- estén bien para siempre. Con el REVOKE, aunque alguien agregue mañana una
+-- política permisiva por descuido, anon sigue sin poder tocar la tabla.
+--
+-- Es el mismo patrón que usan las tablas de 04_diagnostico_seminario.sql.
+-- ---------------------------------------------------------------------------
+revoke all on table public.perfiles from anon;
+
+
 -- ============================================================================
 -- PASO OBLIGATORIO: date a ti mismo el rol admin
 --
