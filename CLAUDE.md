@@ -53,6 +53,7 @@ Dos secciones estáticas dentro de `src/`, independientes de A y de B:
 |---|---|
 | `src/trama/` | Curso-taller de docencia bimodal para la FCA-UAS |
 | `src/seminario/` | Seminario de Investigación Teórico, DISDE, ciclo 2026-2 |
+| `src/manual-claude/` | Manual de Claude para investigadores, documento de consulta |
 
 `src/seminario/` tiene dos páginas: `index.html` con la información del curso y
 `diagnostico.html` con el cuestionario inicial. El formulario **no escribe en
@@ -80,6 +81,23 @@ cambia la paleta del sitio.
 
 `src/trama/`, en cambio, sí carga `custom.css` y usa la paleta azul marino y oro
 del deck del curso-taller. Los dos micro sitios no comparten estilos.
+
+### Por qué los documentos largos NO van en `posts`
+
+El campo `content` de `posts` guarda **HTML semántico plano** —salida del editor
+Quill del panel: `<h1>`, `<p>`, `<strong>`— y el blog lo inyecta dentro de la
+plantilla del sitio. Un documento con su propio `<style>` no cabe ahí: reglas como
+`* { margin: 0 }` y `body { background: ... }` se aplican a la página entera y
+rompen el layout del sitio completo.
+
+Además, el panel edita los posts con Quill. Si alguien abre en el editor un post
+que trae HTML y CSS propios, Quill los descarta al guardar y el documento se
+pierde sin aviso.
+
+Por eso los documentos largos y con diseño propio van como página estática bajo
+`src/`, igual que `/trama/`, `/seminario/` y `/manual-claude/`, y el blog lleva
+una entrada corta que enlaza a la página. La entrada sí aparece en el listado;
+el documento conserva su diseño y sus estilos de impresión.
 
 ### Conflicto conocido entre A y B
 

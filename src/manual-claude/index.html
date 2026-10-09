@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Claude para investigadores | Dr. Omar Valdez Palazuelos</title>
+
+<meta name="description" content="Guía práctica para investigación de posgrado: cómo configurar Claude, cómo integrarlo al trabajo de maestría y doctorado, y dónde están sus límites. Integridad académica, verificación de referencias y usos por etapa.">
+<meta name="author" content="Omar Valdez Palazuelos">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://omarvaldez.com/manual-claude/">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Dr. Omar Valdez Palazuelos">
+<meta property="og:title" content="Manual de Claude para investigadores">
+<meta property="og:description" content="Cómo configurar la herramienta, cómo integrarla al trabajo de investigación de maestría y doctorado, y dónde están sus límites.">
+<meta property="og:url" content="https://omarvaldez.com/manual-claude/">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B1D3A'/><text x='50' y='68' font-family='Segoe UI,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Manual de Claude para investigadores",
+  "description": "Guía práctica para integrar Claude al trabajo de investigación de posgrado, con sus límites y las reglas de integridad académica.",
+  "inLanguage": "es-MX",
+  "datePublished": "2026-10-09",
+  "author": {
+    "@type": "Person",
+    "name": "Omar Valdez Palazuelos",
+    "url": "https://omarvaldez.com/"
+  }
+}
+</script>
+
+<style>
+:root {
+  --navy: #0B1D3A; --navy-2: #1e3a5f; --coral: #F96167; --teal: #0891B2; --gold: #F59E0B; --green: #10B981;
+  --texto: #1f2937; --suave: #4b5563; --tenue: #6b7280; --borde: #e5e7eb; --fondo: #f3f5f8; --papel: #ffffff;
+  --teal-claro: #ecfeff; --gold-claro: #fffbeb; --coral-claro: #fff1f2; --green-claro: #ecfdf5; --navy-claro: #eef2f7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px; line-height: 1.65; color: var(--texto); background: var(--fondo); }
+.documento { max-width: 880px; margin: 0 auto; background: var(--papel); min-height: 100vh; box-shadow: 0 1px 4px rgba(11,29,58,.08); }
+.contenido { padding: 8px 48px 56px; }
+
+/* Barra de regreso al sitio */
+.volver { background: #07152b; }
+.volver .interior { max-width: 880px; margin: 0 auto; padding: 10px 48px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.volver a { color: #fff; text-decoration: none; font-size: .88rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
+.volver a:hover { color: var(--gold); }
+.volver span { color: rgba(255,255,255,.55); font-size: .82rem; }
+
+/* Portada */
+.portada { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; padding: 44px 48px 36px; border-bottom: 5px solid var(--coral); }
+.portada .ceja { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 10px; }
+.portada h1 { font-size: 2.15rem; line-height: 1.2; font-weight: 700; margin-bottom: 10px; }
+.portada .bajada { font-size: 1.08rem; color: rgba(255,255,255,.88); max-width: 640px; }
+.portada .datos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.portada .dato { font-size: .8rem; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 4px 12px; }
+.portada .autoria { margin-top: 22px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.18); font-size: .9rem; color: rgba(255,255,255,.82); }
+.portada .autoria b { display: block; color: #fff; font-size: 1rem; }
+
+/* Indice */
+.indice { background: var(--navy-claro); border-radius: 10px; padding: 18px 22px; margin: 28px 0 8px; }
+.indice strong { display: block; color: var(--navy); font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.indice ol { columns: 2; column-gap: 28px; padding-left: 20px; }
+.indice li { font-size: .95rem; margin-bottom: 4px; padding-right: 16px; break-inside: avoid; }
+.indice a { color: var(--navy); text-decoration: none; }
+.indice a:hover { color: var(--teal); text-decoration: underline; }
+
+/* Titulos y texto */
+section { margin-top: 44px; }
+h2 { font-size: 1.55rem; color: var(--navy); line-height: 1.3; padding-bottom: 10px; margin-bottom: 18px; border-bottom: 3px solid var(--teal); scroll-margin-top: 12px; }
+h3 { font-size: 1.15rem; color: var(--navy); margin: 26px 0 10px; }
+h4 { font-size: 1rem; color: var(--navy); margin: 18px 0 6px; }
+p { margin-bottom: 14px; color: var(--texto); }
+ul, ol { padding-left: 24px; margin-bottom: 14px; }
+li { margin-bottom: 6px; }
+a { color: var(--teal); }
+strong { color: var(--navy); }
+.entrada { font-size: 1.12rem; color: var(--suave); }
+.nota-pie { font-size: .85rem; color: var(--tenue); }
+
+/* Recuadros */
+.recuadro { border-radius: 10px; padding: 16px 20px; margin: 18px 0; border-left: 5px solid; }
+.recuadro > strong:first-child { display: block; margin-bottom: 6px; font-size: .95rem; }
+.recuadro p:last-child, .recuadro ul:last-child, .recuadro ol:last-child { margin-bottom: 0; }
+.recuadro.info { background: var(--teal-claro); border-color: var(--teal); }
+.recuadro.info > strong:first-child { color: #0e7490; }
+.recuadro.aviso { background: var(--gold-claro); border-color: var(--gold); }
+.recuadro.aviso > strong:first-child { color: #b45309; }
+.recuadro.alerta { background: var(--coral-claro); border-color: var(--coral); }
+.recuadro.alerta > strong:first-child { color: #be123c; }
+.recuadro.bien { background: var(--green-claro); border-color: var(--green); }
+.recuadro.bien > strong:first-child { color: #047857; }
+.destacado { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; border-radius: 12px; padding: 22px 26px; margin: 22px 0; }
+.destacado strong, .destacado h3 { color: #fff; }
+.destacado p { color: rgba(255,255,255,.92); }
+.destacado .grande { font-size: 1.25rem; line-height: 1.45; font-weight: 600; margin: 0; }
+
+/* Cadena de pasos */
+.cadena { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 18px 0 22px; }
+.eslabon { flex: 1 1 130px; background: var(--navy-claro); border: 1px solid #d5deea; border-radius: 10px; padding: 12px 12px; text-align: center; font-size: .9rem; position: relative; }
+.eslabon b { display: block; color: var(--navy); font-size: .98rem; }
+.eslabon span { color: var(--suave); font-size: .82rem; }
+.eslabon.primero { background: var(--navy); border-color: var(--navy); }
+.eslabon.primero b, .eslabon.primero span { color: #fff; }
+.flecha { align-self: center; color: var(--coral); font-weight: 700; font-size: 1.2rem; }
+
+/* Tarjetas */
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 18px 0; }
+.tarjetas.cuatro { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.tarjetas.dos { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.tarjeta { border: 1px solid var(--borde); border-radius: 12px; padding: 16px 18px; background: #fff; border-top: 4px solid var(--teal); }
+.tarjeta.coral { border-top-color: var(--coral); }
+.tarjeta.gold { border-top-color: var(--gold); }
+.tarjeta.green { border-top-color: var(--green); }
+.tarjeta.navy { border-top-color: var(--navy); }
+.tarjeta h4 { margin-top: 0; }
+.tarjeta p, .tarjeta ul { font-size: .93rem; margin-bottom: 8px; }
+.tarjeta p:last-child, .tarjeta ul:last-child { margin-bottom: 0; }
+.etiqueta { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; background: var(--navy-claro); color: var(--navy); margin-bottom: 6px; }
+
+/* Tablas */
+.tabla-scroll { overflow-x: auto; margin: 16px 0 20px; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; min-width: 520px; }
+th { background: var(--navy); color: #fff; text-align: left; padding: 10px 12px; font-weight: 600; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+tr:nth-child(even) td { background: #f9fafb; }
+td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Pasos numerados */
+ol.pasos { list-style: none; counter-reset: paso; padding-left: 0; }
+ol.pasos > li { counter-increment: paso; position: relative; padding-left: 44px; margin-bottom: 14px; }
+ol.pasos > li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 700; font-size: .9rem; display: flex; align-items: center; justify-content: center; }
+
+/* Elementos de interfaz y codigo */
+.boton { display: inline-block; font-size: .86em; font-weight: 600; background: var(--navy); color: #fff; border-radius: 6px; padding: 1px 9px; white-space: nowrap; }
+.pestana { display: inline-block; font-size: .86em; font-weight: 600; background: var(--teal-claro); color: #0e7490; border: 1px solid #a5f3fc; border-radius: 6px; padding: 0 8px; white-space: nowrap; }
+code, .codigo { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .88em; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 5px; padding: 1px 6px; }
+pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.55; white-space: pre-wrap; background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 16px 18px; margin: 12px 0 18px; border-left: 4px solid var(--gold); }
+.si-no { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
+.si-no > div { border-radius: 10px; padding: 14px 18px; }
+.si-no .si { background: var(--green-claro); border: 1px solid #a7f3d0; }
+.si-no .no { background: var(--coral-claro); border: 1px solid #fecdd3; }
+.si-no h4 { margin-top: 0; }
+.si-no ul { margin-bottom: 0; font-size: .93rem; }
+
+/* Pie */
+.pie { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--borde); font-size: .85rem; color: var(--tenue); }
+.pie strong { color: var(--suave); }
+
+/* Celular */
+@media (max-width: 640px) {
+  .volver .interior { padding: 9px 16px; }
+  .portada { padding: 32px 16px 26px; }
+  .portada h1 { font-size: 1.6rem; }
+  .contenido { padding: 4px 16px 40px; }
+  .indice ol { columns: 1; }
+  h2 { font-size: 1.3rem; }
+  .flecha { display: none; }
+  .eslabon { flex-basis: 100%; }
+}
+
+/* Impresion */
+@media print {
+  body { background: #fff; font-size: 11.5pt; }
+  .documento { box-shadow: none; max-width: none; }
+  .volver { display: none; }
+  .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  th, .destacado, .eslabon.primero, .boton, ol.pasos > li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  section { break-inside: auto; }
+  .tarjeta, .recuadro, .destacado, .eslabon, .si-no > div, pre.prompt, tr, li, .pie { break-inside: avoid; }
+  h2, h3, h4 { break-after: avoid; }
+  p { orphans: 3; widows: 3; }
+  a { color: inherit; text-decoration: none; }
+  .indice { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<div class="volver">
+  <div class="interior">
+    <a href="/">&larr; Volver a omarvaldez.com</a>
+    <span>Documento de libre consulta &middot; optimizado para imprimir</span>
+  </div>
+</div>
+
+<div class="documento">
+<header class="portada">
+  <div class="ceja">Guía práctica para investigación de posgrado</div>
+  <h1>Manual de Claude</h1>
+  <p class="bajada">Cómo configurar la herramienta, cómo integrarla al trabajo de investigación de maestría y doctorado, y dónde están sus límites.</p>
+  <div class="datos">
+    <span class="dato">Cuenta Claude Pro</span>
+    <span class="dato">Chat, Cowork, Proyectos y Skills</span>
+    <span class="dato">Octubre de 2026</span>
+  </div>
+  <div class="autoria">
+    Material elaborado por
+    <b>Dr. Omar Valdez Palazuelos</b>
+    Investigador SNII Nivel I
+  </div>
+</header>
+
+<div class="contenido">
+
+<nav class="indice">
+  <strong>Contenido</strong>
+  <ol>
+    <li><a href="#esencial">Lo esencial en un minuto</a></li>
+    <li><a href="#integridad">Integridad y uso responsable</a></li>
+    <li><a href="#configura">Configura tu cuenta</a></li>
+    <li><a href="#hoy">Cómo funciona Claude hoy</a></li>
+    <li><a href="#modelos">Modelos y nivel de esfuerzo</a></li>
+    <li><a href="#limites">Límites de uso</a></li>
+    <li><a href="#proyecto">Un Proyecto por línea de investigación</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#programadas">Tareas programadas</a></li>
+    <li><a href="#pedir">Cómo pedirle las cosas</a></li>
+    <li><a href="#tareas">Ejemplos por tarea de investigación</a></li>
+    <li><a href="#limitaciones">Qué no conviene delegarle</a></li>
+    <li><a href="#seguridad">Seguridad</a></li>
+    <li><a href="#ayuda">Ayuda y recursos</a></li>
+  </ol>
+</nav>
+
+<section id="esencial">
+  <h2>1. Lo esencial en un minuto</h2>
+  <p class="entrada">Claude puede acelerar casi todas las etapas de una investigación, pero no puede responder por ninguna. Esa frontera es la que organiza todo este manual.</p>
+  <div class="tarjetas cuatro">
+    <div class="tarjeta"><h4>Tu cuenta</h4><p>Una cuenta personal de Claude Pro con el entrenamiento desactivado antes de subir cualquier material propio.</p></div>
+    <div class="tarjeta navy"><h4>Tu espacio</h4><p>Un Proyecto por línea de investigación, con tus fuentes, tu marco teórico y tus criterios ya cargados.</p></div>
+    <div class="tarjeta coral"><h4>La línea roja</h4><p>Nunca datos identificables de participantes, ni manuscritos ajenos que estés dictaminando.</p></div>
+    <div class="tarjeta green"><h4>Tu firma</h4><p>Verificas cada cita, respondes por cada afirmación y declaras el uso de IA donde corresponda.</p></div>
+  </div>
+  <div class="recuadro alerta">
+    <strong>Lo primero que debes saber</strong>
+    <p>Claude <strong>inventa referencias</strong>. Produce títulos verosímiles, con autores reales, revistas reales y DOI con el formato correcto, que simplemente no existen. Lo hace con total seguridad y sin avisar. Ninguna cita entra a tu trabajo sin que la hayas abierto y verificado en la fuente. Este es, por mucho, el riesgo más grave para un investigador.</p>
+  </div>
+</section>
+
+<section id="integridad">
+  <h2>2. Integridad y uso responsable</h2>
+  <p>La herramienta no cambia las reglas de la integridad académica. Las vuelve más fáciles de romper sin darte cuenta, que es distinto y más peligroso.</p>
+  <div class="destacado">
+    <p class="grande">La autoría no se delega. Puedes usar la herramienta en cualquier etapa, pero tú respondes por cada dato, cada cita y cada afirmación que lleve tu nombre.</p>
+  </div>
+
+  <h3>Las cinco reglas</h3>
+  <ol class="pasos">
+    <li><strong>Desactiva el entrenamiento antes de subir nada tuyo.</strong> En <em>Settings › Privacy</em>, apaga <em>«Help improve our AI models»</em>. Y evita los botones de pulgar arriba o abajo en conversaciones con material no publicado: al usarlos, la conversación completa se conserva hasta cinco años aunque el entrenamiento esté apagado.</li>
+    <li><strong>Datos de participantes, nunca.</strong> Ni nombres, correos, teléfonos, grabaciones, ni transcripciones sin anonimizar. Lo que aprobó tu comité de ética define qué puedes procesar y dónde, y un servicio en la nube rara vez está contemplado en esa aprobación. Anonimiza primero y refiérete a cada caso por código (P01, P02…). Si trabajas con menores de edad, con población vulnerable o con datos de salud, el umbral es todavía más estricto.</li>
+    <li><strong>Manuscritos ajenos en dictamen, nunca.</strong> Si arbitras para una revista o evalúas expedientes para una comisión, ese material es confidencial y no es tuyo. Subirlo a cualquier herramienta de IA rompe la confidencialidad del proceso, y varias editoriales y agencias de financiamiento lo prohíben de forma expresa. Esto incluye resúmenes, apartados sueltos y «solo para que me ayude a redactar el dictamen».</li>
+    <li><strong>La IA no puede ser autora.</strong> Las principales editoriales y los organismos de ética editorial coinciden: una herramienta de IA no reúne los requisitos de autoría porque no puede responsabilizarse del trabajo ni aprobar la versión final. Se declara como herramienta, no se acredita como coautora.</li>
+    <li><strong>Declara el uso.</strong> La mayoría de las revistas ya lo exige, normalmente en métodos o en un apartado de declaraciones. Consulta la política específica de tu revista objetivo antes de enviar: varían en qué consideran declarable y algunas distinguen entre pulir la redacción y generar contenido.</li>
+  </ol>
+
+  <div class="si-no">
+    <div class="si">
+      <h4>Buen uso</h4>
+      <ul>
+        <li>Mapear un campo y encontrar los debates que lo organizan.</li>
+        <li>Aclarar un concepto o una técnica que no dominas.</li>
+        <li>Someter tu propio argumento a crítica adversa.</li>
+        <li>Mejorar claridad, estructura y precisión de la redacción.</li>
+        <li>Pulir inglés académico y afinar un <em>abstract</em>.</li>
+        <li>Escribir y depurar código de análisis en R, Python o Stata.</li>
+        <li>Diseñar y someter a crítica instrumentos de recolección.</li>
+        <li>Organizar y codificar datos ya anonimizados.</li>
+        <li>Preparar clases, rúbricas y material docente.</li>
+      </ul>
+    </div>
+    <div class="no">
+      <h4>Nunca</h4>
+      <ul>
+        <li>Datos identificables de personas participantes.</li>
+        <li>Manuscritos o expedientes que estés dictaminando.</li>
+        <li>Datos no publicados de colegas sin su consentimiento.</li>
+        <li>Citar algo que no abriste y verificaste.</li>
+        <li>Presentar texto generado como propio sin declararlo.</li>
+        <li>Sustituir la búsqueda sistemática en bases de datos.</li>
+        <li>Delegar la interpretación de tus propios resultados.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Cómo declarar el uso</h3>
+  <p>Dos formatos de partida, que debes ajustar a lo que pida la revista o la institución:</p>
+  <pre class="prompt">Declaración de uso de inteligencia artificial: durante la preparación de este trabajo se utilizó Claude (Anthropic) para [la revisión de estilo y claridad del manuscrito / la depuración del código de análisis / la exploración preliminar de literatura]. Tras usar la herramienta, los autores revisaron y editaron el contenido según fue necesario y asumen plena responsabilidad por el contenido de la publicación.</pre>
+  <pre class="prompt">Nota sobre el uso de herramientas de IA en esta tesis: se empleó Claude (Anthropic) como apoyo en [especificar etapas]. El diseño de la investigación, el análisis de los datos, la interpretación de los resultados y las conclusiones son obra del autor. Todas las referencias citadas fueron verificadas directamente en la fuente original.</pre>
+
+  <div class="recuadro aviso">
+    <strong>Antes de enviar a una revista</strong>
+    <p>Busca en las instrucciones para autores el apartado de inteligencia artificial o de políticas editoriales. Cambian con frecuencia y no son uniformes entre editoriales. Lo que una revista considera un apoyo menor que no requiere declaración, otra lo considera material declarable.</p>
+  </div>
+</section>
+
+<section id="configura">
+  <h2>3. Configura tu cuenta</h2>
+  <p>Los menús pueden verse en español o en inglés, según el idioma de tu app. Aquí van en inglés, como los documenta Anthropic.</p>
+  <ol class="pasos">
+    <li><strong>Contrata o activa tu cuenta.</strong> El plan Pro cubre con holgura el trabajo de un investigador individual. Muchas instituciones tienen convenios o licencias: pregunta antes de pagar por tu cuenta.</li>
+    <li><strong>Instala la app de escritorio</strong> desde <code>claude.com/download</code>. Funciona en macOS 11 o superior y en Windows 10 o superior (Linux en beta). También puedes usar Claude en <code>claude.ai</code> desde el navegador.</li>
+    <li><strong>Comprueba que el entrenamiento esté desactivado:</strong> en <em>Settings › Privacy</em>, <em>«Help improve our AI models»</em> debe estar apagado. Hazlo antes que cualquier otra cosa.</li>
+    <li><strong>Activa la creación de archivos:</strong> en <em>Settings › Capabilities</em>, enciende <em>«Code execution and file creation»</em>. Sin esto, Claude no genera documentos, hojas de cálculo ni usa skills.</li>
+    <li><strong>Revisa la memoria:</strong> en <em>Settings › Memory</em>. Viene activa: Claude recuerda datos de conversaciones anteriores. Puedes revisarla, corregirla o pausarla. Si trabajas dentro de un Proyecto, este tiene su propia memoria.</li>
+    <li><strong>Escribe tus instrucciones generales</strong> en <em>Settings › General › «Instructions for Claude»</em>. Aplican a todas tus conversaciones, así que no pongas ahí material no publicado. Un ejemplo:
+      <pre class="prompt">Soy investigador en [tu disciplina], con formación doctoral. Respóndeme en español, con precisión conceptual y sin relleno; puedo con el vocabulario técnico de mi campo.
+
+Si no tienes un dato o una fuente, dilo. No inventes referencias, cifras ni citas bajo ninguna circunstancia: prefiero una respuesta incompleta a una inventada.
+
+Distingue siempre entre lo que está establecido en la literatura, lo que está en disputa y lo que es inferencia tuya. Cuando la tarea sea ambigua, pregúntame antes de empezar.</pre></li>
+    <li><strong>Crea un Proyecto por línea de investigación</strong>, como explica la sección 7.</li>
+  </ol>
+</section>
+
+<section id="hoy">
+  <h2>4. Cómo funciona Claude hoy</h2>
+  <p class="entrada">Claude ya no es solo un chat: en la misma conversación platica contigo y también hace el trabajo, como investigar, crear archivos o ejecutar tareas de varios pasos.</p>
+  <p>Desde el 16 de septiembre de 2026, Anthropic está unificando el chat y Cowork. El cambio llega poco a poco a cada cuenta, así que puedes encontrarte cualquiera de estos dos casos:</p>
+  <div class="tarjetas">
+    <div class="tarjeta gold">
+      <span class="etiqueta">Experiencia anterior</span>
+      <h4>Ves el selector «Chat / Cowork»</h4>
+      <p>Está abajo a la izquierda de la caja de mensaje. Elige <strong>Cowork</strong> para tareas con archivos, documentos o varios pasos, y <strong>Chat</strong> para conversar.</p>
+    </div>
+    <div class="tarjeta green">
+      <span class="etiqueta">Experiencia nueva</span>
+      <h4>Ya no hay selector</h4>
+      <p>Cualquier conversación puede tomar una tarea. Describe el resultado que quieres y Claude decide cómo hacerlo.</p>
+    </div>
+  </div>
+
+  <h3>Lo que puede hacer</h3>
+  <div class="tabla-scroll">
+    <table>
+      <tr><th>Función</th><th>Para qué te sirve</th></tr>
+      <tr><td><strong>Búsqueda web</strong></td><td>Literatura de acceso abierto, repositorios, preprints, datos oficiales y noticias, con ligas a las fuentes.</td></tr>
+      <tr><td><strong>Research</strong></td><td>Investigación a fondo de varias fuentes, con reporte. Se activa con «+» › Research. Consume bastante de tu límite.</td></tr>
+      <tr><td><strong>Archivos</strong></td><td>Crea Word, Excel con fórmulas, PowerPoint y PDF, y edita borradores con «Edit with Claude».</td></tr>
+      <tr><td><strong>Archivos que subes</strong></td><td>Hasta 20 por conversación y 500 MB cada uno: PDF (hasta 1,000 páginas), Word, Excel, CSV, TXT y más.</td></tr>
+      <tr><td><strong>Carpetas de tu computadora</strong></td><td>Solo en la app de escritorio, en las carpetas que conectes como <em>Trusted folders</em>.</td></tr>
+      <tr><td><strong>Tareas largas</strong></td><td>Trabajos de varios pasos, incluso con subagentes en paralelo, mientras haces otra cosa.</td></tr>
+      <tr><td><strong>Navegador</strong></td><td>Navegador integrado en la app de escritorio o Claude in Chrome, para consultar sitios.</td></tr>
+    </table>
+  </div>
+
+  <div class="recuadro alerta">
+    <strong>Lo que la búsqueda web no alcanza</strong>
+    <p>Claude navega la web abierta. <strong>No entra a Scopus, Web of Science, JSTOR ni a los textos completos detrás del muro de pago de tu biblioteca.</strong> Lo que encuentra es acceso abierto, repositorios institucionales, preprints y resúmenes. Sirve para mapear un campo y encontrar hilos; no sustituye una búsqueda sistemática con cadenas booleanas en las bases indexadas, y declararlo como tal en un artículo sería un error metodológico serio. Para el texto completo, descarga el PDF desde tu biblioteca y súbelo a la conversación.</p>
+  </div>
+
+  <div class="recuadro info">
+    <strong>Dónde corre tu trabajo</strong>
+    <p>Las tareas corren en la nube de Anthropic. Cuando Claude abre un archivo de tu computadora, ese archivo se procesa en sus servidores. Por eso la carpeta que conectes debe contener solo material que estés dispuesto a procesar fuera de tu equipo, nunca bases de datos con información identificable.</p>
+  </div>
+
+  <h3>Modo de permisos</h3>
+  <p>En <strong>Manual</strong> (el predeterminado), Claude te pide aprobar las acciones importantes. En <strong>Auto</strong> avanza solo, pero consume más de tu límite. Para trabajo con tus archivos, quédate en Manual y lee lo que vas a aprobar.</p>
+</section>
+
+<section id="modelos">
+  <h2>5. Modelos y nivel de esfuerzo</h2>
+  <p>El modelo se elige en el selector de la caja de mensaje. Para casi todo, empieza con Sonnet.</p>
+  <div class="tabla-scroll">
+    <table>
+      <tr><th>Modelo</th><th>Úsalo para</th><th>Consumo</th></tr>
+      <tr><td><strong>Sonnet 5.5</strong></td><td>El trabajo de todos los días: redactar, analizar, documentos, hojas de cálculo y presentaciones. Es rápido y muy capaz.</td><td>Medio</td></tr>
+      <tr><td><strong>Opus 5.5</strong></td><td>Lo difícil: discusión teórica fina, revisión crítica de un manuscrito completo, análisis con muchas variables, respuesta a dictámenes.</td><td>Alto</td></tr>
+      <tr><td><strong>Haiku 5.5</strong></td><td>Respuestas rápidas y tareas sencillas: corregir un párrafo, reformular, resumir algo corto.</td><td>Bajo</td></tr>
+      <tr><td><strong>Fable 5.1</strong></td><td>En el plan Pro solo se usa pagando créditos aparte.</td><td>Con costo extra</td></tr>
+    </table>
+  </div>
+  <p><strong>Nivel de esfuerzo.</strong> Low o Medium para lo rutinario, High como equilibrio, y Extra high o Max para lo más difícil. A más esfuerzo, mejores respuestas en problemas complejos, pero más consumo. En Sonnet 5.5 y Opus 5.5 el razonamiento siempre está activo.</p>
+  <p><strong>Memoria de trabajo.</strong> Opus 5.5 y Sonnet 5.5 manejan conversaciones y documentos muy largos, pero una conversación nueva para cada tema distinto sigue dando mejores resultados y cuida tu límite.</p>
+  <p><strong>Lo que sabe.</strong> El conocimiento de cada modelo llega hasta una fecha de corte, posterior a la cual no sabe nada. Para literatura reciente, cifras oficiales o cualquier dato de los últimos meses, pídele que busque y que cite las fuentes.</p>
+  <div class="recuadro aviso">
+    <strong>Los nombres de los modelos cambian seguido</strong>
+    <p>Anthropic libera versiones nuevas cada pocos meses y el selector de tu app es la referencia que manda. Si ves un nombre distinto al de esta tabla, no es un error tuyo: es que salió uno nuevo. La lógica de elección —rápido y barato para lo sencillo, el más capaz para lo difícil— no cambia.</p>
+  </div>
+</section>
+
+<section id="limites">
+  <h2>6. Límites de uso</h2>
+  <p>El plan Pro tiene dos límites: una <strong>ventana de 5 horas</strong> que se reinicia sola y un <strong>límite semanal</strong> que se reinicia el mismo día y a la misma hora cada semana. No hay un número fijo de mensajes: depende de cuánto trabajo le pidas. La web, la app de escritorio y Claude Code comparten la misma bolsa.</p>
+  <div class="si-no">
+    <div class="no">
+      <h4>Lo que más consume</h4>
+      <ul>
+        <li>Opus y los niveles de esfuerzo altos.</li>
+        <li>Research y las tareas largas de varios pasos.</li>
+        <li>El modo Auto.</li>
+        <li>Conversaciones muy largas y PDF pesados.</li>
+      </ul>
+    </div>
+    <div class="si">
+      <h4>Cómo rendirlo</h4>
+      <ul>
+        <li>Sonnet como modelo de base; Opus solo cuando haga falta.</li>
+        <li>Una conversación nueva para cada tema.</li>
+        <li>Fuentes de consulta en tu Proyecto, no subidas una y otra vez.</li>
+        <li>Pedir todo lo que necesitas en un solo mensaje bien armado.</li>
+      </ul>
+    </div>
+  </div>
+  <p>Tu consumo lo ves en <em>Settings › Usage</em>. Si llegas al límite, puedes esperar al reinicio o, si tienes uno disponible, usar el botón <em>«Reset for free»</em>. También existen créditos de uso, que se pagan aparte.</p>
+  <div class="recuadro aviso">
+    <strong>Planea contra tus fechas</strong>
+    <p>No dejes el trabajo con Claude para la víspera del cierre de una convocatoria o de una fecha de envío. Si se te acaba la ventana de 5 horas o el límite semanal, no hay forma de adelantarlo sin pagar.</p>
+  </div>
+</section>
+
+<section id="proyecto">
+  <h2>7. Un Proyecto por línea de investigación</h2>
+  <p>Un Proyecto de Claude agrupa conversaciones, instrucciones y archivos de consulta. Así no vuelves a explicar tu marco teórico, tu metodología ni tus convenciones cada vez que abres una conversación, y cada línea de trabajo queda separada de las demás.</p>
+  <p>Conviene un Proyecto por cada cosa con vida propia: cada artículo en curso, cada tesis que diriges, cada curso que impartes, cada proyecto financiado.</p>
+  <ol class="pasos">
+    <li>En la barra lateral, entra a <strong>Projects</strong> y crea uno con el nombre de tu línea o tu manuscrito.</li>
+    <li>Pega en las instrucciones del proyecto un texto como el de abajo, ajustado a tu caso.</li>
+    <li>Sube como archivos de consulta tus lecturas clave, tu protocolo, el manual de estilo de la revista objetivo y tu libro de códigos. Cada archivo puede pesar hasta 30 MB.</li>
+    <li>Trabaja siempre dentro del Proyecto cuando se trate de esa línea.</li>
+  </ol>
+  <pre class="prompt">Este proyecto corresponde a mi investigación sobre [tema], en [disciplina]. El producto en curso es [un artículo para la revista X / el capítulo 4 de una tesis doctoral / un informe para la agencia financiadora].
+
+Enfoque: [cuantitativo / cualitativo / mixto]. Marco teórico de referencia: [teoría y autores principales]. Diseño: [descripción breve]. Muestra o corpus: [descripción, sin datos identificables].
+
+Reglas de trabajo:
+- Responde en español, con precisión conceptual.
+- No inventes referencias ni cifras. Si no tienes la fuente, dilo.
+- Distingue lo establecido en la literatura, lo que está en disputa y lo que es inferencia tuya.
+- Cuando uses internet, cita con liga y señala si la fuente es revisada por pares.
+- Citas y referencias en formato [APA 7 / Chicago / el que pida la revista].
+- Los casos del estudio se identifican solo por código (P01, P02...).</pre>
+  <div class="recuadro aviso">
+    <strong>Qué no subir al Proyecto</strong>
+    <p>Bases de datos con información identificable, grabaciones, transcripciones sin anonimizar, manuscritos ajenos en dictamen, y datos no publicados de colegas que no te hayan autorizado a usarlos así.</p>
+  </div>
+</section>
+
+<section id="skills">
+  <h2>8. Skills</h2>
+  <p class="entrada">Una skill es un paquete de instrucciones, y a veces de archivos, que Claude carga solo cuando lo necesita. Sirve para que haga siempre igual de bien una tarea que repites.</p>
+
+  <h3>Las que ya tienes</h3>
+  <p>Claude trae skills de fábrica para <strong>Word, Excel, PowerPoint y PDF</strong>, y las usa cuando le pides esos archivos. Para eso necesitas encendido <em>«Code execution and file creation»</em> (sección 3). También hay un directorio con skills de otras empresas: <em>Customize › Skills › «+» › Browse skills</em>.</p>
+
+  <h3>Cómo instalar una skill</h3>
+  <ol class="pasos">
+    <li>Ten la skill en un archivo <strong>ZIP</strong>.</li>
+    <li>Ve a <em>Customize › Skills</em>, da clic en <strong>«+»</strong>, luego en <em>Create skill › Upload a skill</em> y sube el ZIP.</li>
+    <li>Revisa que su interruptor esté encendido.</li>
+  </ol>
+  <p>La skill queda guardada en tu cuenta y funciona en el chat y en Cowork, en la web y en la app de escritorio, sin reiniciar nada. Claude la usa sola cuando la tarea coincide con su descripción, o cuando se lo pides por su nombre.</p>
+
+  <h3>Cómo crear la tuya</h3>
+  <p>Una skill es una carpeta con un archivo <code>SKILL.md</code>. Arriba lleva un nombre y una descripción; abajo, las instrucciones. Para un investigador, las candidatas naturales son las tareas que repites con criterios fijos: fichar un artículo, revisar el formato de un manuscrito, evaluar un avance de tesis. Un ejemplo:</p>
+  <pre class="prompt">---
+name: ficha-de-lectura
+description: Genera la ficha de lectura estandarizada de un artículo académico. Úsala al procesar literatura para una revisión o un marco teórico.
+---
+
+# Ficha de lectura
+
+Al recibir un artículo, produce una ficha con esta estructura exacta:
+
+1. **Referencia completa** en APA 7, tal como aparece en el documento.
+2. **Problema y pregunta** que el artículo aborda, en dos líneas.
+3. **Posición teórica**: desde qué tradición escribe y contra quién discute.
+4. **Diseño**: enfoque, método, muestra o corpus, instrumentos, y país o contexto.
+5. **Hallazgos principales**, máximo cinco viñetas.
+6. **Limitaciones**, separando las que reconocen los autores de las que detectas tú.
+7. **Dos o tres citas textuales** con número de página, útiles para citar después.
+8. **Relevancia para mi investigación**: cómo se conecta y dónde podría discrepar.
+
+Reglas: no inventes nada que no esté en el texto. Si un apartado no aplica o
+el artículo no lo reporta, escribe "no reportado". Distingue siempre lo que
+dice el artículo de lo que es interpretación tuya.</pre>
+  <ul>
+    <li><strong>Nombre:</strong> en minúsculas y con guiones, sin las palabras «claude» ni «anthropic».</li>
+    <li><strong>Descripción:</strong> de 200 caracteres o menos. De ella depende que Claude sepa cuándo usarla, así que di qué hace y cuándo aplica.</li>
+    <li><strong>Empaquetado:</strong> comprime la carpeta en un ZIP. La carpeta va en la raíz del ZIP y se llama igual que la skill (<code>ficha-de-lectura</code>).</li>
+  </ul>
+  <p>Puedes pedirle a Claude que redacte el <code>SKILL.md</code> contigo a partir de una tarea que ya hiciste bien, por ejemplo pasándole una ficha que te haya quedado como la quieres.</p>
+  <div class="recuadro info">
+    <strong>Compartir y cuidar</strong>
+    <p>En el plan Pro cada persona sube las skills a su propia cuenta. Si tu cuerpo académico o tu grupo de investigación crea una que vale la pena —el formato de ficha común, la rúbrica de evaluación de avances—, compártela como archivo y que cada quien la instale. Instala solo skills de fuentes confiables y revisa sus archivos antes, porque una skill puede ejecutar código. Nunca pongas material no publicado dentro de una skill.</p>
+  </div>
+</section>
+
+<section id="programadas">
+  <h2>9. Tareas programadas</h2>
+  <p>Claude puede repetir una tarea cada hora, cada día, cada semana o en días hábiles. Se crean escribiendo <code>/schedule</code>, desde <em>Scheduled</em> en la barra lateral o, en la experiencia nueva, pidiéndolo con tus palabras. Corren en la nube aunque tu computadora esté apagada.</p>
+  <p>Para un investigador, el uso natural es la vigilancia: literatura nueva, convocatorias y cambios normativos. Dos ejemplos:</p>
+  <pre class="prompt">Cada lunes a las 7:00, busca artículos y preprints publicados la semana anterior sobre [tu tema], en español e inglés. Revisa repositorios de acceso abierto y servidores de preprints. Dame un máximo de 12 viñetas, cada una con título, autores, año, una línea de por qué me puede interesar y la liga. Si no hay nada relevante, dímelo en una línea en lugar de rellenar.</pre>
+  <pre class="prompt">El día 1 de cada mes, revisa las convocatorias abiertas de financiamiento a la investigación en [tu país o área] cuyo cierre caiga en los siguientes 90 días. Para cada una: organismo, monto, requisitos de elegibilidad, fecha de cierre y liga oficial. Ordénalas por fecha de cierre.</pre>
+  <div class="recuadro aviso">
+    <strong>Solo con información pública</strong>
+    <p>Una tarea programada corre sin que tú la estés viendo. Úsala para vigilar fuentes abiertas, no para procesar tus datos ni tus borradores.</p>
+  </div>
+</section>
+
+<section id="pedir">
+  <h2>10. Cómo pedirle las cosas</h2>
+  <p class="entrada">La calidad de la respuesta depende de la claridad de la petición. Piensa en Claude como un colega muy capaz y muy leído que llega sin saber nada de tu investigación.</p>
+  <div class="cadena">
+    <div class="eslabon primero"><b>Contexto</b><span>tu campo, tu enfoque, para qué</span></div>
+    <div class="flecha">›</div>
+    <div class="eslabon"><b>Tarea</b><span>qué necesitas, concreto</span></div>
+    <div class="flecha">›</div>
+    <div class="eslabon"><b>Formato</b><span>tabla, documento, extensión</span></div>
+    <div class="flecha">›</div>
+    <div class="eslabon"><b>Criterios</b><span>qué hace buena la respuesta</span></div>
+  </div>
+  <div class="si-no">
+    <div class="no">
+      <h4>Petición vaga</h4>
+      <ul><li>«Hazme un estado del arte sobre adopción tecnológica.»</li></ul>
+    </div>
+    <div class="si">
+      <h4>Petición clara</h4>
+      <ul><li>«Para el marco teórico de un artículo sobre adopción de comercio electrónico en pymes latinoamericanas, mapea las tres corrientes teóricas que dominan el campo desde 2015: de qué supuesto parte cada una, quiénes son sus autores de referencia, qué critican de las otras y qué deja sin explicar cada una. Tabla comparativa y luego dos párrafos sobre dónde está hoy el desacuerdo central. Busca fuentes y marca cuáles son revisadas por pares.»</li></ul>
+    </div>
+  </div>
+  <h3>Hábitos que dan mejores resultados</h3>
+  <ul>
+    <li><strong>Pide que te pregunte primero:</strong> «Antes de empezar, hazme las preguntas que necesites para no suponer nada».</li>
+    <li><strong>Trabaja por partes:</strong> primero la estructura argumental, luego cada sección.</li>
+    <li><strong>Pide alternativas:</strong> «Dame tres formas distintas de organizar este argumento, con sus ventajas».</li>
+    <li><strong>Pide crítica adversa:</strong> «Léelo como el revisor 2 más hostil que te puedas imaginar y dime por dónde lo rechazarías».</li>
+    <li><strong>Pide que separe:</strong> «Marca qué afirmaciones tienen respaldo en lo que te di y cuáles estás infiriendo».</li>
+    <li><strong>Da ejemplos</strong> del resultado que esperas: un párrafo tuyo que te guste, una ficha bien hecha.</li>
+    <li><strong>Guarda las peticiones que funcionan;</strong> las que repites, conviértelas en skill.</li>
+  </ul>
+  <div class="recuadro alerta">
+    <strong>El protocolo de verificación</strong>
+    <p>Antes de que cualquier cosa pase de la conversación a tu manuscrito: abre cada referencia y confirma que existe, que dice lo que Claude afirma y que la página citada es la correcta. Recalcula cada cifra. Y relee buscando afirmaciones que suenen bien pero que nadie respalde. Lo que publicas es tuyo.</p>
+  </div>
+</section>
+
+<section id="tareas">
+  <h2>11. Ejemplos por tarea de investigación</h2>
+  <p>Puntos de partida para las etapas donde la herramienta rinde más. Úsalos dentro del Proyecto de tu línea y ajústalos a tu caso.</p>
+
+  <h4>Delimitar el problema y la pregunta</h4>
+  <pre class="prompt">Tengo un tema amplio: [descríbelo en tres o cuatro líneas]. Ayúdame a convertirlo en una pregunta de investigación viable para una tesis doctoral. Propón cinco formulaciones distintas, de la más ambiciosa a la más acotada. Para cada una: qué tendría que observar para responderla, qué diseño pediría, cuánto tiempo de campo supondría y cuál es su riesgo principal. Después dime cuál recomendarías y por qué.</pre>
+
+  <h4>Revisión de literatura y estado del arte</h4>
+  <pre class="prompt">Estoy mapeando la literatura sobre [tema] para el estado del arte de mi tesis. Busca en acceso abierto y repositorios, y dame: (1) las corrientes o escuelas que organizan el campo, (2) los cinco trabajos más citados de cada una con su aporte en una línea, (3) los debates abiertos, con quién sostiene cada posición, y (4) los vacíos que la propia literatura reconoce.
+
+Marca cada fuente como revisada por pares, preprint o literatura gris, y dame la liga. No incluyas ninguna referencia que no hayas podido localizar: prefiero una lista corta y verificable.</pre>
+  <p class="nota-pie">Esto es exploración, no búsqueda sistemática. Si tu revisión va a declararse como sistemática, la estrategia de búsqueda tiene que correr en las bases indexadas y documentarse conforme al protocolo que uses.</p>
+
+  <h4>Construcción del marco teórico</h4>
+  <pre class="prompt">Te subo los ocho artículos que son la base de mi marco teórico. Hazme un mapa conceptual en texto: qué constructos aparecen, cómo define cada autor los que comparte con los demás, dónde las definiciones son incompatibles entre sí, y qué relaciones entre constructos están propuestas y cuáles probadas empíricamente. Señala en qué puntos mi marco quedaría internamente contradictorio si los junto sin más.</pre>
+
+  <h4>Diseño metodológico e instrumentos</h4>
+  <pre class="prompt">Estoy diseñando un cuestionario para medir [constructo] en [población]. Te paso los ítems que llevo. Para cada uno: señala si induce la respuesta, si es doble, si usa un lenguaje que la población podría no entender, y si realmente mide el constructo o algo adyacente. Propón la versión corregida.
+
+Después dime qué dimensiones del constructo quedan sin cubrir según la literatura, y qué escalas ya validadas existen para medirlo, con su referencia.</pre>
+  <pre class="prompt">Revisa esta guía de entrevista semiestructurada para un estudio [fenomenológico / de caso múltiple / etnográfico]. Evalúa: si las preguntas abren o cierran, si el orden genera sesgo de arrastre, si hay preguntas que un participante no podría responder honestamente, y qué falta para cubrir mis categorías de análisis. Propón la versión corregida y las preguntas de profundización para cada bloque.</pre>
+
+  <h4>Análisis cuantitativo</h4>
+  <pre class="prompt">Tengo una muestra de [n] casos y quiero probar si [variable independiente] predice [variable dependiente], controlando por [covariables]. Mis variables son [escala de medición de cada una].
+
+Primero dime qué técnica es apropiada y por qué, qué supuestos tendría que verificar antes y cómo los verifico. Luego escríbeme el código en R, comentado línea por línea, incluyendo la verificación de supuestos y los diagnósticos. Al final, explícame cómo leer cada parte de la salida y qué conclusiones NO podría sacar de este diseño.</pre>
+
+  <h4>Análisis cualitativo</h4>
+  <pre class="prompt">Te paso extractos ya anonimizados de ocho entrevistas, identificados de P01 a P08, sobre [tema]. Propón un libro de códigos inductivo: cada código con su definición operativa, criterios de inclusión y exclusión, y un ejemplo textual con su clave de participante. Agrúpalos en categorías y dime qué relaciones ves entre ellas.
+
+Marca con claridad qué es lo que dicen los participantes y qué es interpretación tuya. Señala también los extractos que no encajan en ningún código: ahí suele estar lo interesante.</pre>
+
+  <h4>Redacción y estructura del manuscrito</h4>
+  <pre class="prompt">Te paso el borrador de mi sección de discusión. No la reescribas: diagnostícala. Dime (1) cuál es el argumento central y si se sostiene de principio a fin, (2) qué afirmaciones van más allá de lo que permiten mis datos, (3) dónde repito lo que ya dije en resultados en lugar de interpretarlo, y (4) qué implicación importante de mis hallazgos no estoy desarrollando. Después propón una estructura alternativa en forma de esquema.</pre>
+
+  <h4>Publicación y respuesta a dictámenes</h4>
+  <pre class="prompt">Mi manuscrito trata sobre [tema], con enfoque [X] y una contribución que consiste en [Y]. Sugiéreme ocho revistas donde podría enviarlo. Para cada una: alcance temático, si publica trabajos con este enfoque metodológico, idioma, modelo de acceso y lo que encuentres sobre tiempos de dictamen. Ordénalas por ajuste real, no por prestigio, y dime cuáles descartaría y por qué.</pre>
+  <pre class="prompt">Te paso los comentarios de los dictaminadores de mi artículo y el manuscrito. Ayúdame a organizar la respuesta: clasifica cada observación en atendible con cambio menor, atendible con cambio mayor, o no procedente con argumento. Para las dos primeras, dime exactamente qué habría que modificar y dónde. Para las terceras, ayúdame a redactar el argumento de por qué no procede, en tono respetuoso y sin concesiones innecesarias.</pre>
+  <p class="nota-pie">Esto aplica a dictámenes <em>de tu propio trabajo</em>. El manuscrito de otra persona que tú estés dictaminando no entra en ninguna herramienta de IA (sección 2, regla 3).</p>
+
+  <h4>Dirección de tesis y docencia</h4>
+  <pre class="prompt">Te paso el avance de capítulo de una persona que dirijo, en nivel [maestría / doctorado]. Prepárame la retroalimentación: señala los problemas por orden de gravedad, distinguiendo los de fondo (problema mal planteado, método que no responde a la pregunta, conclusiones no sostenidas) de los de forma. Para cada observación, formula una pregunta que la lleve a darse cuenta sola, en lugar de darle la respuesta. No reescribas su texto.</pre>
+  <pre class="prompt">Diseña la sesión de un seminario de posgrado de dos horas sobre [tema]. Público: estudiantes de maestría de [disciplina], con formación desigual en metodología. Incluye: objetivo de aprendizaje, una pregunta detonadora, dos lecturas previas, una actividad práctica de 40 minutos con instrucciones para el estudiante, los errores que suelen cometer en esa actividad, y una rúbrica de evaluación de tres criterios.</pre>
+
+  <h4>Difusión y transferencia</h4>
+  <pre class="prompt">Convierte los hallazgos de este artículo en tres productos de difusión: (1) un resumen de 250 palabras para público no especializado, sin tecnicismos y sin exagerar los alcances; (2) un guion de cinco minutos para presentarlo en video; y (3) una nota de una cuartilla dirigida a quien toma decisiones en [sector], que diga qué implica esto para su práctica. En los tres, conserva las salvedades del estudio: no quiero divulgación que prometa más de lo que encontramos.</pre>
+</section>
+
+<section id="limitaciones">
+  <h2>12. Qué no conviene delegarle</h2>
+  <p>No por una regla externa, sino porque hace mal esas cosas o porque al hacerlas destruye el valor del trabajo.</p>
+  <div class="tarjetas dos">
+    <div class="tarjeta coral">
+      <h4>La búsqueda sistemática</h4>
+      <p>No entra a las bases indexadas, no replica una cadena booleana y no garantiza exhaustividad. Sirve para explorar, no para cumplir un protocolo de revisión sistemática.</p>
+    </div>
+    <div class="tarjeta coral">
+      <h4>Las referencias</h4>
+      <p>Las inventa. Cada una se verifica en la fuente, sin excepción. Una referencia falsa en un artículo publicado es una corrección, en el mejor de los casos.</p>
+    </div>
+    <div class="tarjeta coral">
+      <h4>La interpretación de tus resultados</h4>
+      <p>Puede proponer lecturas, y ayuda mucho para destrabarte. Pero la interpretación es el lugar donde tu conocimiento del campo y del trabajo de campo es insustituible, y donde un revisor competente notará de inmediato que alguien habló de lo que no conoce.</p>
+    </div>
+    <div class="tarjeta coral">
+      <h4>La originalidad del aporte</h4>
+      <p>Por construcción, tiende a lo que ya existe en la literatura. Puede ayudarte a ver dónde está el hueco; no puede decidir por ti qué vale la pena decir.</p>
+    </div>
+    <div class="tarjeta gold">
+      <h4>El juicio sobre personas</h4>
+      <p>Evaluar a un estudiante, dictaminar a un colega, decidir una autoría. Son actos de responsabilidad profesional que no se delegan, aunque se pueda preparar el material con apoyo.</p>
+    </div>
+    <div class="tarjeta gold">
+      <h4>Las decisiones éticas</h4>
+      <p>Qué puedes preguntar, a quién, y qué puedes publicar sobre ello. Eso lo define tu comité de ética y tu propio criterio, no una herramienta.</p>
+    </div>
+  </div>
+  <div class="recuadro bien">
+    <strong>Una forma útil de pensarlo</strong>
+    <p>Claude es excelente para el trabajo que rodea a la investigación: organizar, comparar, redactar, traducir, programar, criticar, formatear. Es mediocre o peligroso en el núcleo: decidir qué es importante, interpretar lo que encontraste y responder por ello. Si lo usas para liberar tiempo del primer grupo y dedicarlo al segundo, ganaste. Si lo usas al revés, perdiste algo que no se nota de inmediato.</p>
+  </div>
+</section>
+
+<section id="seguridad">
+  <h2>13. Seguridad</h2>
+  <p>Mientras más puede hacer Claude, más importa cómo lo usas. Estas son las recomendaciones de Anthropic, aterrizadas al trabajo académico:</p>
+  <ul>
+    <li><strong>Instrucciones escondidas.</strong> Una página web o un PDF puede traer instrucciones escondidas para que Claude haga algo que no pediste. Si propone una acción rara, detenlo.</li>
+    <li><strong>Modo Manual y lectura atenta.</strong> Revisa lo que vas a aprobar, sobre todo si borra, envía o modifica algo.</li>
+    <li><strong>Carpeta dedicada y respaldo.</strong> Conecta solo la carpeta del trabajo en curso, nunca la raíz de tus documentos, y guarda copia de lo importante. Tus datos de campo y tus borradores no deberían estar en la misma carpeta que conectas.</li>
+    <li><strong>Solo fuentes confiables</strong> para conectores, plugins y skills.</li>
+    <li><strong>Navegador.</strong> El navegador integrado puede importar las sesiones de tu navegador. Deja sin marcar la banca, el correo institucional y los sistemas donde gestionas evaluaciones o dictámenes. Claude in Chrome tiene sus propios riesgos: lee su guía de seguridad antes de activarlo.</li>
+    <li><strong>Uso de la computadora</strong> (computer use, beta): Claude ve tu pantalla sin ningún aislamiento. No lo uses mientras tengas abiertos expedientes, datos de participantes o sistemas institucionales.</li>
+    <li><strong>Tú respondes</strong> por lo que Claude haga en tu nombre.</li>
+  </ul>
+  <p>Si notas un comportamiento sospechoso de Claude, repórtalo a <code>usersafety@anthropic.com</code>. Si crees que se expuso información protegida de una investigación, avisa además a tu comité de ética o a la instancia que corresponda en tu institución.</p>
+</section>
+
+<section id="ayuda">
+  <h2>14. Ayuda y recursos</h2>
+  <div class="tarjetas dos">
+    <div class="tarjeta"><h4>Centro de ayuda</h4><p><code>support.claude.com</code>. Dentro de la app, en el menú › <em>Get help</em>, hay un asistente y, si hace falta, atención humana.</p></div>
+    <div class="tarjeta gold"><h4>Cursos gratuitos</h4><p><code>academy.claude.com</code>, con cursos de Anthropic para aprender a usar Claude.</p></div>
+    <div class="tarjeta green"><h4>Ejemplos de skills</h4><p><code>github.com/anthropics/skills</code>. Revísalas antes de instalarlas.</p></div>
+    <div class="tarjeta navy"><h4>Políticas editoriales</h4><p>Antes de enviar, consulta las instrucciones para autores de tu revista objetivo y los lineamientos de integridad de tu institución. Son la referencia que manda.</p></div>
+  </div>
+  <p class="nota-pie">Claude cambia con frecuencia. Las funciones, modelos y límites descritos aquí corresponden a octubre de 2026. Si algo no coincide con lo que ves en tu app, la documentación oficial de Anthropic es la que manda.</p>
+</section>
+
+<footer class="pie">
+  <p><strong>Manual de Claude para investigación de posgrado</strong> · Octubre de 2026.</p>
+  <p>Material elaborado por el <strong>Dr. Omar Valdez Palazuelos</strong>, Investigador SNII Nivel I.</p>
+  <p>© 2026 Omar Valdez Palazuelos. Todos los derechos reservados. Se autoriza su uso con fines académicos y de formación citando la fuente. Este documento no constituye asesoría legal ni sustituye las políticas de integridad académica de cada institución o revista.</p>
+  <p style="margin-top:10px"><a href="/">omarvaldez.com</a> &middot; <a href="/#contacto">Contacto</a></p>
+</footer>
+
+</div>
+
+</div>
+</body>
+</html>
