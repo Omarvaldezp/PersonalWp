@@ -331,9 +331,12 @@ IP nunca queda en claro.
 `src/sitemap.xml` lista las páginas fijas y los posts publicados. **No se
 actualiza solo**: al publicar un post nuevo, agrégalo.
 
-### Pendiente
-
-- Correr `09_limite_de_envios.sql` (el conector no puede aplicar DDL; ver arriba).
+Aplicado por Omar el 10 de octubre de 2026. Comprobado en producción con la
+llave anónima: un correo inválido y un mensaje vacío responden 400 sin guardar
+nada, y una suscripción de prueba quedó registrada con la huella de la IP, así
+que Supabase sí entrega los encabezados que el tope por IP necesita. Quedó un
+suscriptor de prueba inactivo, `prueba-limite-claude@ejemplo.invalid`, que se
+puede borrar sin riesgo.
 
 ---
 
