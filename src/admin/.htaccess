@@ -1,5 +1,11 @@
-# Admin Panel - Directory Configuration
-DirectoryIndex index.php
+# Panel de administración (Supabase)
+#
+# /admin/ abre el panel del blog, que es el único que queda. El panel PHP se
+# retiró en octubre de 2026; cualquier enlace o marcador viejo a un .php de
+# esta carpeta (index.php, login.php, estudiantes/..., etc.) se manda al panel.
+DirectoryIndex index.html
+
+RedirectMatch 301 ^/admin/.*\.php$ /admin/
 
 # Prevent directory listing
 Options -Indexes

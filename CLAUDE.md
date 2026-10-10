@@ -15,11 +15,16 @@ varias trampas que pueden tumbar el sitio si se ignoran.
 
 ---
 
-## Los dos sistemas
+## Un solo sistema: Supabase
 
-Conviven dos sistemas independientes. No los mezcles.
+Hasta octubre de 2026 convivía un segundo sistema en PHP + PostgreSQL (panel
+de `/admin/index.php`, API en `src/api/`, diagnóstico DISDE y gestión de
+estudiantes). Se retiró completo, junto con los datos, por decisión de Omar.
+Ver "Retiro del PHP" más abajo. **No lo reconstruyas** ni agregues PHP nuevo:
+todo lo que necesite servidor va en Supabase (tablas con RLS, funciones
+`SECURITY DEFINER` o Edge Functions).
 
-### A. Sitio público + blog (Supabase) — EL QUE ESTÁ EN VIVO
+### Sitio público + blog (Supabase)
 
 Frontend estático que carga el SDK de Supabase desde CDN. El contenido del blog,
 cursos, investigaciones y stats vive en Supabase, no en el repo.
@@ -40,14 +45,20 @@ Colecciones/tablas en Supabase: posts de blog (con `slug`, `category`,
 `excerpt`, `content`, `image_url`, `likes`, `dislikes`), cursos,
 investigaciones y stats.
 
-### B. Sistema académico (PHP + PostgreSQL) — EN ESTE REPO
+### Panel de administración
 
-Diagnóstico DISDE y gestión de estudiantes. Vive en `src/api/` y `src/admin/`.
-Fase 1 terminada: `estudiantes`, `cursos_instancias`, `inscripciones`.
+Uno solo: `src/admin/index.html`, que responde en `https://omarvaldez.com/admin/`.
+Entra con Supabase Auth y los permisos salen de `perfiles` / `tiene_rol()`
+(`database/supabase/00_roles.sql`). Es un archivo autocontenido: estilos y
+scripts van dentro, y las librerías (Supabase, Quill, Chart.js) vienen de CDN.
+
+`src/admin/.htaccess` declara `DirectoryIndex index.html` y redirige cualquier
+`.php` de `/admin/` al panel, para que los marcadores viejos del panel PHP no
+terminen en un 404.
 
 ### Micro sitios de curso
 
-Dos secciones estáticas dentro de `src/`, independientes de A y de B:
+Tres secciones estáticas dentro de `src/`, independientes del sitio principal:
 
 | Ruta | Qué es |
 |---|---|
@@ -99,22 +110,12 @@ Por eso los documentos largos y con diseño propio van como página estática ba
 una entrada corta que enlaza a la página. La entrada sí aparece en el listado;
 el documento conserva su diseño y sus estilos de impresión.
 
-### Conflicto conocido entre A y B
+### Firebase: retirado
 
-`src/.htaccess` declara `DirectoryIndex index.html index.php`, pero
-`src/admin/.htaccess` declara `DirectoryIndex index.php`, y el del subdirectorio
-manda. **Gana el panel PHP**: entrar a `/admin/` redirige a `/admin/login.php`.
-El panel del blog solo responde en `/admin/index.html`. Ver el pendiente 1. El panel PHP solo es alcanzable por nombre
-explícito (`/admin/index.php`, `/admin/estudiantes/index.php`). No es un bug que
-haya que "arreglar" sin consultar a Omar: el panel del blog es el que él usa a
-diario.
-
-### Código muerto — NO es el blog actual
-
-`src/index-firebase.html`, `src/firebase/*` y `src/main.js` son de un intento
-anterior con **Firebase**, abandonado. El blog actual es **Supabase**. No los
-confundas ni los uses como referencia. Pendiente de limpieza (ver abajo el
-riesgo de borrar archivos).
+Hubo un intento anterior con **Firebase** (`src/index-firebase.html`,
+`src/firebase/`, `firebase.json`, `firestore.*`). Se borró en
+octubre de 2026. Si encuentras menciones a Firebase en guías viejas de la raíz
+o en `package.json`, son restos sin efecto: el sitio no lo usa.
 
 ---
 
@@ -131,7 +132,8 @@ SiteGround.
 **Cuidado:** `dangerous-clean-slate: false` NO significa que no borre nada. La
 acción lleva un archivo de estado en el servidor y **sí borra remotamente los
 archivos que quites del repo**. Los archivos que nunca han estado en el repo
-(los de la sección A) no los toca.
+(los del sitio público que solo viven en el servidor, y `api/config/config.php`)
+no los toca.
 
 ### Bomba de tiempo: `src/index.html`
 
@@ -141,6 +143,10 @@ modificado. Pero:
 
 - Si alguien lo **edita**, el deploy pisa la landing real.
 - Si alguien lo **borra**, el deploy borra la landing real.
+
+`src/main.js` y `src/styles/main.css` van con él: son el JavaScript y los
+estilos de esa landing vieja, y el paso `npm run build` del workflow falla si
+faltan (Vite compila `src/index.html`). Tampoco los borres por separado.
 
 La solución correcta es **reemplazar su contenido por el de producción, byte por
 byte**, no borrarlo. Requiere bajar el archivo del servidor.
@@ -153,8 +159,6 @@ Falta agregar a la sección `exclude:` del workflow (requiere permiso
 ```yaml
 exclude: |
   index.html
-  index-firebase.html
-  main.js
   # ...resto de las exclusiones existentes
 ```
 
@@ -163,31 +167,22 @@ exclude: |
 ## Restricciones del entorno
 
 - **Hosting:** SiteGround. No se puede cambiar el DNS ni migrar de proveedor.
-- **Red de la sesión:** el environment `Default` está en nivel `Trusted`, así que
-  `omarvaldez.com` devuelve `403 host_not_allowed`. No se puede verificar el
-  sitio ni bajar archivos del servidor hasta que se ponga en `Custom` con
-  `omarvaldez.com`, `*.omarvaldez.com` y `*.supabase.co`.
+- **Red de la sesión:** para verificar el sitio o bajar archivos del servidor,
+  el environment necesita permitir `omarvaldez.com`, `*.omarvaldez.com` y
+  `*.supabase.co`. En octubre de 2026 ya estaban permitidos.
 - **FTP directo desde la sesión no sirve:** todo el egress pasa por un proxy
   HTTP/HTTPS. El camino de publicación es siempre commit → push → Action.
-- **Base de datos del sistema académico:** PostgreSQL, **no MySQL**. Usa JSONB.
 - Los archivos en la raíz del repo (`*.md`, `database/`) **no se despliegan**.
-  Antes eso se resolvía con scripts PHP dentro de `src/` que llevaban el SQL
-  embebido; se eliminaron por inseguros. Ver "Cómo correr migraciones".
 
 ## Cómo correr migraciones
 
-El SQL vive en `database/migrations/` y `database/*.sql`, y **no se despliega**.
-Ejecútalo desde el panel de SiteGround (phpPgAdmin o acceso `psql`), pegando el
-archivo correspondiente.
+El SQL de Supabase vive en `database/supabase/` y **no se despliega**. Pégalo
+en el SQL Editor del proyecto de Supabase, en el orden de su número.
 
-**Nunca** vuelvas a poner un script de migración o de diagnóstico dentro de
-`src/`. Todo lo que esté ahí queda publicado en `https://omarvaldez.com/` y es
-alcanzable por cualquiera. Los scripts que se borraron usaban llaves
-`?key=migrate123`, `?key=test123` y `?key=check123` en texto plano; uno de ellos
-imprimía nombres y correos de estudiantes.
-
-Si en algún momento hace falta un script de mantenimiento vía web, debe ir detrás
-de la sesión de admin (`Auth`), no de una llave en el código fuente.
+**Nunca** pongas un script de migración o de diagnóstico dentro de `src/`. Todo
+lo que esté ahí queda publicado en `https://omarvaldez.com/` y es alcanzable
+por cualquiera. En 2026 hubo scripts PHP así, con llaves `?key=migrate123` en
+texto plano; uno de ellos imprimía nombres y correos de estudiantes.
 
 ---
 
@@ -195,37 +190,15 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
 
 ### Hecho
 
-- Diagnóstico DISDE con institución separada de licenciatura y maestría
-- Fase 1 del sistema académico: estudiantes, cursos, inscripciones (API + panel)
 - Sección `/trama`: curso-taller de docencia bimodal para la FCA-UAS
   (`src/trama/index.html`, `src/css/trama.css`, kit descargable)
-- Eliminados de `src/` los scripts expuestos con llaves débiles (`migrate-*.php`,
-  `test-db-connection.php`, `check-diagnostico-data.php`). El deploy los borra
-  también del servidor, que es lo que se buscaba. Ver "Cómo correr migraciones".
-- API cerrada. Los nueve controladores de `src/api/controllers/` exigen sesión
-  vía `api_require_auth()` (`src/api/auth/guard.php`). Única excepción: el
-  **POST** de `diagnostico-disde.php`, que recibe el formulario público de
-  `src/diagnosticoDISDE.php`; su GET sí está protegido.
-- CORS cerrado. `src/api/config/cors.php` ya no emite el comodín. Todo lo que
-  consume la API es del mismo origen y no necesita CORS. Para autorizar un
-  dominio externo, define `API_ALLOWED_ORIGINS` en `config.php`.
-- Los controladores dejaron de devolver `$e->getMessage()` al cliente; el
-  detalle va a `error_log` y el cliente recibe un mensaje genérico.
-- `config/`, `models/` y `utils/` se bloquean por HTTP con un `.htaccess` propio
-  dentro de cada uno. **Nunca metas reglas de `mod_rewrite` bajo `/api/`**: la
-  primera versión de `src/api/.htaccess` las traía y dejó `/api/auth/login.php`
-  respondiendo 404, con lo que el panel no podía cerrar sesión. La redirección
-  a HTTPS ya la hace el `.htaccess` de la raíz.
-- **`auth/` queda accesible a propósito**: el panel cierra sesión llamando a
-  `/api/auth/login.php?action=logout` desde el navegador.
-
 - Micro sitio del Seminario de Investigación Teórico (`src/seminario/`), con la
   información del curso y el diagnóstico inicial conectado a Supabase. Las
-  respuestas se consultan desde el panel del blog, sección Seminario, con
-  promedios por alumno, panorama del grupo por reactivo y exportación a CSV.
-- `src/admin/index.html`, el panel del blog, entró al repo. Antes vivía sólo en
-  el servidor. **A partir de ahora el deploy manda sobre él**: cualquier cambio
-  hecho a mano en el servidor se pierde en el siguiente push.
+  respuestas se consultan desde el panel, sección Seminario, con promedios por
+  alumno, panorama del grupo por reactivo y exportación a CSV.
+- `src/admin/index.html`, el panel, entró al repo. Antes vivía sólo en el
+  servidor. **El deploy manda sobre él**: cualquier cambio hecho a mano en el
+  servidor se pierde en el siguiente push.
 - El panel puede borrar una respuesta del seminario, con confirmación que dice
   el nombre. El desglose por reactivo se va solo, por la llave foránea con
   ON DELETE CASCADE.
@@ -237,30 +210,45 @@ de la sesión de admin (`Auth`), no de una llave en el código fuente.
   `window['cachedPosts']`, pero esas variables se declaran con `let` en el nivel
   superior del script y `let` **no** crea una propiedad de `window`. Devolvía
   `undefined` siempre, así que escribir en cualquier caja de búsqueda vaciaba la
-  tabla en lugar de filtrarla. Fallaba en todas las secciones, no sólo en la
-  nueva.
+  tabla en lugar de filtrarla.
 
-### Retiro del PHP, en curso
+### Retiro del PHP (octubre de 2026)
 
-El panel y la API PHP se retiran; todo queda en el panel del blog (Supabase).
-Los archivos preparados van en `database/supabase/` y `supabase/functions/`.
-El orden importa:
+Omar decidió dejar un solo panel, el de Supabase, y **no conservar** los datos
+del diagnóstico DISDE ni de estudiantes. Con eso se borró del repo, y por lo
+tanto del servidor en el siguiente deploy:
 
-1. `00_roles.sql` — tabla `perfiles` y función `tiene_rol()`. **Va primero**,
-   porque `01_academico.sql` depende de ella. Incluye el paso obligatorio de
-   darte a ti mismo el rol `admin`.
-2. `01_academico.sql` — las cuatro tablas académicas con RLS por rol.
+- El panel PHP: `src/admin/*.php`, `includes/`, `estudiantes/`,
+  `cursos-academicos/` y `assets/` (el panel de Supabase no usa nada de ahí).
+- La API PHP completa (`src/api/`), salvo su `.htaccess`, que ahora niega todo.
+- El formulario público `src/diagnosticoDISDE.php` y `src/bienvenida-disde.php`.
+- El SQL del PostgreSQL de SiteGround (`database/*.sql`, `database/migrations/`)
+  y la Edge Function `diagnostico-correo`, que nunca llegó a publicarse.
+- De paso, el código muerto de Firebase.
+
+`src/api/.htaccess` se queda a propósito: `api/config/config.php` (credenciales
+del PostgreSQL) nunca estuvo en git, así que el deploy no lo borra. Mientras
+alguien no lo elimine a mano, ese `.htaccess` impide alcanzarlo por HTTP.
+
+Del lado de Supabase, la secuencia de archivos queda así:
+
+1. `00_roles.sql` — tabla `perfiles` y función `tiene_rol()`. Se queda: el
+   panel la usa para los roles.
+2. `01_academico.sql` — creó las cuatro tablas académicas. **Obsoleto**: lo
+   deshace `07_retirar_sistema_academico.sql`. No lo vuelvas a correr.
 3. `02_corregir_politicas.sql` — repara los like y acota la baja de suscriptores.
-4. `supabase/functions/diagnostico-correo/` — Edge Function que sustituye al
-   `mail()` del PHP. **Sin ella no se puede apagar el PHP** sin que el
-   estudiante deje de recibir su correo.
+4. `04_diagnostico_seminario.sql` — micro sitio del seminario.
+5. `05_corregir_reaccionar_post.sql`, `06_cerrar_tablas_del_blog.sql`.
+6. `07_retirar_sistema_academico.sql` — borra las cuatro tablas académicas, que
+   nunca se usaron, y con ellas el INSERT anónimo que seguía abierto en
+   `diagnostico_disde_respuestas`.
 
-`04_diagnostico_seminario.sql` no forma parte de esta secuencia: es del micro
-sitio del seminario, no del retiro del PHP. Sólo depende de `00_roles.sql`, así
-que puede correrse antes o después de `01_academico.sql`.
+Pasos manuales que el repo no puede hacer (los hace Omar):
 
-Decisiones ya tomadas por Omar: habrá más usuarios del panel (por eso los
-roles), y el correo del diagnóstico se conserva (por eso la Edge Function).
+- Correr `07_retirar_sistema_academico.sql` en el SQL Editor de Supabase.
+- Borrar desde el Administrador de archivos de SiteGround la carpeta
+  `/public_html/api/` completa (incluye `config/config.php`).
+- Eliminar la base PostgreSQL y su usuario desde Site Tools de SiteGround.
 
 ### Trampa comprobada: `posts.id` es `uuid`, no `bigint`
 
@@ -291,22 +279,16 @@ Mismo defecto que tenían los like: falla en silencio y la página muestra un
 SECURITY DEFINER; falta cambiar la línea en `unsubscribe.html`, que no está en
 el repo.
 
+
 ### Pendiente, por prioridad
 
-1. **Decidir qué debe servir `/admin/`.** Comprobado en agosto de 2026: entrar
-   a `/admin/` lleva a `/admin/login.php`, o sea al **panel PHP**, no al del
-   blog. Lo causa el `DirectoryIndex index.php` de `src/admin/.htaccess`, que
-   desde mayo de 2026 pisa el del directorio padre. El panel del blog solo es
-   alcanzable escribiendo `/admin/index.html`. Falta que Omar decida cuál de
-   los dos debe quedarse en `/admin/`.
-2. Sincronizar los archivos de producción hacia el repo (sección A)
-3. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
+1. Sincronizar los archivos de producción hacia el repo (`index.html`,
+   `post.html`, `css/custom.css`, `js/app.js`, `privacidad.html`,
+   `unsubscribe.html`, `img/`). Desactiva además la bomba de `src/index.html`.
+2. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
    `baja_suscriptor()` en vez de escribir directo. Requiere bajar el archivo
    del servidor. Ver la trampa comprobada más arriba.
-4. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
-5. Sustituir los `alert()` del panel PHP por toasts
-6. Fases 2 a 5 del sistema académico: actividades, calificaciones, asistencia,
-   cuestionarios múltiples, reportes
+3. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
 
 ---
 
@@ -315,9 +297,8 @@ el repo.
 - **Idioma:** todo el contenido de cara al usuario va en **español de México**.
   No neutro, no de España.
 - El sitio no usa emojis en el contenido publicado.
-- PHP con PDO y sentencias preparadas. `Database` es singleton; las respuestas
-  de la API pasan por la clase `Response`.
-- Las páginas del panel en subcarpetas necesitan rutas **absolutas** para assets
-  (`/admin/assets/...`) y `../../` para los `require_once` hacia `src/api/`.
+- Nada de PHP nuevo. Lo que necesite lógica de servidor va en Supabase.
+- Toda tabla con datos de personas lleva RLS y `REVOKE` para `anon`; toda vista
+  sobre ellas, `security_invoker = true`.
 - Antes de proponer cambios al sitio público, recuerda que muchos archivos no
   están aquí: pídelos o baja del servidor, no los reconstruyas de memoria.

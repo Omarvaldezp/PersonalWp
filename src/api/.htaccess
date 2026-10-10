@@ -1,28 +1,18 @@
-# API - Configuración de acceso
+# API PHP retirada (octubre de 2026)
 #
-# Deliberadamente SIN reglas de mod_rewrite.
+# El panel y la API PHP se eliminaron: todo el sitio trabaja con Supabase.
+# Este archivo se queda a propósito para cerrar /api/ por completo.
 #
-# La versión anterior de este archivo traía un RewriteEngine con redirección a
-# HTTPS y un bloqueo por RewriteRule, y con ella /api/auth/login.php empezó a
-# responder 404, con lo que el panel dejó de poder cerrar sesión. La
-# redirección a HTTPS ya la hace el .htaccess de la raíz, así que aquí sobra.
-#
-# El bloqueo de los directorios internos se hace ahora con un .htaccess propio
-# dentro de cada uno (config/, models/, utils/), que no puede afectar a las
-# rutas vecinas.
-#
-# Por HTTP solo deben alcanzarse:
-#   - controllers/*.php   endpoints del panel y del formulario público
-#   - auth/login.php      login, logout y consulta del usuario actual
+# Por qué no basta con borrar los archivos: el deploy solo elimina del
+# servidor lo que alguna vez estuvo en el repo. config/config.php, con las
+# credenciales de la base PostgreSQL, nunca estuvo en git y sigue en
+# /public_html/api/config/ hasta que se borre a mano desde SiteGround. Mientras
+# exista, este bloqueo impide alcanzarlo por HTTP.
 
-Options -Indexes
-
-<FilesMatch "\.(sql|md|ini|log|bak)$|\.example\.php$">
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-    <IfModule !mod_authz_core.c>
-        Order allow,deny
-        Deny from all
-    </IfModule>
-</FilesMatch>
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
