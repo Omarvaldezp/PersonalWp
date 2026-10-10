@@ -250,10 +250,18 @@ Del lado de Supabase, la secuencia de archivos queda así:
 6. `07_retirar_sistema_academico.sql` — borra las cuatro tablas académicas, que
    nunca se usaron, y con ellas el INSERT anónimo que seguía abierto en
    `diagnostico_disde_respuestas`.
+7. `08_politicas_por_rol.sql` — **seguridad, urgente**. Las políticas
+   originales del blog decían `auth.role() = 'authenticated'` y el registro de
+   Supabase Auth estaba abierto: cualquiera que se creara una cuenta podía leer
+   contactos y suscriptores o borrar posts. Pasa el contenido a admin/editor,
+   los datos personales a sólo admin, y hace que las cuentas nuevas nazcan
+   inactivas. Va acompañado de desactivar "Allow new users to sign up" en
+   Authentication del panel de Supabase.
 
 Pendiente fuera del repo:
 
-- Correr `07_retirar_sistema_academico.sql`. La sesión tiene el conector de
+- Correr `08_politicas_por_rol.sql` y `07_retirar_sistema_academico.sql`, y
+  desactivar el registro público en Supabase Auth. La sesión tiene el conector de
   Supabase (`mcp__Supabase__*`, proyecto `mogmgtnkyazpsgslucrx`), pero en
   octubre de 2026 las sentencias destructivas se quedaban esperando una
   confirmación del usuario y vencían a los 60 s sin ejecutarse. Las lecturas
