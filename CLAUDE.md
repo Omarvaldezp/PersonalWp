@@ -245,6 +245,8 @@ Del lado de Supabase, la secuencia de archivos queda así:
    los datos personales a sólo admin, y hace que las cuentas nuevas nazcan
    inactivas. Va acompañado de desactivar "Allow new users to sign up" en
    Authentication del panel de Supabase.
+8. `09_limite_de_envios.sql` — tope de envíos para contacto y newsletter. Ver
+   "Límite de envíos" más abajo.
 
 Aplicado el 10 de octubre de 2026: `07` y `08` corridos por Omar desde el SQL
 Editor (el conector no puede: las sentencias de DDL se quedan esperando una
@@ -300,9 +302,31 @@ activo; la función lo da de baja aunque el correo traiga otras mayúsculas o
 espacios.
 
 
-### Pendiente, por prioridad
+### Límite de envíos de los formularios públicos
 
-1. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
+`09_limite_de_envios.sql` pone un trigger `BEFORE INSERT` en `contacts` y
+`subscribers` que sólo aplica al rol `anon`: 3 mensajes y 5 suscripciones por
+hora por IP, 30 y 60 por hora en total, más validación de correo y largo del
+mensaje. La IP sale de `request.headers` (PostgREST) y se guarda como SHA-256 en
+`limite_envios`, que nadie lee por la API y se vacía sola a las 24 horas.
+
+Trampa: dentro de una función `SECURITY DEFINER`, `current_user` es el dueño de
+la función, no `anon`. El rol de la petición se lee con
+`current_setting('role', true)`.
+
+Probado en un PostgreSQL 16 local simulando `anon` con encabezados: el cuarto
+mensaje desde la misma IP falla, otra IP sí entra, el panel no tiene tope, el
+duplicado de suscriptor sigue dando 23505 (que el sitio trata como éxito) y la
+IP nunca queda en claro.
+
+### Sitemap
+
+`src/sitemap.xml` lista las páginas fijas y los posts publicados. **No se
+actualiza solo**: al publicar un post nuevo, agrégalo.
+
+### Pendiente
+
+- Correr `09_limite_de_envios.sql` (el conector no puede aplicar DDL; ver arriba).
 
 ---
 
