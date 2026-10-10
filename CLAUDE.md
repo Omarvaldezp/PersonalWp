@@ -258,14 +258,24 @@ Del lado de Supabase, la secuencia de archivos queda así:
    inactivas. Va acompañado de desactivar "Allow new users to sign up" en
    Authentication del panel de Supabase.
 
+Aplicado el 10 de octubre de 2026: `07` y `08` corridos por Omar desde el SQL
+Editor (el conector no puede: las sentencias de DDL se quedan esperando una
+confirmación del usuario y vencen a los 60 s; las lecturas y los INSERT sí
+funcionan). Comprobado después: cero políticas con `auth.role()`, las cuatro
+tablas académicas ya no existen y la llave anónima sigue leyendo los posts
+publicados, cursos y estadísticas.
+
+Los avisos de Supabase que quedan sobre funciones `SECURITY DEFINER` que `anon`
+puede ejecutar (`reaccionar_post`, `baja_suscriptor`,
+`guardar_diagnostico_seminario`) son intencionales: son las únicas puertas de
+escritura del público.
+
 Pendiente fuera del repo:
 
-- Correr `08_politicas_por_rol.sql` y `07_retirar_sistema_academico.sql`, y
-  desactivar el registro público en Supabase Auth. La sesión tiene el conector de
-  Supabase (`mcp__Supabase__*`, proyecto `mogmgtnkyazpsgslucrx`), pero en
-  octubre de 2026 las sentencias destructivas se quedaban esperando una
-  confirmación del usuario y vencían a los 60 s sin ejecutarse. Las lecturas
-  sí funcionan. Las cuatro tablas estaban vacías y sin dependencias.
+- Desactivar "Allow new users to sign up" en Authentication de Supabase. Con
+  `08`, una cuenta nueva nace inactiva y no puede nada, pero no tiene por qué
+  poder crearse.
+- Activar la protección contra contraseñas filtradas (Authentication).
 - Eliminar la base PostgreSQL y su usuario desde Site Tools de SiteGround.
   SiteGround no tiene API pública, así que esto sólo lo puede hacer Omar.
 
