@@ -48,6 +48,13 @@ descargas sin caché (`?nc=...`) que el contenido fuera idéntico. Ojo: la cach�
 SiteGround (`x-proxy-cache: HIT`) puede servir una copia vieja; para bajar o
 verificar un archivo, agrega siempre un parámetro aleatorio.
 
+**Caché del navegador:** `src/.htaccess` le dice al navegador que guarde CSS y
+JS **un año**. Por eso las páginas cargan `custom.css`, `app.js` y
+`supabase-config.js` con `?v=AAAAMMDD`. **Cada vez que cambies uno de esos tres
+archivos, sube la fecha de `?v=` en todas las páginas que lo cargan**
+(`grep -rn "?v=2" src`); si no, los visitantes que ya entraron seguirán viendo
+la versión vieja hasta un año.
+
 Colecciones/tablas en Supabase: posts de blog (con `slug`, `category`,
 `excerpt`, `content`, `image_url`, `likes`, `dislikes`), cursos,
 investigaciones y stats.

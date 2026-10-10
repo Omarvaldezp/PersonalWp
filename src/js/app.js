@@ -70,7 +70,7 @@
                 const date = new Date(p.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
 
                 return `<article class="blog-card reveal" data-category="${esc(p.category)}">
-                    <div class="blog-thumb">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.title)}" style="width:100%;height:100%;object-fit:cover;">` : icon}</div>
+                    <a href="/post.html?slug=${esc(p.slug)}" class="blog-thumb" tabindex="-1" aria-hidden="true">${p.image_url ? `<img src="${esc(p.image_url)}" alt="" style="width:100%;height:100%;object-fit:cover;">` : icon}</a>
                     <div class="blog-body">
                         <div class="blog-meta">
                             <span class="blog-cat">${catLabel[p.category] || p.category}</span>
