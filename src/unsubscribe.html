@@ -93,10 +93,9 @@
 
         try {
             const email = atob(emailB64);
-            const { error } = await db
-                .from('subscribers')
-                .update({ active: false })
-                .eq('email', email);
+            // baja_suscriptor() es SECURITY DEFINER: un UPDATE directo de anon
+            // no ve la fila (no hay política de SELECT) y no da de baja a nadie.
+            const { error } = await db.rpc('baja_suscriptor', { correo: email });
 
             if (error) throw error;
 

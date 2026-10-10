@@ -293,16 +293,16 @@ que la fila es invisible para el filtro. La política de UPDATE dice
 
 Mismo defecto que tenían los like: falla en silencio y la página muestra un
 éxito que no corresponde a nada. Lo resuelve `baja_suscriptor()`, que es
-SECURITY DEFINER; falta cambiar la línea en `unsubscribe.html`, que no está en
-el repo.
+SECURITY DEFINER. **Reparado el 10 de octubre de 2026**: `src/unsubscribe.html`
+ya llama a `db.rpc('baja_suscriptor', { correo })`. Comprobado con un suscriptor
+de prueba y la llave anónima: el UPDATE directo respondía 204 y lo dejaba
+activo; la función lo da de baja aunque el correo traiga otras mayúsculas o
+espacios.
 
 
 ### Pendiente, por prioridad
 
-1. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
-   `baja_suscriptor()` en vez de escribir directo. Requiere bajar el archivo
-   del servidor. Ver la trampa comprobada más arriba.
-2. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
+1. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
 
 ---
 
