@@ -6,12 +6,13 @@ varias trampas que pueden tumbar el sitio si se ignoran.
 
 ## Lo más importante en tres líneas
 
-1. El sitio en vivo (omarvaldez.com) corre con **Supabase**, y la mayoría de sus
-   archivos **no están en este repo**.
-2. El deploy **borra en el servidor lo que desaparezca del repo**. Nunca borres
-   `src/index.html`.
-3. `src/index.html` es una **versión vieja y obsoleta**. Si se llega a subir,
-   reemplaza la landing real. Ver "Bomba de tiempo".
+1. El sitio en vivo (omarvaldez.com) corre con **Supabase**. Desde octubre de
+   2026 **todos sus archivos están en `src/`**, copiados byte por byte del
+   servidor: el repo es la fuente de verdad.
+2. El deploy **borra en el servidor lo que desaparezca del repo**. Borrar
+   `src/index.html` tumba la portada.
+3. Cualquier cambio hecho a mano en el servidor (Administrador de archivos de
+   SiteGround) se pierde en cuanto el repo cambie ese archivo. Edita aquí.
 
 ---
 
@@ -29,17 +30,23 @@ todo lo que necesite servidor va en Supabase (tablas con RLS, funciones
 Frontend estático que carga el SDK de Supabase desde CDN. El contenido del blog,
 cursos, investigaciones y stats vive en Supabase, no en el repo.
 
-Archivos que **solo existen en el servidor** (`/public_html/`), no en git:
+Archivos del sitio público (todos en `src/`, el deploy manda sobre ellos):
 
 | Ruta | Qué es |
 |---|---|
-| `index.html` | Landing real, con carga dinámica desde Supabase |
+| `index.html` | Portada, con carga dinámica desde Supabase |
 | `post.html` | Artículo de blog individual (`?slug=...`) |
 | `css/custom.css` | Estilos de todo el sitio |
-| ~~`js/supabase-config.js`~~ | **Ya está en el repo**, en `src/js/`. El deploy manda sobre él |
-| `js/app.js` | Lógica del landing (formularios, filtros, animaciones) |
-| ~~`admin/index.html`~~ | **Ya está en el repo**, en `src/admin/`. El deploy manda sobre él |
-| `privacidad.html`, `img/` | Aviso de privacidad y assets |
+| `js/supabase-config.js` | Cliente de Supabase y funciones de datos (`window.API`) |
+| `js/app.js` | Lógica de la portada (formularios, filtros, animaciones) |
+| `privacidad.html` | Aviso de privacidad |
+| `unsubscribe.html` | Baja del newsletter (`?e=` correo en base64) |
+| `img/`, `favicon.ico`, `robots.txt`, `sitemap.xml` | Imágenes y archivos para buscadores |
+
+Se sincronizaron del servidor el 10 de octubre de 2026, comprobando con dos
+descargas sin caché (`?nc=...`) que el contenido fuera idéntico. Ojo: la caché de
+SiteGround (`x-proxy-cache: HIT`) puede servir una copia vieja; para bajar o
+verificar un archivo, agrega siempre un parámetro aleatorio.
 
 Colecciones/tablas en Supabase: posts de blog (con `slug`, `category`,
 `excerpt`, `content`, `image_url`, `likes`, `dislikes`), cursos,
@@ -132,35 +139,16 @@ SiteGround.
 **Cuidado:** `dangerous-clean-slate: false` NO significa que no borre nada. La
 acción lleva un archivo de estado en el servidor y **sí borra remotamente los
 archivos que quites del repo**. Los archivos que nunca han estado en el repo
-(los del sitio público que solo viven en el servidor, y `api/config/config.php`)
-no los toca.
+no los toca (ver el truco de los dos commits en "Retiro del PHP").
 
-### Bomba de tiempo: `src/index.html`
+### La portada vieja ya no existe
 
-El `src/index.html` del repo es la landing estática vieja (mayo), no la de
-producción. Hoy no se sube porque no ha cambiado y la acción solo envía lo
-modificado. Pero:
-
-- Si alguien lo **edita**, el deploy pisa la landing real.
-- Si alguien lo **borra**, el deploy borra la landing real.
-
-`src/main.js` y `src/styles/main.css` van con él: son el JavaScript y los
-estilos de esa landing vieja, y el paso `npm run build` del workflow falla si
-faltan (Vite compila `src/index.html`). Tampoco los borres por separado.
-
-La solución correcta es **reemplazar su contenido por el de producción, byte por
-byte**, no borrarlo. Requiere bajar el archivo del servidor.
-
-### Protección pendiente en el workflow
-
-Falta agregar a la sección `exclude:` del workflow (requiere permiso
-`workflows` en la GitHub App, que la sesión normalmente no tiene):
-
-```yaml
-exclude: |
-  index.html
-  # ...resto de las exclusiones existentes
-```
+Hasta octubre de 2026, `src/index.html` era una portada vieja de mayo, distinta
+de la de producción, y editarla habría reemplazado la portada real. Ahora es la
+portada real. `src/main.js` y `src/styles/main.css`, que eran de esa portada
+vieja, se borraron. El paso `npm run build` del workflow compila
+`src/index.html` con Vite; su resultado (`dist/`) no se publica, pero si el
+build falla el deploy no corre.
 
 ---
 
@@ -311,13 +299,10 @@ el repo.
 
 ### Pendiente, por prioridad
 
-1. Sincronizar los archivos de producción hacia el repo (`index.html`,
-   `post.html`, `css/custom.css`, `js/app.js`, `privacidad.html`,
-   `unsubscribe.html`, `img/`). Desactiva además la bomba de `src/index.html`.
-2. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
+1. **Reparar la baja del newsletter.** `unsubscribe.html` debe llamar a
    `baja_suscriptor()` en vez de escribir directo. Requiere bajar el archivo
    del servidor. Ver la trampa comprobada más arriba.
-3. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
+2. Limitar la frecuencia de los `POST` de contacto y newsletter (hoy sin tope)
 
 ---
 
@@ -329,5 +314,6 @@ el repo.
 - Nada de PHP nuevo. Lo que necesite lógica de servidor va en Supabase.
 - Toda tabla con datos de personas lleva RLS y `REVOKE` para `anon`; toda vista
   sobre ellas, `security_invoker = true`.
-- Antes de proponer cambios al sitio público, recuerda que muchos archivos no
-  están aquí: pídelos o baja del servidor, no los reconstruyas de memoria.
+- Todo el sitio público está en `src/`. Si sospechas que alguien cambió algo
+  directo en el servidor, compáralo antes de editar (descarga con `?nc=` para
+  saltarte la caché).

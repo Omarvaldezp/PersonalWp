@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /sql/
+
+Sitemap: https://omarvaldez.com/sitemap.xml

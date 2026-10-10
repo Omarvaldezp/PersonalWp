@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CBXB26M1F4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CBXB26M1F4');
+    </script>
+
+    <!-- SEO Base (se actualizan dinámicamente con JS) -->
+    <meta name="description" id="metaDesc" content="Dr. Omar Valdez Palazuelos — Artículos sobre Blockchain, Bitcoin, IA y Fintech.">
+    <meta name="author" content="Omar Valdez Palazuelos">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" id="canonicalUrl" href="https://omarvaldez.com/post.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Dr. Omar Valdez Palazuelos">
+    <meta property="og:title" id="ogTitle" content="Blog | Dr. Omar Valdez Palazuelos">
+    <meta property="og:description" id="ogDesc" content="Artículos sobre Blockchain, Bitcoin, IA y Fintech.">
+    <meta property="og:url" id="ogUrl" content="https://omarvaldez.com/post.html">
+    <meta property="og:image" id="ogImage" content="https://omarvaldez.com/img/og-default.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twTitle" content="Blog | Dr. Omar Valdez Palazuelos">
+    <meta name="twitter:description" id="twDesc" content="Artículos sobre Blockchain, Bitcoin, IA y Fintech.">
+
+    <title id="pageTitle">Blog | Dr. Omar Valdez Palazuelos</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='68' font-family='Inter,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <!-- JSON-LD Structured Data (se inyecta dinámicamente) -->
+    <script type="application/ld+json" id="jsonLd">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Dr. Omar Valdez Palazuelos",
+        "url": "https://omarvaldez.com"
+    }
+    </script>
+
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar scrolled" id="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <span class="logo-name" style="color:#0f172a;">Dr. Omar Valdez</span>
+            <span class="logo-sub" style="color:#64748b;">PhD · SNI Nivel I</span>
+        </a>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menú">
+            <span style="background:#0f172a;"></span>
+            <span style="background:#0f172a;"></span>
+            <span style="background:#0f172a;"></span>
+        </button>
+        <ul class="nav-links" id="navMenu">
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/#sobre-mi">Sobre Mí</a></li>
+            <li><a href="/#servicios">Servicios</a></li>
+            <li><a href="/#investigacion">Investigación</a></li>
+            <li><a href="/#cursos">Cursos</a></li>
+            <li><a href="/#blog" class="active">Blog</a></li>
+            <li><a href="/#contacto" class="nav-cta">Contacto</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- POST CONTENT -->
+<article class="post-page">
+    <div class="container">
+
+        <!-- Loading State -->
+        <div class="post-loading" id="postLoading">
+            <div class="loading-spinner"></div>
+            <p>Cargando artículo...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="post-error" id="postError" style="display:none;">
+            <div class="error-icon"><i class="fas fa-file-alt"></i></div>
+            <h2>Artículo no encontrado</h2>
+            <p>El artículo que buscas no existe o ha sido removido.</p>
+            <a href="/#blog" class="btn btn-primary">Volver al Blog <span class="btn-arrow">→</span></a>
+        </div>
+
+        <!-- Post Content (se llena dinámicamente) -->
+        <div class="post-content" id="postContent" style="display:none;">
+
+            <!-- Breadcrumb -->
+            <nav class="post-breadcrumb">
+                <a href="/">Inicio</a>
+                <span>/</span>
+                <a href="/#blog">Blog</a>
+                <span>/</span>
+                <span id="breadcrumbTitle">Artículo</span>
+            </nav>
+
+            <!-- Header -->
+            <header class="post-header">
+                <div class="post-meta-top">
+                    <span class="post-category-badge" id="postCategory">Blockchain</span>
+                    <time class="post-date" id="postDate"></time>
+                </div>
+                <h1 id="postTitle"></h1>
+                <p class="post-excerpt" id="postExcerpt"></p>
+
+                <!-- Author -->
+                <div class="post-author">
+                    <div class="author-avatar">OV</div>
+                    <div>
+                        <div class="author-name">Dr. Omar Valdez Palazuelos</div>
+                        <div class="author-role">Profesor, Investigador & Consultor</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="post-featured-image" id="postImage" style="display:none;">
+                <img id="postImageSrc" src="" alt="">
+            </div>
+
+            <!-- Article Body -->
+            <div class="post-body" id="postBody"></div>
+
+            <!-- Share -->
+            <div class="post-share">
+                <span class="share-label">Compartir:</span>
+                <div class="share-buttons">
+                    <a href="#" id="shareTwitter" class="share-btn" target="_blank" rel="noopener" aria-label="Compartir en Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" id="shareLinkedIn" class="share-btn" target="_blank" rel="noopener" aria-label="Compartir en LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" id="shareWhatsApp" class="share-btn" target="_blank" rel="noopener" aria-label="Compartir en WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <button class="share-btn" id="copyLink" aria-label="Copiar enlace"><i class="fas fa-link"></i></button>
+                </div>
+            </div>
+
+            <!-- Reactions (Like / Dislike) -->
+            <div class="post-reactions" id="postReactions" style="display:none;">
+                <p class="reactions-question">¿Te resultó útil este artículo?</p>
+                <div class="reactions-buttons">
+                    <button class="reaction-btn reaction-like" id="btnLike" aria-label="Me gusta">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span id="likeCount">0</span>
+                    </button>
+                    <button class="reaction-btn reaction-dislike" id="btnDislike" aria-label="No me gusta">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span id="dislikeCount">0</span>
+                    </button>
+                </div>
+                <p class="reactions-thanks" id="reactionsThanks" style="display:none;">
+                    <i class="fas fa-check-circle"></i> Gracias por tu opinión
+                </p>
+            </div>
+
+            <!-- Related Posts -->
+            <div class="post-related" id="relatedPosts" style="display:none;">
+                <h3>Artículos Relacionados</h3>
+                <div class="related-grid" id="relatedGrid"></div>
+            </div>
+
+            <!-- Back to Blog -->
+            <div class="post-back">
+                <a href="/#blog" class="btn btn-outline">← Volver al Blog</a>
+            </div>
+        </div>
+
+    </div>
+</article>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-grid">
+        <div>
+            <h3>Dr. Omar Valdez Palazuelos</h3>
+            <p>Profesor, Investigador y Consultor en Tecnologías Emergentes</p>
+            <div class="footer-badges">
+                <span class="footer-badge">SNI Nivel I</span>
+                <span class="footer-badge">IEEE</span>
+                <span class="footer-badge">IIDISE</span>
+            </div>
+        </div>
+        <div>
+            <h4>Navegación</h4>
+            <ul>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/#sobre-mi">Sobre Mí</a></li>
+                <li><a href="/#servicios">Servicios</a></li>
+                <li><a href="/#investigacion">Investigación</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Recursos</h4>
+            <ul>
+                <li><a href="/#cursos">Cursos</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#contacto">Contacto</a></li>
+                <li><a href="/privacidad.html">Aviso de Privacidad</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Especialización</h4>
+            <ul>
+                <li>Blockchain y Bitcoin</li>
+                <li>Inteligencia Artificial</li>
+                <li>Fintech</li>
+                <li>Marketing Digital</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2025 Omar Valdez Palazuelos. Todos los derechos reservados. · <a href="/privacidad.html" style="color: rgba(255,255,255,0.6);">Aviso de Privacidad</a></p>
+    </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Scripts -->
+<script src="/js/supabase-config.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // Mobile menu
+    const menuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        });
+    }
+
+    // Get slug from URL
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+
+    if (!slug) {
+        showError();
+        return;
+    }
+
+    loadPost(slug);
+
+    async function loadPost(slug) {
+        try {
+            const post = await window.API.getPostBySlug(slug);
+            if (!post) { showError(); return; }
+
+            // Update page content
+            document.getElementById('postTitle').textContent = post.title;
+            document.getElementById('breadcrumbTitle').textContent = post.title;
+            document.getElementById('postExcerpt').textContent = post.excerpt || '';
+
+            const catLabels = { blockchain: 'Blockchain', ia: 'Inteligencia Artificial', fintech: 'Fintech', marketing: 'Marketing', ecommerce: 'eCommerce' };
+            document.getElementById('postCategory').textContent = catLabels[post.category] || post.category;
+
+            const date = new Date(post.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('postDate').textContent = date;
+
+            // Featured image
+            if (post.image_url) {
+                document.getElementById('postImage').style.display = 'block';
+                document.getElementById('postImageSrc').src = post.image_url;
+                document.getElementById('postImageSrc').alt = post.title;
+            }
+
+            // Content — render HTML from WYSIWYG or plain text
+            const bodyEl = document.getElementById('postBody');
+            if (post.content.includes('<') && post.content.includes('>')) {
+                // HTML content from WYSIWYG editor
+                bodyEl.innerHTML = post.content;
+            } else {
+                // Plain text — convert to paragraphs
+                bodyEl.innerHTML = post.content
+                    .split('\n\n')
+                    .filter(p => p.trim())
+                    .map(p => `<p>${escHtml(p.trim())}</p>`)
+                    .join('');
+            }
+
+            // === SEO: Update meta tags dynamically ===
+            const pageUrl = `https://omarvaldez.com/post.html?slug=${slug}`;
+            document.getElementById('pageTitle').textContent = `${post.title} | Dr. Omar Valdez Palazuelos`;
+            document.title = `${post.title} | Dr. Omar Valdez Palazuelos`;
+            setMeta('metaDesc', post.excerpt || post.title);
+            setMeta('canonicalUrl', pageUrl, 'href');
+            setMeta('ogTitle', post.title);
+            setMeta('ogDesc', post.excerpt || post.title);
+            setAttr('ogUrl', 'content', pageUrl);
+            if (post.image_url) setAttr('ogImage', 'content', post.image_url);
+            setMeta('twTitle', post.title);
+            setMeta('twDesc', post.excerpt || post.title);
+
+            // JSON-LD Structured Data
+            document.getElementById('jsonLd').textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BlogPosting",
+                "headline": post.title,
+                "description": post.excerpt || '',
+                "image": post.image_url || '',
+                "datePublished": post.created_at,
+                "dateModified": post.updated_at || post.created_at,
+                "author": {
+                    "@type": "Person",
+                    "name": "Dr. Omar Valdez Palazuelos",
+                    "url": "https://omarvaldez.com",
+                    "jobTitle": "Profesor-Investigador",
+                    "affiliation": { "@type": "Organization", "name": "Universidad Autónoma de Sinaloa" }
+                },
+                "publisher": {
+                    "@type": "Person",
+                    "name": "Dr. Omar Valdez Palazuelos",
+                    "url": "https://omarvaldez.com"
+                },
+                "mainEntityOfPage": pageUrl,
+                "keywords": post.category
+            });
+
+            // GA4 Event: Blog post view
+            if (typeof gtag === 'function') {
+                gtag('event', 'blog_post_view', {
+                    event_category: 'content',
+                    event_label: post.title,
+                    post_slug: slug,
+                    post_category: post.category
+                });
+            }
+
+            // Share buttons
+            const encodedUrl = encodeURIComponent(pageUrl);
+            const encodedTitle = encodeURIComponent(post.title);
+            document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+            document.getElementById('shareLinkedIn').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+            document.getElementById('shareWhatsApp').href = `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`;
+
+            document.getElementById('copyLink').addEventListener('click', () => {
+                navigator.clipboard.writeText(pageUrl).then(() => {
+                    showToast('Enlace copiado al portapapeles', 'success');
+                });
+            });
+
+            // Show content
+            document.getElementById('postLoading').style.display = 'none';
+            document.getElementById('postContent').style.display = 'block';
+
+            // Initialize reactions
+            initReactions(post);
+
+            // Load related posts
+            loadRelated(post.category, post.id);
+
+        } catch (err) {
+            console.error('Error loading post:', err);
+            showError();
+        }
+    }
+
+    async function loadRelated(category, excludeId) {
+        try {
+            const posts = await window.API.getPosts(category, 4);
+            const related = posts.filter(p => p.id !== excludeId).slice(0, 3);
+            if (!related.length) return;
+
+            const grid = document.getElementById('relatedGrid');
+            grid.innerHTML = related.map(p => {
+                const date = new Date(p.created_at).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+                const iconMap = { blockchain: '<i class="fas fa-link"></i>', ia: '<i class="fas fa-robot"></i>', marketing: '<i class="fas fa-bullhorn"></i>', fintech: '<i class="fas fa-briefcase"></i>', ecommerce: '<i class="fas fa-shopping-cart"></i>' };
+                return `<a href="/post.html?slug=${escAttr(p.slug)}" class="related-card">
+                    <div class="related-thumb">${p.image_url ? `<img src="${escAttr(p.image_url)}" alt="${escAttr(p.title)}">` : (iconMap[p.category] || '<i class="fas fa-file-alt"></i>')}</div>
+                    <div class="related-body">
+                        <span class="related-date">${date}</span>
+                        <h4>${escHtml(p.title)}</h4>
+                    </div>
+                </a>`;
+            }).join('');
+            document.getElementById('relatedPosts').style.display = 'block';
+        } catch (e) { console.error('Error loading related:', e); }
+    }
+
+    function showError() {
+        document.getElementById('postLoading').style.display = 'none';
+        document.getElementById('postError').style.display = 'block';
+    }
+
+    function setMeta(id, content, attr = 'content') {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute(attr, content);
+    }
+    function setAttr(id, attr, val) {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute(attr, val);
+    }
+    function escHtml(str) { if (!str) return ''; const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+    function escAttr(str) { return escHtml(str); }
+    function initReactions(post) {
+        const container = document.getElementById('postReactions');
+        const btnLike = document.getElementById('btnLike');
+        const btnDislike = document.getElementById('btnDislike');
+        const likeCount = document.getElementById('likeCount');
+        const dislikeCount = document.getElementById('dislikeCount');
+        const thanksMsg = document.getElementById('reactionsThanks');
+
+        if (!container || !btnLike || !btnDislike) return;
+
+        // Mostrar contadores actuales
+        likeCount.textContent = post.likes || 0;
+        dislikeCount.textContent = post.dislikes || 0;
+        container.style.display = 'block';
+
+        // Verificar si ya votó (localStorage)
+        const storageKey = 'reaction_' + post.id;
+        const existingVote = localStorage.getItem(storageKey);
+        if (existingVote) {
+            markVoted(existingVote);
+            return;
+        }
+
+        btnLike.addEventListener('click', () => handleReaction('like', post.id));
+        btnDislike.addEventListener('click', () => handleReaction('dislike', post.id));
+
+        async function handleReaction(type, postId) {
+            // Deshabilitar botones inmediatamente
+            btnLike.disabled = true;
+            btnDislike.disabled = true;
+
+            try {
+                if (window.API && typeof window.API.reactToPost === 'function') {
+                    const updated = await window.API.reactToPost(postId, type);
+                    if (updated) {
+                        likeCount.textContent = updated.likes || 0;
+                        dislikeCount.textContent = updated.dislikes || 0;
+                    }
+                }
+
+                // Guardar en localStorage
+                localStorage.setItem(storageKey, type);
+                markVoted(type);
+
+                // GA4 Event
+                if (typeof gtag === 'function') {
+                    gtag('event', 'post_reaction', {
+                        event_category: 'engagement',
+                        event_label: type,
+                        post_slug: slug
+                    });
+                }
+            } catch (err) {
+                console.error('Error en reacción:', err);
+                btnLike.disabled = false;
+                btnDislike.disabled = false;
+            }
+        }
+
+        function markVoted(type) {
+            btnLike.disabled = true;
+            btnDislike.disabled = true;
+            if (type === 'like') {
+                btnLike.classList.add('active');
+            } else {
+                btnDislike.classList.add('active');
+            }
+            thanksMsg.style.display = 'block';
+        }
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        if (!t) return;
+        t.textContent = msg; t.className = 'toast ' + type;
+        void t.offsetWidth; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+})();
+</script>
+
+</body>
+</html>
