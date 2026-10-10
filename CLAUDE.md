@@ -167,6 +167,9 @@ exclude: |
 ## Restricciones del entorno
 
 - **Hosting:** SiteGround. No se puede cambiar el DNS ni migrar de proveedor.
+- **Supabase:** la sesión tiene el conector oficial (herramientas
+  `mcp__Supabase__*`). Úsalo para consultar y migrar en lugar de pedirle a Omar
+  que pegue SQL. Antes de cualquier cambio destructivo, muéstrale el SQL.
 - **Red de la sesión:** para verificar el sitio o bajar archivos del servidor,
   el environment necesita permitir `omarvaldez.com`, `*.omarvaldez.com` y
   `*.supabase.co`. En octubre de 2026 ya estaban permitidos.
@@ -226,9 +229,14 @@ tanto del servidor en el siguiente deploy:
   y la Edge Function `diagnostico-correo`, que nunca llegó a publicarse.
 - De paso, el código muerto de Firebase.
 
-`src/api/.htaccess` se queda a propósito: `api/config/config.php` (credenciales
-del PostgreSQL) nunca estuvo en git, así que el deploy no lo borra. Mientras
-alguien no lo elimine a mano, ese `.htaccess` impide alcanzarlo por HTTP.
+`api/config/config.php` (credenciales del PostgreSQL) nunca estuvo en git, así
+que el deploy no podía borrarlo. Se resolvió en dos commits: el primero lo subió
+vacío para sobrescribirlo y el segundo lo quitó del repo, con lo que el deploy
+lo eliminó del servidor. Sirve igual para cualquier otro archivo que sólo exista
+en el servidor y haya que borrar sin entrar a SiteGround.
+
+`src/api/.htaccess` se queda, negando todo, por si en `/public_html/api/` queda
+algún otro archivo que nunca estuvo en git.
 
 Del lado de Supabase, la secuencia de archivos queda así:
 
@@ -243,12 +251,15 @@ Del lado de Supabase, la secuencia de archivos queda así:
    nunca se usaron, y con ellas el INSERT anónimo que seguía abierto en
    `diagnostico_disde_respuestas`.
 
-Pasos manuales que el repo no puede hacer (los hace Omar):
+Pendiente fuera del repo:
 
-- Correr `07_retirar_sistema_academico.sql` en el SQL Editor de Supabase.
-- Borrar desde el Administrador de archivos de SiteGround la carpeta
-  `/public_html/api/` completa (incluye `config/config.php`).
+- Correr `07_retirar_sistema_academico.sql`. La sesión tiene el conector de
+  Supabase (`mcp__Supabase__*`, proyecto `mogmgtnkyazpsgslucrx`), pero en
+  octubre de 2026 las sentencias destructivas se quedaban esperando una
+  confirmación del usuario y vencían a los 60 s sin ejecutarse. Las lecturas
+  sí funcionan. Las cuatro tablas estaban vacías y sin dependencias.
 - Eliminar la base PostgreSQL y su usuario desde Site Tools de SiteGround.
+  SiteGround no tiene API pública, así que esto sólo lo puede hacer Omar.
 
 ### Trampa comprobada: `posts.id` es `uuid`, no `bigint`
 
