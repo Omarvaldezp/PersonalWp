@@ -92,7 +92,10 @@
         }
 
         try {
-            const email = atob(emailB64);
+            // El enlace lleva el correo en base64 de sus bytes UTF-8; atob()
+            // solo devuelve los bytes, y un correo con acento llegaría alterado.
+            const bytes = Uint8Array.from(atob(emailB64), c => c.charCodeAt(0));
+            const email = new TextDecoder().decode(bytes);
             // baja_suscriptor() es SECURITY DEFINER: un UPDATE directo de anon
             // no ve la fila (no hay política de SELECT) y no da de baja a nadie.
             const { error } = await db.rpc('baja_suscriptor', { correo: email });

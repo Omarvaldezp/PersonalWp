@@ -1459,13 +1459,20 @@ function confirmSendNewsletter(id) {
     currentEditType = 'newsletter-confirm';
 }
 
+// functions.invoke() devuelve un error genérico ("non-2xx status code") cuando
+// la función responde 4xx/5xx; el mensaje útil viene en el cuerpo.
+async function mensajeDeFuncion(error) {
+    try { const cuerpo = await error.context.json(); return cuerpo.error || error.message; }
+    catch { return error.message; }
+}
+
 async function sendTestNewsletter(id) {
     toast('Enviando prueba...', 'success');
     try {
         const { data, error } = await db.functions.invoke('send-newsletter', {
             body: { newsletter_id: id, test_mode: true }
         });
-        if (error) throw error;
+        if (error) throw new Error(await mensajeDeFuncion(error));
         console.log('Send test response:', data);
         if (data?.error) {
             toast('Error de Resend: ' + data.error, 'error');
@@ -1489,7 +1496,7 @@ async function sendNewsletter(id) {
         const { data, error } = await db.functions.invoke('send-newsletter', {
             body: { newsletter_id: id, test_mode: false }
         });
-        if (error) throw error;
+        if (error) throw new Error(await mensajeDeFuncion(error));
         console.log('Send all response:', data);
         if (data?.error) {
             throw new Error(data.error);
