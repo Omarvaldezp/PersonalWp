@@ -289,7 +289,8 @@ Pendiente fuera del repo:
 - Desactivar "Allow new users to sign up" en Authentication de Supabase. Con
   `08`, una cuenta nueva nace inactiva y no puede nada, pero no tiene por qué
   poder crearse.
-- Activar la protección contra contraseñas filtradas (Authentication).
+- La protección contra contraseñas filtradas sólo existe en el plan Pro de
+  Supabase; el proyecto está en el gratuito, así que no aplica.
 - Eliminar la base PostgreSQL y su usuario desde Site Tools de SiteGround.
   SiteGround no tiene API pública, así que esto sólo lo puede hacer Omar.
 
@@ -371,16 +372,28 @@ El enlace de baja lleva el correo en base64 de sus bytes UTF-8 y pasado por
 
 ### Caché de SiteGround para HTML
 
-SiteGround guarda en caché las páginas HTML (`x-proxy-cache`). Después de un
-deploy, quien entra sin parámetros puede seguir viendo la versión anterior
-hasta que la caché expire o se vacíe en Site Tools > Speed > Caching. Para
-verificar un deploy, compara siempre con y sin `?nc=` aleatorio: si sólo la
-versión con parámetro está al día, falta vaciar la caché.
+SiteGround guardaba en caché las páginas HTML: después de un deploy, quien
+entraba sin parámetros seguía viendo la versión anterior (pasó con la portada
+el 10 y 11 de octubre de 2026). Se resolvió con `Cache-Control: no-cache` para
+`*.html` en `src/.htaccess`: comprobado que, tras un deploy, la URL sin
+parámetros ya entrega la versión nueva sin vaciar nada. Si alguna vez vuelve a
+pasar, Site Tools > Speed > Caching > Flush Cache. Para verificar un deploy,
+compara con y sin `?nc=` aleatorio.
+
+### Accesos a los micro sitios
+
+La portada enlaza a `/trama/` y `/manual-claude/` desde el pie (HTML fijo, para
+que los buscadores lo sigan) y TRAMA tiene una tarjeta en Cursos (tabla
+`courses`, `sort_order` 0, editable desde el panel). `courses.icon` es
+`varchar(10)`: sólo cabe un emoji, no HTML de un ícono.
 
 ### Sitemap
 
 `src/sitemap.xml` lista las páginas fijas y los posts publicados. **No se
-actualiza solo**: al publicar un post nuevo, agrégalo.
+actualiza solo**: al publicar un post nuevo, agrégalo. La entrada del Manual de
+Claude en el blog (`manual-claude-investigadores`) la borró Omar el 11 de
+octubre de 2026 para rehacerla; cuando se vuelva a publicar, hay que agregarla
+otra vez.
 
 Aplicado por Omar el 10 de octubre de 2026. Comprobado en producción con la
 llave anónima: un correo inválido y un mensaje vacío responden 400 sin guardar
