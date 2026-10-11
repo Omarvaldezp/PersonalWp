@@ -286,9 +286,10 @@ escritura del público.
 
 Pendiente fuera del repo:
 
-- Desactivar "Allow new users to sign up" en Authentication de Supabase. Con
-  `08`, una cuenta nueva nace inactiva y no puede nada, pero no tiene por qué
-  poder crearse.
+- ~~Desactivar "Allow new users to sign up"~~. Hecho; comprobado el 11 de
+  octubre de 2026: `/auth/v1/signup` responde 422 `signup_disabled`. Las
+  cuentas del panel se crean con "Invite user". Ojo: `/auth/v1/settings` tardó
+  en reflejar el cambio; la prueba fiable es intentar el registro.
 - La protección contra contraseñas filtradas sólo existe en el plan Pro de
   Supabase; el proyecto está en el gratuito, así que no aplica.
 - Eliminar la base PostgreSQL y su usuario desde Site Tools de SiteGround.
