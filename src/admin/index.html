@@ -543,7 +543,7 @@ tr:hover { background: #f8fafc; }
                     Los newsletters salen desde tu cuenta de correo de SiteGround (SMTP, puerto 465), uno por segundo.
                     La conexión se configura en Supabase, <strong>Edge Functions &rsaquo; Secrets</strong>, con
                     <code>SMTP_HOST</code>, <code>SMTP_USER</code> y <code>SMTP_PASS</code>.
-                    Antes de enviar a todos, usa <strong>Enviar prueba</strong>: llega sólo a tu correo.
+                    Antes de enviar a todos, usa <strong>🧪 Prueba</strong> en la fila del newsletter: llega sólo a tu correo.
                 </p>
             </div>
         </div>
@@ -1390,12 +1390,15 @@ function renderNewsletters(data) {
         <td>${n.sent_at ? fmtDate(n.sent_at) : fmtDate(n.created_at)}</td>
         <td class="actions">
             <button class="btn btn-ghost btn-sm" onclick="previewNewsletter('${n.id}')" title="Vista previa">👁</button>
+            ${n.status === 'draft' || n.status === 'failed' ? `
+                <button class="btn btn-ghost btn-sm" onclick="sendTestNewsletter('${n.id}')" title="Enviar sólo a tu correo">🧪 Prueba</button>
+            ` : ''}
             ${n.status === 'draft' ? `
                 <button class="btn btn-ghost btn-sm" onclick="editNewsletter('${n.id}')">Editar</button>
                 <button class="btn btn-primary btn-sm" onclick="confirmSendNewsletter('${n.id}')">📤 Enviar</button>
             ` : ''}
             ${n.status === 'failed' ? `
-                <button class="btn btn-warning btn-sm" onclick="retryNewsletter('${n.id}')">🔄 Reintentar</button>
+                <button class="btn btn-warning btn-sm" onclick="retryNewsletter('${n.id}')" title="Regresarla a borrador para poder enviarla a todos">🔄 Reintentar</button>
                 <button class="btn btn-ghost btn-sm" onclick="editNewsletter('${n.id}')">Editar</button>
             ` : ''}
             ${n.status === 'sending' ? `
