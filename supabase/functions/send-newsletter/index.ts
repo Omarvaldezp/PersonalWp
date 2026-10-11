@@ -1,14 +1,20 @@
 // =============================================
 // Supabase Edge Function: send-newsletter
 // =============================================
-// Envía un newsletter a los suscriptores activos por medio de Resend.
-// La llama el panel (/admin/, sección Newsletter) con
-//   { newsletter_id, test_mode }
+// Envía un newsletter a los suscriptores activos desde la cuenta de correo del
+// dominio en SiteGround, por SMTP. La llama el panel (/admin/, sección
+// Newsletter) con { newsletter_id, test_mode }.
 //
-// Requisitos (una sola vez):
-//   - Cuenta en https://resend.com con el dominio omarvaldez.com verificado.
-//   - Secreto RESEND_API_KEY en Supabase: Edge Functions > Secrets.
-//   - Opcional: NEWSLETTER_FROM para cambiar el remitente.
+// Secretos en Supabase (Edge Functions > Secrets):
+//   SMTP_HOST   servidor de salida de SiteGround (Site Tools > Email >
+//               Accounts > Mail Configuration > Manual Settings)
+//   SMTP_USER   la cuenta completa, p. ej. newsletter@omarvaldez.com
+//   SMTP_PASS   su contraseña
+//   SMTP_PORT   opcional, 465 por omisión
+//   NEWSLETTER_FROM  opcional, p. ej. "Dr. Omar Valdez <newsletter@omarvaldez.com>"
+//
+// Por qué el puerto 465: Supabase bloquea en sus Edge Functions las
+// conexiones salientes a los puertos 25 y 587. El 465 (SMTP sobre SSL) sí pasa.
 //
 // Seguridad (octubre de 2026):
 //   La versión anterior estaba publicada con verify_jwt = false y no revisaba
@@ -19,11 +25,12 @@
 // =============================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4'
+import nodemailer from 'npm:nodemailer@6.9.16'
 
 const ORIGENES = ['https://omarvaldez.com', 'https://www.omarvaldez.com']
-const REMITENTE = Deno.env.get('NEWSLETTER_FROM') ?? 'Dr. Omar Valdez <newsletter@omarvaldez.com>'
-const LOTE = 100          // máximo de correos por llamada a /emails/batch
-const PAUSA_MS = 600      // Resend permite 2 peticiones por segundo
+// SiteGround limita los correos por hora de cada cuenta. Uno por segundo,
+// por una sola conexión, queda muy por debajo y no parece envío masivo.
+const POR_SEGUNDO = 1
 
 function cabeceras(req: Request) {
   const origen = req.headers.get('Origin') ?? ''
@@ -51,11 +58,6 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return responder(req, { error: 'Método no permitido' }, 405)
 
   try {
-    const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')
-    if (!RESEND_API_KEY) {
-      return responder(req, { error: 'Falta configurar RESEND_API_KEY en Supabase (Edge Functions > Secrets).' }, 500)
-    }
-
     const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
     // 1. ¿Quién llama? Debe ser un usuario del panel con rol admin o editor.
@@ -68,6 +70,14 @@ Deno.serve(async (req) => {
     if (!perfil?.activo || !['admin', 'editor'].includes(perfil.rol)) {
       return responder(req, { error: 'Tu usuario no tiene permiso para enviar newsletters.' }, 403)
     }
+
+    const SMTP_HOST = Deno.env.get('SMTP_HOST')
+    const SMTP_USER = Deno.env.get('SMTP_USER')
+    const SMTP_PASS = Deno.env.get('SMTP_PASS')
+    if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+      return responder(req, { error: 'Falta configurar SMTP_HOST, SMTP_USER y SMTP_PASS en Supabase (Edge Functions > Secrets).' }, 500)
+    }
+    const REMITENTE = Deno.env.get('NEWSLETTER_FROM') ?? `Dr. Omar Valdez <${SMTP_USER}>`
 
     // 2. El newsletter.
     const { newsletter_id, test_mode = false } = await req.json()
@@ -96,38 +106,44 @@ Deno.serve(async (req) => {
       await admin.from('newsletters').update({ status: 'sending' }).eq('id', newsletter_id)
     }
 
-    // 4. Envío por lotes.
+    // 4. Envío, uno por uno, por una sola conexión SMTP.
+    const smtp = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: Number(Deno.env.get('SMTP_PORT') ?? 465),
+      secure: true,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+      pool: true,
+      maxConnections: 1,
+      rateDelta: 1000,
+      rateLimit: POR_SEGUNDO,
+    })
+    try {
+      await smtp.verify()
+    } catch (e) {
+      if (!test_mode) await admin.from('newsletters').update({ status: 'failed' }).eq('id', newsletter_id)
+      return responder(req, { error: `No se pudo entrar al correo de SiteGround: ${(e as Error).message}` }, 502)
+    }
+
     let enviados = 0
     let fallidos = 0
     let primerError = ''
-    for (let i = 0; i < destinatarios.length; i += LOTE) {
-      const lote = destinatarios.slice(i, i + LOTE).map((email) => {
-        const baja = enlaceBaja(email)
-        return {
+    for (const email of destinatarios) {
+      const baja = enlaceBaja(email)
+      try {
+        await smtp.sendMail({
           from: REMITENTE,
-          to: [email],
+          to: email,
           subject: (test_mode ? '[Prueba] ' : '') + newsletter.subject,
           html: plantilla(newsletter.content ?? '', newsletter.preview_text ?? '', baja),
           headers: { 'List-Unsubscribe': `<${baja}>` },
-        }
-      })
-
-      const r = await fetch('https://api.resend.com/emails/batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${RESEND_API_KEY}` },
-        body: JSON.stringify(lote),
-      })
-      if (r.ok) {
-        enviados += lote.length
-      } else {
-        fallidos += lote.length
-        if (!primerError) {
-          const detalle = await r.json().catch(() => ({}))
-          primerError = `Resend respondió ${r.status}: ${detalle?.message ?? 'sin detalle'}`
-        }
+        })
+        enviados++
+      } catch (e) {
+        fallidos++
+        if (!primerError) primerError = `El servidor de correo rechazó un envío: ${(e as Error).message}`
       }
-      if (i + LOTE < destinatarios.length) await new Promise((ok) => setTimeout(ok, PAUSA_MS))
     }
+    smtp.close()
 
     if (!test_mode) {
       await admin.from('newsletters').update({

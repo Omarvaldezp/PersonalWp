@@ -345,25 +345,37 @@ IP nunca queda en claro.
 
 ### Newsletter
 
-El panel envía con la Edge Function `send-newsletter`; el código está en
-`supabase/functions/send-newsletter/index.ts` y se publica con el conector de
-Supabase (`deploy_edge_function`), que sí funciona. Manda por Resend con
-`/emails/batch` (100 por llamada, 2 llamadas por segundo como máximo).
+Los correos del dominio salen por SiteGround, **no por Resend** (decisión de
+Omar, octubre de 2026). El panel envía con la Edge Function `send-newsletter`
+(`supabase/functions/send-newsletter/index.ts`), que manda por SMTP con
+`nodemailer` a través del **puerto 465**: Supabase bloquea en sus Edge Functions
+la salida a los puertos 25 y 587. Uno por segundo, por una sola conexión, para
+no topar con el límite por hora de SiteGround. Con el límite de tiempo de una
+Edge Function, eso alcanza para unos cientos de suscriptores por envío; si la
+lista crece mucho más, habrá que repartir el envío.
 
-Hasta octubre de 2026 la función no revisaba quién la llamaba (estaba con
-`verify_jwt = false` y sin otra validación). Ahora exige la sesión de un usuario
-de `perfiles` con rol admin o editor activo; `verify_jwt` sigue en `false`
-porque la validación la hace la propia función, y la llave anónima también es un
-JWT válido, así que activarlo no protegería nada. Comprobado: con la llave
-anónima responde 401.
+Secretos (Supabase > Edge Functions > Secrets): `SMTP_HOST`, `SMTP_USER`,
+`SMTP_PASS`, y opcionales `SMTP_PORT` y `NEWSLETTER_FROM`. Quedó un
+`RESEND_API_KEY` de un intento anterior que ya no se usa.
+
+La función se publica con el conector de Supabase (`deploy_edge_function`), que
+sí funciona. Exige la sesión de un usuario de `perfiles` con rol admin o editor
+activo; `verify_jwt` sigue en `false` porque la validación la hace la propia
+función, y la llave anónima también es un JWT válido, así que activarlo no
+protegería nada. Comprobado: con la llave anónima responde 401. Hasta octubre
+de 2026 no revisaba quién la llamaba.
 
 El enlace de baja lleva el correo en base64 de sus bytes UTF-8 y pasado por
 `encodeURIComponent`: sin eso, un `+` del base64 llegaba como espacio a
 `unsubscribe.html` y la baja fallaba.
 
-Los dos envíos de febrero de 2026 quedaron en `failed` con 0 destinatarios. El
-secreto `RESEND_API_KEY` sí existe, así que lo más probable es el dominio sin
-verificar en Resend.
+### Caché de SiteGround para HTML
+
+SiteGround guarda en caché las páginas HTML (`x-proxy-cache`). Después de un
+deploy, quien entra sin parámetros puede seguir viendo la versión anterior
+hasta que la caché expire o se vacíe en Site Tools > Speed > Caching. Para
+verificar un deploy, compara siempre con y sin `?nc=` aleatorio: si sólo la
+versión con parámetro está al día, falta vaciar la caché.
 
 ### Sitemap
 

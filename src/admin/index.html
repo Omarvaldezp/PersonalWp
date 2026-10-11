@@ -540,9 +540,10 @@ tr:hover { background: #f8fafc; }
             <div style="margin-top:1.5rem; padding:1.25rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border);">
                 <h3 style="font-size:0.92rem; margin-bottom:0.75rem;"><i class="fas fa-cog"></i> Configuración de envío</h3>
                 <p style="font-size:0.82rem; color:var(--text-light); line-height:1.7;">
-                    Para enviar newsletters necesitas configurar <strong>Resend</strong> y una <strong>Supabase Edge Function</strong>.
-                    <a href="https://resend.com" target="_blank" style="color:var(--primary);">Crear cuenta en Resend</a> (gratis hasta 100 emails/día).
-                    Consulta el archivo <code>supabase/functions/send-newsletter/index.ts</code> para instrucciones de deploy.
+                    Los newsletters salen desde tu cuenta de correo de SiteGround (SMTP, puerto 465), uno por segundo.
+                    La conexión se configura en Supabase, <strong>Edge Functions &rsaquo; Secrets</strong>, con
+                    <code>SMTP_HOST</code>, <code>SMTP_USER</code> y <code>SMTP_PASS</code>.
+                    Antes de enviar a todos, usa <strong>Enviar prueba</strong>: llega sólo a tu correo.
                 </p>
             </div>
         </div>
@@ -1475,9 +1476,9 @@ async function sendTestNewsletter(id) {
         if (error) throw new Error(await mensajeDeFuncion(error));
         console.log('Send test response:', data);
         if (data?.error) {
-            toast('Error de Resend: ' + data.error, 'error');
+            toast('Error al enviar: ' + data.error, 'error');
         } else if (data?.sent_count === 0) {
-            toast('Error: No se pudo enviar. Revisa la API Key de Resend y el dominio.', 'error');
+            toast('Error: no se pudo enviar. Revisa la configuración SMTP en Supabase.', 'error');
         } else {
             toast(`Prueba enviada a tu email (${data?.sent_count || 0} email)`, 'success');
         }
