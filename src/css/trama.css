@@ -1157,10 +1157,19 @@
 @media (max-width: 720px) {
     .trama-hero { padding: 7rem 0 3rem; }
 
-    .trama-flow { flex-wrap: wrap; justify-content: center; }
-    .trama-node { flex: 0 0 calc(50% - 1.5rem); }
-    .trama-node.n-out { flex: 0 0 100%; }
-    .trama-arrow { transform: rotate(0deg); }
+    /* En celular las etapas van en columna, letra y nombre lado a lado, para
+       que se lean de arriba abajo como el acrónimo. En dos columnas,
+       "MULTIMODALIDAD" no cabía en su tarjeta y se salía. */
+    .trama-flow { flex-direction: column; flex-wrap: nowrap; gap: .3rem; padding: 1rem; }
+    .trama-node {
+        flex: none; min-width: 0;
+        flex-direction: row; justify-content: flex-start; gap: .9rem;
+        padding: .7rem 1rem; text-align: left;
+    }
+    .trama-node .n-letter { width: 1.75rem; flex: none; text-align: center; font-size: 1.5rem; }
+    .trama-node .n-name { overflow-wrap: anywhere; }
+    .trama-node.n-out { flex: none; min-width: 0; justify-content: center; text-align: center; }
+    .trama-arrow { transform: rotate(90deg); font-size: .85rem; }
 
     .trama-compare-head { grid-template-columns: 1fr; }
     .trama-compare-head .c-before { display: none; }

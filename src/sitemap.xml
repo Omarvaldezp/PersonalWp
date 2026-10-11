@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://omarvaldez.com/</loc>
-        <lastmod>2026-10-10</lastmod>
+        <lastmod>2026-10-11</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -20,15 +20,9 @@
     </url>
     <url>
         <loc>https://omarvaldez.com/trama/</loc>
-        <lastmod>2026-08-19</lastmod>
+        <lastmod>2026-10-11</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
-    </url>
-    <url>
-        <loc>https://omarvaldez.com/post.html?slug=manual-claude-investigadores</loc>
-        <lastmod>2026-10-10</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.6</priority>
     </url>
     <url>
         <loc>https://omarvaldez.com/post.html?slug=la-revolucion-silenciosa-de-2026-5-realidades-de-la-ia-que-estan-cambiando-el-juego-y-tu-futuro</loc>
