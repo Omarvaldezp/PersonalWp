@@ -1234,3 +1234,8 @@
 
     a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .75em; color: #666; }
 }
+
+/* Las URL largas en código en línea (youtube.com/watch?v=..., open.spotify.com/
+   embed/episode/...) no se partían y desbordaban la página 64 px en un celular
+   de 390 px. Los bloques de prompt (<pre>) conservan su propio scroll. */
+:not(pre) > code { overflow-wrap: anywhere; }

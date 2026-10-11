@@ -55,6 +55,23 @@ archivos, sube la fecha de `?v=` en todas las páginas que lo cargan**
 (`grep -rn "?v=2" src`); si no, los visitantes que ya entraron seguirán viendo
 la versión vieja hasta un año.
 
+Lo mismo con `css/trama.css` y `css/seminario.css`, que también llevan `?v=`.
+
+**Imágenes del blog:** las cuatro que había se convirtieron a WebP (de 2.6–6.3
+MB en PNG a 180–290 KB) y viven en `src/img/blog/`; `posts.image_url` apunta ahí.
+El panel comprime en el navegador cada imagen nueva antes de subirla
+(`comprimirImagen()`: lado mayor de 1600 px, WebP), así que las nuevas van a
+Storage ya ligeras.
+
+**Imagen para compartir:** todas las páginas llevan `og:image` y
+`twitter:image`. Por omisión es `img/og-default.jpg`; TRAMA tiene la suya,
+`img/trama/og-trama.jpg`. Las dos se generaron con Pillow (1200×630).
+
+**`.htaccess` de la raíz:** redirige `www.` al dominio sin `www`, manda HSTS
+(sin `includeSubDomains`) y `Referrer-Policy`. `admin/.htaccess` repite la
+redirección de `www` porque tiene su propio `RewriteEngine` y no hereda las
+reglas de la raíz. Probado en Apache local antes de publicar.
+
 Colecciones/tablas en Supabase: posts de blog (con `slug`, `category`,
 `excerpt`, `content`, `image_url`, `likes`, `dislikes`), cursos,
 investigaciones y stats.
@@ -325,6 +342,28 @@ Probado en un PostgreSQL 16 local simulando `anon` con encabezados: el cuarto
 mensaje desde la misma IP falla, otra IP sí entra, el panel no tiene tope, el
 duplicado de suscriptor sigue dando 23505 (que el sitio trata como éxito) y la
 IP nunca queda en claro.
+
+### Newsletter
+
+El panel envía con la Edge Function `send-newsletter`; el código está en
+`supabase/functions/send-newsletter/index.ts` y se publica con el conector de
+Supabase (`deploy_edge_function`), que sí funciona. Manda por Resend con
+`/emails/batch` (100 por llamada, 2 llamadas por segundo como máximo).
+
+Hasta octubre de 2026 la función no revisaba quién la llamaba (estaba con
+`verify_jwt = false` y sin otra validación). Ahora exige la sesión de un usuario
+de `perfiles` con rol admin o editor activo; `verify_jwt` sigue en `false`
+porque la validación la hace la propia función, y la llave anónima también es un
+JWT válido, así que activarlo no protegería nada. Comprobado: con la llave
+anónima responde 401.
+
+El enlace de baja lleva el correo en base64 de sus bytes UTF-8 y pasado por
+`encodeURIComponent`: sin eso, un `+` del base64 llegaba como espacio a
+`unsubscribe.html` y la baja fallaba.
+
+Los dos envíos de febrero de 2026 quedaron en `failed` con 0 destinatarios. El
+secreto `RESEND_API_KEY` sí existe, así que lo más probable es el dominio sin
+verificar en Resend.
 
 ### Sitemap
 
