@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/css/custom.css?v=20261028">
+    <link rel="stylesheet" href="/css/custom.css?v=20261028b">
 
     <!-- JSON-LD Structured Data (se inyecta dinámicamente) -->
     <script type="application/ld+json" id="jsonLd">
@@ -285,6 +285,165 @@
     const escAtr = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const DE_STORAGE = /^https:\/\/mogmgtnkyazpsgslucrx\.supabase\.co\/storage\/v1\/object\/public\/images\//;
 
+    // Descarga con nombre propio (slug + tipo). El atributo download no sirve
+    // con archivos de otro dominio, así que se baja como blob; si falla, se abre
+    // el archivo como último recurso.
+    async function descargarArchivo(url, nombre, boton) {
+        const texto = boton ? boton.textContent : '';
+        if (boton) { boton.disabled = true; boton.textContent = 'Descargando...'; }
+        try {
+            const r = await fetch(url);
+            if (!r.ok) throw new Error(r.status);
+            const blob = await r.blob();
+            const ext = (url.split('?')[0].match(/\.([a-z0-9]+)$/i) || [, ''])[1];
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = ext ? `${nombre}.${ext}` : nombre;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+        } catch (e) {
+            window.open(url, '_blank', 'noopener');
+        } finally {
+            if (boton) { boton.disabled = false; boton.textContent = texto; }
+        }
+    }
+
+    // Visor a pantalla completa para la infografía y la presentación. El PDF se
+    // dibuja con PDF.js (cdnjs, se carga sólo al abrirlo) una lámina a la vez.
+    const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+    const Visor = (() => {
+        let raiz, cuerpo, titulo, contador, anterior, siguiente, bajar, docPdf = null, pagina = 1, archivo = null, foco = null;
+
+        function crear() {
+            if (raiz) return;
+            raiz = document.createElement('div');
+            raiz.className = 'visor';
+            raiz.hidden = true;
+            raiz.setAttribute('role', 'dialog');
+            raiz.setAttribute('aria-modal', 'true');
+            raiz.innerHTML = `
+                <div class="visor-barra">
+                    <span class="visor-titulo"></span>
+                    <span class="visor-contador" aria-live="polite"></span>
+                    <button type="button" class="visor-boton visor-bajar" aria-label="Descargar"><i class="fas fa-download"></i></button>
+                    <button type="button" class="visor-boton visor-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>
+                </div>
+                <div class="visor-cuerpo"></div>
+                <button type="button" class="visor-boton visor-flecha visor-anterior" aria-label="Lámina anterior"><i class="fas fa-chevron-left"></i></button>
+                <button type="button" class="visor-boton visor-flecha visor-siguiente" aria-label="Lámina siguiente"><i class="fas fa-chevron-right"></i></button>`;
+            document.body.appendChild(raiz);
+            cuerpo = raiz.querySelector('.visor-cuerpo');
+            titulo = raiz.querySelector('.visor-titulo');
+            contador = raiz.querySelector('.visor-contador');
+            anterior = raiz.querySelector('.visor-anterior');
+            siguiente = raiz.querySelector('.visor-siguiente');
+            bajar = raiz.querySelector('.visor-bajar');
+            raiz.querySelector('.visor-cerrar').onclick = cerrar;
+            raiz.addEventListener('click', (e) => { if (e.target === raiz || e.target === cuerpo) cerrar(); });
+            anterior.onclick = () => irA(pagina - 1);
+            siguiente.onclick = () => irA(pagina + 1);
+            bajar.onclick = (e) => archivo && descargarArchivo(archivo.url, archivo.nombre, null);
+            document.addEventListener('keydown', (e) => {
+                if (raiz.hidden) return;
+                if (e.key === 'Escape') cerrar();
+                if (e.key === 'ArrowLeft') irA(pagina - 1);
+                if (e.key === 'ArrowRight') irA(pagina + 1);
+            });
+            let x0 = null;
+            cuerpo.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+            cuerpo.addEventListener('touchend', (e) => {
+                if (x0 === null || !docPdf) return;
+                const dx = e.changedTouches[0].clientX - x0; x0 = null;
+                if (Math.abs(dx) > 50) irA(pagina + (dx < 0 ? 1 : -1));
+            });
+            window.addEventListener('resize', () => { if (!raiz.hidden && docPdf) dibujar(); });
+        }
+
+        function abrir(nombreTitulo, url, nombre) {
+            crear();
+            foco = document.activeElement;
+            archivo = { url, nombre };
+            titulo.textContent = nombreTitulo;
+            contador.textContent = '';
+            cuerpo.innerHTML = '';
+            docPdf = null;
+            anterior.hidden = siguiente.hidden = true;
+            raiz.setAttribute('aria-label', nombreTitulo);
+            raiz.hidden = false;
+            document.body.style.overflow = 'hidden';
+            raiz.querySelector('.visor-cerrar').focus();
+        }
+
+        function cerrar() {
+            raiz.hidden = true;
+            document.body.style.overflow = '';
+            cuerpo.innerHTML = '';
+            docPdf = null;
+            if (foco) foco.focus();
+        }
+
+        function cargarScript(src) {
+            return new Promise((ok, mal) => {
+                if (window.pdfjsLib) return ok();
+                const s = document.createElement('script');
+                s.src = src; s.onload = ok; s.onerror = mal;
+                document.head.appendChild(s);
+            });
+        }
+
+        async function dibujar() {
+            const p = await docPdf.getPage(pagina);
+            const base = p.getViewport({ scale: 1 });
+            const ancho = cuerpo.clientWidth - 16, alto = cuerpo.clientHeight - 16;
+            const escala = Math.min(ancho / base.width, alto / base.height);
+            const dpr = window.devicePixelRatio || 1;
+            const vista = p.getViewport({ scale: escala * dpr });
+            const canvas = document.createElement('canvas');
+            canvas.width = vista.width; canvas.height = vista.height;
+            canvas.style.width = (vista.width / dpr) + 'px';
+            canvas.style.height = (vista.height / dpr) + 'px';
+            canvas.setAttribute('role', 'img');
+            canvas.setAttribute('aria-label', `Lámina ${pagina} de ${docPdf.numPages}`);
+            await p.render({ canvasContext: canvas.getContext('2d'), viewport: vista }).promise;
+            cuerpo.replaceChildren(canvas);
+            contador.textContent = `${pagina} / ${docPdf.numPages}`;
+            anterior.disabled = pagina <= 1;
+            siguiente.disabled = pagina >= docPdf.numPages;
+        }
+
+        function irA(n) {
+            if (!docPdf || n < 1 || n > docPdf.numPages || n === pagina) return;
+            pagina = n;
+            dibujar();
+        }
+
+        return {
+            imagen(url, nombreTitulo, nombre) {
+                abrir(nombreTitulo, url, nombre);
+                const img = document.createElement('img');
+                img.src = url; img.alt = nombreTitulo;
+                img.className = 'visor-imagen';
+                cuerpo.appendChild(img);
+            },
+            async pdf(url, nombreTitulo, nombre) {
+                abrir(nombreTitulo, url, nombre);
+                cuerpo.innerHTML = '<p class="visor-aviso">Cargando la presentación...</p>';
+                try {
+                    await cargarScript(PDFJS + 'pdf.min.js');
+                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+                    docPdf = await window.pdfjsLib.getDocument(url).promise;
+                    if (raiz.hidden) return;
+                    pagina = 1;
+                    anterior.hidden = siguiente.hidden = docPdf.numPages < 2;
+                    await dibujar();
+                } catch (e) {
+                    console.error('Visor PDF:', e);
+                    cuerpo.innerHTML = '<p class="visor-aviso">No se pudo mostrar la presentación. Usa el botón de descarga de arriba.</p>';
+                }
+            }
+        };
+    })();
+
     function mostrarMultimedia(post) {
         const grid = document.getElementById('postMediaGrid');
         const atajos = [];
@@ -311,22 +470,38 @@
                 </div>`);
             atajos.unshift('<a href="#multimedia"><i class="fab fa-spotify"></i> Escuchar el podcast</a>');
         }
+        // La infografía y el PDF se abren en un visor dentro de la página y se
+        // descargan con un nombre propio: así nunca aparece en la barra la
+        // dirección del almacenamiento de Supabase.
         if (DE_STORAGE.test(post.infografia_url || '')) {
             grid.insertAdjacentHTML('beforeend', `
                 <div class="post-media-item">
                     <h3><i class="fas fa-image"></i> Infografía</h3>
-                    <a href="${escAtr(post.infografia_url)}" target="_blank" rel="noopener">
+                    <button type="button" class="post-media-miniatura" id="verInfografia" aria-label="Ampliar la infografía">
                         <img src="${escAtr(post.infografia_url)}" alt="Infografía: ${escAtr(post.title)}" loading="lazy">
-                    </a>
+                    </button>
+                    <div class="post-media-acciones">
+                        <button type="button" class="btn btn-primary" id="ampliarInfografia">Ampliar</button>
+                        <button type="button" class="btn btn-outline" id="bajarInfografia">Descargar</button>
+                    </div>
                 </div>`);
+            const ver = () => Visor.imagen(post.infografia_url, 'Infografía', `${post.slug}-infografia`);
+            document.getElementById('verInfografia').onclick = ver;
+            document.getElementById('ampliarInfografia').onclick = ver;
+            document.getElementById('bajarInfografia').onclick = (e) => descargarArchivo(post.infografia_url, `${post.slug}-infografia`, e.currentTarget);
         }
         if (DE_STORAGE.test(post.carrusel_url || '')) {
             grid.insertAdjacentHTML('beforeend', `
                 <div class="post-media-item">
                     <h3><i class="fas fa-file-pdf"></i> Presentación</h3>
                     <p>Las ideas clave del artículo en diapositivas.</p>
-                    <a class="btn btn-primary" href="${escAtr(post.carrusel_url)}" target="_blank" rel="noopener">Abrir PDF</a>
+                    <div class="post-media-acciones">
+                        <button type="button" class="btn btn-primary" id="verPresentacion">Ver presentación</button>
+                        <button type="button" class="btn btn-outline" id="bajarPresentacion">Descargar PDF</button>
+                    </div>
                 </div>`);
+            document.getElementById('verPresentacion').onclick = () => Visor.pdf(post.carrusel_url, 'Presentación', `${post.slug}-presentacion`);
+            document.getElementById('bajarPresentacion').onclick = (e) => descargarArchivo(post.carrusel_url, `${post.slug}-presentacion`, e.currentTarget);
         }
 
         if (grid.children.length) document.getElementById('multimedia').hidden = false;

@@ -425,7 +425,12 @@ hace ChatGPT con su foto como referencia.
   genera, pide confirmación antes de publicar, sube a Spotify y YouTube, y
   guarda enlaces y archivos **desde el mismo diálogo del panel** (`listo`) →
   `post.html` muestra solo la sección "Escucha y mira" (`#multimedia`).
-- La infografía y el PDF van al bucket `images`, carpeta `multimedia/`.
+- La infografía y el PDF van al bucket `images`, carpeta `multimedia/`. En el
+  artículo **nunca se enlazan directo** (Omar no quiere que se vea la dirección
+  de Supabase, y un dominio propio para Storage es de paga): se abren en un
+  visor dentro de la página (la presentación con PDF.js 3.11.174 de cdnjs,
+  cargado sólo al abrirla) y se descargan como blob con nombre
+  `{slug}-infografia.webp` / `{slug}-presentacion.pdf`.
 - `11_multimedia_posts.sql` limita los enlaces: Spotify sólo
   `https://open.spotify.com/episode|show/...`, YouTube sólo `youtube.com/watch`,
   `/shorts` o `youtu.be`, y los archivos sólo del bucket del proyecto.
