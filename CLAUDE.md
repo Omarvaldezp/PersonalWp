@@ -371,6 +371,38 @@ El enlace de baja lleva el correo en base64 de sus bytes UTF-8 y pasado por
 `encodeURIComponent`: sin eso, un `+` del base64 llegaba como espacio a
 `unsubscribe.html` y la baja fallaba.
 
+### Redes sociales (LinkedIn; Instagram después)
+
+Decisiones de Omar (27 de octubre de 2026): el sitio es el centro; cada
+entrada del blog se convierte en un borrador para redes que **Omar aprueba uno
+por uno** (nada se publica solo) en su **perfil personal** de LinkedIn. Fase 2:
+Instagram.
+
+- `10_redes_sociales.sql`: `redes_publicaciones` (borradores, admin/editor),
+  `redes_conexiones` (tokens; sin políticas, sólo la llave de servicio) y
+  `redes_oauth_estados` (state del OAuth).
+- Edge Functions `linkedin-auth` (conectar: OAuth con `openid profile
+  w_member_social`, callback en la propia función, redirige a
+  `/admin/#redes?linkedin=...`) y `linkedin-publicar` (Posts API `/rest/posts`,
+  versión en `LINKEDIN_API_VERSION`, 202609 por omisión). Las dos con
+  `verify_jwt = false` y validación de rol dentro; con la llave anónima
+  responden 401.
+- Secretos: `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`. La app de LinkedIn
+  lleva los productos "Share on LinkedIn" y "Sign In with LinkedIn using OpenID
+  Connect" (ambos sin revisión) y el redirect
+  `https://mogmgtnkyazpsgslucrx.supabase.co/functions/v1/linkedin-auth`.
+- El token dura ~60 días y no hay refresh token sin aprobación de LinkedIn: el
+  panel muestra cuándo vence y "Reconectar".
+- **Trampa:** el texto va en formato "little text". Los caracteres
+  `\ | { } @ [ ] ( ) < > # * _ ~` se escapan con `\`; si no, LinkedIn responde
+  201 y publica el texto **cortado** sin avisar. Los hashtags van como
+  `{hashtag|\#|Tag}`. Lo hace `aLittleText()` en `linkedin-publicar`.
+- LinkedIn no acepta WebP: el panel convierte la imagen a JPEG en el navegador
+  (`imagenAJpegBase64`) y la manda a la función.
+- LinkedIn no permite leer las publicaciones del perfil con estos permisos, así
+  que "de LinkedIn al sitio" no se puede automatizar; Instagram sí lo permite
+  (cuenta profesional, API con Instagram Login, sin página de Facebook).
+
 ### Caché de SiteGround para HTML
 
 SiteGround guardaba en caché las páginas HTML: después de un deploy, quien

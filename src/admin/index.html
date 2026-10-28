@@ -389,6 +389,7 @@ tr:hover { background: #f8fafc; }
             <button class="nav-item" data-section="contacts"><span class="icon"><i class="fas fa-envelope"></i></span><span>Contactos</span><span class="nav-badge" id="unreadBadge" style="display:none;"></span></button>
             <button class="nav-item" data-section="subscribers"><span class="icon"><i class="fas fa-users"></i></span><span>Suscriptores</span></button>
             <button class="nav-item" data-section="newsletter"><span class="icon"><i class="fas fa-paper-plane"></i></span><span>Newsletter</span></button>
+            <button class="nav-item" data-section="redes"><span class="icon"><i class="fab fa-linkedin"></i></span><span>Redes</span></button>
             <button class="nav-item" data-section="analytics"><span class="icon"><i class="fas fa-chart-line"></i></span><span>Analytics</span></button>
             <button class="nav-item" data-section="stats"><span class="icon"><i class="fas fa-cog"></i></span><span>Estadísticas</span></button>
         </nav>
@@ -549,6 +550,29 @@ tr:hover { background: #f8fafc; }
         </div>
 
         <!-- ANALYTICS -->
+        <div class="section-panel" id="sec-redes">
+            <div class="page-header"><div><h1>Redes</h1><p>Prepara, revisa y publica en LinkedIn las entradas de tu blog</p></div></div>
+            <div id="redesConexion" style="margin-bottom:1.25rem; padding:1.1rem 1.25rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border); font-size:0.86rem;">
+                <span class="spinner-sm"></span> Revisando la conexión con LinkedIn...
+            </div>
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="abrirBorradorRedes()">+ Nuevo post</button>
+                </div>
+                <div class="toolbar-right">
+                    <span class="result-count" id="countRedes"></span>
+                </div>
+            </div>
+            <div class="table-wrap"><table>
+                <thead><tr><th>Texto</th><th>Red</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="redesTable"><tr class="loading-row"><td colspan="5"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
+            </table></div>
+            <p style="font-size:0.8rem; color:var(--text-light); margin-top:1rem; line-height:1.6;">
+                Para crear un borrador a partir de una entrada, usa el botón <i class="fab fa-linkedin"></i> en la lista del <strong>Blog</strong>.
+                Nada se publica sin que pulses <strong>Publicar</strong>.
+            </p>
+        </div>
+
         <div class="section-panel" id="sec-analytics">
             <div class="page-header"><div><h1>Analytics</h1><p>Estadísticas de tu sitio y audiencia</p></div></div>
             <div id="analyticsConfig" style="margin-bottom:1.5rem;"></div>
@@ -608,6 +632,8 @@ let cachedResearch = [];
 let cachedContacts = [];
 let cachedSubscribers = [];
 let cachedNewsletters = [];
+let cachedRedes = [];          // filas de redes_publicaciones
+let linkedinConectado = false;
 let cachedSeminario = [];      // filas de v_seminario_alumnos
 let cachedSemReactivos = [];   // filas de v_seminario_reactivos
 
@@ -645,6 +671,15 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 function showApp() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('app').classList.add('active');
+    // LinkedIn regresa a /admin/#redes?linkedin=conectado (o =error&motivo=...)
+    if (location.hash.startsWith('#redes')) {
+        const params = new URLSearchParams(location.hash.split('?')[1] || '');
+        history.replaceState(null, '', location.pathname);
+        document.querySelector('.nav-item[data-section="redes"]').click();
+        if (params.get('linkedin') === 'conectado') toast('LinkedIn conectado', 'success');
+        else if (params.get('linkedin') === 'error') toast('No se conectó LinkedIn: ' + (params.get('motivo') || 'error desconocido'), 'error');
+        return;
+    }
     loadDashboard();
 }
 
@@ -683,6 +718,7 @@ document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
             contacts: loadContacts,
             subscribers: loadSubscribers,
             newsletter: loadNewsletters,
+            redes: loadRedes,
             analytics: loadAnalytics,
             stats: loadStats
         };
@@ -779,6 +815,7 @@ function renderPosts(data) {
             <a href="/post.html?slug=${encodeURIComponent(p.slug)}" target="_blank" class="btn-link" title="Vista previa">👁 Ver</a>
             <button class="btn btn-ghost btn-sm" onclick="editPost('${p.id}')">Editar</button>
             <button class="btn btn-ghost btn-sm" onclick="duplicatePost('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="nuevoBorradorDesdePost('${p.id}')" title="Preparar post para LinkedIn"><i class="fab fa-linkedin"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="togglePublish('${p.id}', ${p.published})">${p.published ? '⏸' : '▶'}</button>
             <button class="btn btn-danger btn-sm" onclick="deleteRecord('posts', '${p.id}', loadPosts)">✕</button>
         </td>
@@ -2172,6 +2209,235 @@ function updateCharCount(inputId, recommended, countId) {
     const len = input.value.length;
     counter.textContent = `${len} caracteres${recommended ? ` (recomendado: ${recommended})` : ''}`;
     counter.className = 'char-count' + (len > recommended * 1.5 ? ' danger' : len > recommended ? ' warn' : '');
+}
+
+// =============================================
+// REDES (LinkedIn)
+// =============================================
+// Los borradores viven en redes_publicaciones. Conectar y publicar pasa por
+// las Edge Functions linkedin-auth y linkedin-publicar: el token de LinkedIn
+// nunca llega al navegador.
+
+const LINKEDIN_MAX = 3000;
+const HASHTAGS_CATEGORIA = {
+    ia: '#InteligenciaArtificial #IA #Innovación',
+    blockchain: '#Blockchain #Bitcoin #Innovación',
+    fintech: '#Fintech #FinanzasDigitales',
+    marketing: '#MarketingDigital #Estrategia',
+    ecommerce: '#eCommerce #NegociosDigitales'
+};
+
+async function llamarFuncion(nombre, body) {
+    const { data, error } = await db.functions.invoke(nombre, { body });
+    if (error) throw new Error(await mensajeDeFuncion(error));
+    if (data?.error) throw new Error(data.error);
+    return data;
+}
+
+async function loadRedes() {
+    estadoLinkedIn();
+    const { data, error } = await db.from('redes_publicaciones').select('*').order('created_at', { ascending: false });
+    const tbody = document.getElementById('redesTable');
+    if (error) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fas fa-database"></i></div>Falta correr <code>10_redes_sociales.sql</code> en Supabase.</div></td></tr>';
+        return;
+    }
+    cachedRedes = data || [];
+    renderRedes(cachedRedes);
+}
+
+async function estadoLinkedIn() {
+    const box = document.getElementById('redesConexion');
+    try {
+        const e = await llamarFuncion('linkedin-auth', { accion: 'estado' });
+        linkedinConectado = !!e.conectado;
+        if (!e.configurado) {
+            box.innerHTML = `<strong><i class="fab fa-linkedin"></i> LinkedIn sin configurar.</strong>
+                Faltan <code>LINKEDIN_CLIENT_ID</code> y <code>LINKEDIN_CLIENT_SECRET</code> en Supabase (Edge Functions &rsaquo; Secrets).`;
+        } else if (!e.conectado) {
+            box.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <span><strong><i class="fab fa-linkedin"></i> LinkedIn no está conectado.</strong>
+                ${e.expira ? 'La conexión anterior venció el ' + fmtDate(e.expira) + '.' : 'Conéctalo para poder publicar.'}</span>
+                <button class="btn btn-primary btn-sm" onclick="conectarLinkedIn()">Conectar LinkedIn</button></div>`;
+        } else {
+            const dias = Math.ceil((new Date(e.expira) - Date.now()) / 86400000);
+            box.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <span><strong style="color:var(--success);"><i class="fab fa-linkedin"></i> Conectado</strong> como ${esc(e.nombre || 'tu perfil')}.
+                La conexión vence en ${dias} día${dias === 1 ? '' : 's'} (${fmtDate(e.expira)}); luego basta con volver a conectar.</span>
+                <span style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="conectarLinkedIn()">Reconectar</button>
+                    <button class="btn btn-ghost btn-sm" onclick="desconectarLinkedIn()">Desconectar</button>
+                </span></div>`;
+        }
+    } catch (err) {
+        box.innerHTML = '<strong>No se pudo revisar la conexión con LinkedIn:</strong> ' + esc(err.message);
+    }
+}
+
+async function conectarLinkedIn() {
+    try {
+        const { url } = await llamarFuncion('linkedin-auth', { accion: 'iniciar' });
+        window.location.href = url;
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+async function desconectarLinkedIn() {
+    if (!confirm('¿Desconectar LinkedIn? Para volver a publicar tendrás que conectarlo de nuevo.')) return;
+    try { await llamarFuncion('linkedin-auth', { accion: 'desconectar' }); toast('LinkedIn desconectado', 'success'); }
+    catch (err) { toast(err.message, 'error'); }
+    estadoLinkedIn();
+}
+
+function renderRedes(data) {
+    const tbody = document.getElementById('redesTable');
+    document.getElementById('countRedes').textContent = data.length + ' posts';
+    if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="icon"><i class="fab fa-linkedin"></i></div>Aún no hay posts. Crea uno desde una entrada del Blog o con "+ Nuevo post".</div></td></tr>';
+        return;
+    }
+    const estados = {
+        borrador: '<span class="badge badge-yellow">Borrador</span>',
+        publicando: '<span class="badge badge-blue">Publicando...</span>',
+        publicado: '<span class="badge badge-green">Publicado</span>',
+        error: '<span class="badge badge-red">Error</span>'
+    };
+    tbody.innerHTML = data.map(r => `<tr>
+        <td style="max-width:420px;"><span style="font-size:0.85rem;">${esc((r.texto || '').slice(0, 140))}${(r.texto || '').length > 140 ? '…' : ''}</span>
+            ${r.error && r.estado === 'error' ? `<br><span style="font-size:0.75rem;color:var(--danger);">${esc(r.error)}</span>` : ''}</td>
+        <td><i class="fab fa-${r.red === 'instagram' ? 'instagram' : 'linkedin'}"></i> ${r.red === 'instagram' ? 'Instagram' : 'LinkedIn'}</td>
+        <td>${estados[r.estado] || esc(r.estado)}</td>
+        <td>${fmtDate(r.publicado_en || r.created_at)}</td>
+        <td class="actions">
+            ${r.estado === 'publicado'
+                ? (r.url_externa ? `<a class="btn-link" href="${esc(r.url_externa)}" target="_blank" rel="noopener">Ver en LinkedIn</a>` : '')
+                : `<button class="btn btn-ghost btn-sm" onclick="abrirBorradorRedes('${r.id}')">Editar</button>
+                   <button class="btn btn-primary btn-sm" onclick="publicarLinkedIn('${r.id}')" ${r.estado === 'publicando' ? 'disabled' : ''}>Publicar</button>`}
+            ${r.estado !== 'publicado' ? `<button class="btn btn-danger btn-sm" onclick="deleteRecord('redes_publicaciones', '${r.id}', loadRedes)">✕</button>` : ''}
+        </td></tr>`).join('');
+}
+
+async function nuevoBorradorDesdePost(postId) {
+    const { data: p, error } = await db.from('posts').select('*').eq('id', postId).single();
+    if (error || !p) { toast('No se encontró la entrada', 'error'); return; }
+    const enlace = 'https://omarvaldez.com/post.html?slug=' + encodeURIComponent(p.slug);
+    const texto = [
+        p.title,
+        '',
+        p.excerpt || '',
+        '',
+        'Lo desarrollo completo en mi sitio. ¿Qué opinas? Te leo en los comentarios.',
+        '',
+        HASHTAGS_CATEGORIA[p.category] || '#Innovación'
+    ].join('\n').replace(/\n{3,}/g, '\n\n');
+    const { data, error: e2 } = await db.from('redes_publicaciones').insert([{
+        red: 'linkedin', post_id: p.id, texto,
+        enlace, enlace_titulo: p.title, enlace_descripcion: p.excerpt || null,
+        imagen_url: p.image_url || null
+    }]).select().single();
+    if (e2) { toast('Error: ' + e2.message + (e2.code === '42P01' ? ' (falta correr 10_redes_sociales.sql)' : ''), 'error'); return; }
+    document.querySelector('.nav-item[data-section="redes"]').click();
+    abrirBorradorRedes(data.id, data);
+}
+
+function abrirBorradorRedes(id = null, fila = null) {
+    const r = fila || cachedRedes.find(x => x.id === id) || {};
+    currentEditType = 'redes';
+    currentEditId = r.id || null;
+    document.getElementById('modalTitle').textContent = r.id ? 'Post para LinkedIn' : 'Nuevo post para LinkedIn';
+    document.getElementById('modalBody').innerHTML = `
+        <div class="form-group"><label>Texto del post</label>
+            <textarea id="rd_texto" rows="11" maxlength="${LINKEDIN_MAX}" oninput="contarRedes()">${esc(r.texto || '')}</textarea>
+            <div class="char-count" id="rd_cc"></div>
+            <div class="form-hint">LinkedIn muestra unos 210 caracteres antes de "ver más": la primera línea es la que engancha. Los #hashtags se convierten solos al formato de LinkedIn.</div>
+        </div>
+        <div class="form-group"><label>Enlace (opcional)</label><input id="rd_enlace" value="${esc(r.enlace || '')}" placeholder="https://omarvaldez.com/post.html?slug=..."></div>
+        <div class="form-row">
+            <div class="form-group"><label>Título de la tarjeta</label><input id="rd_titulo" value="${esc(r.enlace_titulo || '')}" maxlength="200"></div>
+            <div class="form-group"><label>Descripción de la tarjeta</label><input id="rd_desc" value="${esc(r.enlace_descripcion || '')}" maxlength="300"></div>
+        </div>
+        <div class="form-group"><label>Imagen (URL)</label><input id="rd_imagen" value="${esc(r.imagen_url || '')}" oninput="vistaImagenRedes()">
+            <div id="rd_vista" style="margin-top:0.5rem;"></div>
+            <div class="form-hint">Con enlace, la imagen es la miniatura de la tarjeta; sin enlace, el post es la imagen.</div>
+        </div>`;
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-ghost" onclick="guardarBorradorRedes(false)">Guardar borrador</button>
+        <button class="btn btn-primary" onclick="guardarBorradorRedes(true)">Guardar y publicar</button>`;
+    document.getElementById('modalOverlay').classList.add('active');
+    contarRedes(); vistaImagenRedes();
+}
+
+function contarRedes() {
+    const t = document.getElementById('rd_texto'), c = document.getElementById('rd_cc');
+    if (!t || !c) return;
+    c.textContent = `${t.value.length} / ${LINKEDIN_MAX}`;
+    c.className = 'char-count' + (t.value.length > LINKEDIN_MAX * 0.95 ? ' danger' : '');
+}
+
+function vistaImagenRedes() {
+    const u = document.getElementById('rd_imagen')?.value.trim();
+    const v = document.getElementById('rd_vista');
+    if (v) v.innerHTML = u ? `<img src="${esc(u)}" alt="" style="max-height:140px;border-radius:8px;border:1px solid var(--border);">` : '';
+}
+
+async function guardarBorradorRedes(publicarDespues) {
+    const campos = {
+        red: 'linkedin',
+        texto: document.getElementById('rd_texto').value,
+        enlace: document.getElementById('rd_enlace').value.trim() || null,
+        enlace_titulo: document.getElementById('rd_titulo').value.trim() || null,
+        enlace_descripcion: document.getElementById('rd_desc').value.trim() || null,
+        imagen_url: document.getElementById('rd_imagen').value.trim() || null,
+        updated_at: new Date().toISOString()
+    };
+    if (!campos.texto.trim()) { toast('Escribe el texto del post', 'error'); return; }
+    let id = currentEditId, error;
+    if (id) ({ error } = await db.from('redes_publicaciones').update(campos).eq('id', id));
+    else {
+        let fila; ({ data: fila, error } = await db.from('redes_publicaciones').insert([campos]).select().single());
+        id = fila?.id;
+    }
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    closeModal();
+    await loadRedes();
+    if (publicarDespues) publicarLinkedIn(id);
+    else toast('Borrador guardado', 'success');
+}
+
+// LinkedIn sólo acepta JPG, PNG o GIF y las imágenes del sitio son WebP:
+// el navegador la convierte a JPEG (lado mayor de 1200 px) antes de enviarla.
+async function imagenAJpegBase64(url) {
+    const r = await fetch(url, { mode: 'cors' });
+    if (!r.ok) throw new Error('No se pudo leer la imagen (' + r.status + ')');
+    const bmp = await createImageBitmap(await r.blob());
+    const escala = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * escala); c.height = Math.round(bmp.height * escala);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(bmp, 0, 0, c.width, c.height);
+    bmp.close();
+    const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', 0.88));
+    const dataUrl = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(blob); });
+    return String(dataUrl).split(',')[1];
+}
+
+async function publicarLinkedIn(id) {
+    const r = cachedRedes.find(x => x.id === id);
+    if (!r) return;
+    if (!linkedinConectado) { toast('Primero conecta LinkedIn (arriba en esta sección).', 'error'); return; }
+    if (!confirm('¿Publicar este post en tu perfil de LinkedIn? Será público de inmediato.')) return;
+    toast('Publicando en LinkedIn...', 'success');
+    try {
+        let imagen_jpeg_base64 = null;
+        if (r.imagen_url) imagen_jpeg_base64 = await imagenAJpegBase64(r.imagen_url);
+        const res = await llamarFuncion('linkedin-publicar', { publicacion_id: id, imagen_jpeg_base64 });
+        toast('Publicado en LinkedIn', 'success');
+        if (res.url) window.open(res.url, '_blank', 'noopener');
+    } catch (err) {
+        toast('No se publicó: ' + err.message, 'error');
+    }
+    loadRedes();
 }
 
 // =============================================
