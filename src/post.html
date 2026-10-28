@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="/css/custom.css?v=20261010">
+    <link rel="stylesheet" href="/css/custom.css?v=20261028">
 
     <!-- JSON-LD Structured Data (se inyecta dinámicamente) -->
     <script type="application/ld+json" id="jsonLd">
@@ -121,6 +121,9 @@
                 <h1 id="postTitle"></h1>
                 <p class="post-excerpt" id="postExcerpt"></p>
 
+                <!-- Atajo a la multimedia (se muestra si la entrada la tiene) -->
+                <div class="post-media-atajo" id="postMediaAtajo" hidden></div>
+
                 <!-- Author -->
                 <div class="post-author">
                     <div class="author-avatar">OV</div>
@@ -138,6 +141,14 @@
 
             <!-- Article Body -->
             <div class="post-body" id="postBody"></div>
+
+            <!-- Escucha y mira: podcast, video, infografía y carrusel del artículo.
+                 Los genera la skill multimedia-blog; ver CLAUDE.md. -->
+            <section class="post-media" id="multimedia" hidden>
+                <h2>Escucha y mira</h2>
+                <p class="post-media-nota">Versiones en audio y video generadas con IA a partir de este artículo.</p>
+                <div class="post-media-grid" id="postMediaGrid"></div>
+            </section>
 
             <!-- Share -->
             <div class="post-share">
@@ -259,6 +270,73 @@
 
     loadPost(slug);
 
+    // Sólo se incrustan los servicios conocidos. La base ya valida el formato
+    // de cada enlace (11_multimedia_posts.sql); aquí se vuelve a extraer el id
+    // para no meter en un iframe nada que no sea Spotify o YouTube.
+    function idSpotify(url) {
+        const m = /^https:\/\/open\.spotify\.com\/(episode|show)\/([A-Za-z0-9]+)/.exec(url || '');
+        return m ? { tipo: m[1], id: m[2] } : null;
+    }
+    function idYouTube(url) {
+        const m = /^https:\/\/(?:www\.youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/.exec(url || '');
+        return m ? m[1] : null;
+    }
+    // escHtml no toca las comillas, y aquí todo va dentro de atributos.
+    const escAtr = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const DE_STORAGE = /^https:\/\/mogmgtnkyazpsgslucrx\.supabase\.co\/storage\/v1\/object\/public\/images\//;
+
+    function mostrarMultimedia(post) {
+        const grid = document.getElementById('postMediaGrid');
+        const atajos = [];
+        const sp = idSpotify(post.podcast_url);
+        const yt = idYouTube(post.video_url);
+
+        if (yt) {
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="post-media-item post-media-ancho">
+                    <h3><i class="fab fa-youtube"></i> Video</h3>
+                    <div class="post-media-video">
+                        <iframe src="https://www.youtube-nocookie.com/embed/${yt}" title="Video: ${escAtr(post.title)}"
+                            loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+                    </div>
+                </div>`);
+            atajos.push('<a href="#multimedia"><i class="fab fa-youtube"></i> Ver el video</a>');
+        }
+        if (sp) {
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="post-media-item post-media-ancho">
+                    <h3><i class="fab fa-spotify"></i> Podcast</h3>
+                    <iframe class="post-media-spotify" src="https://open.spotify.com/embed/${sp.tipo}/${sp.id}"
+                        title="Podcast: ${escAtr(post.title)}" loading="lazy" allow="encrypted-media"></iframe>
+                </div>`);
+            atajos.unshift('<a href="#multimedia"><i class="fab fa-spotify"></i> Escuchar el podcast</a>');
+        }
+        if (DE_STORAGE.test(post.infografia_url || '')) {
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="post-media-item">
+                    <h3><i class="fas fa-image"></i> Infografía</h3>
+                    <a href="${escAtr(post.infografia_url)}" target="_blank" rel="noopener">
+                        <img src="${escAtr(post.infografia_url)}" alt="Infografía: ${escAtr(post.title)}" loading="lazy">
+                    </a>
+                </div>`);
+        }
+        if (DE_STORAGE.test(post.carrusel_url || '')) {
+            grid.insertAdjacentHTML('beforeend', `
+                <div class="post-media-item">
+                    <h3><i class="fas fa-file-pdf"></i> Presentación</h3>
+                    <p>Las ideas clave del artículo en diapositivas.</p>
+                    <a class="btn btn-primary" href="${escAtr(post.carrusel_url)}" target="_blank" rel="noopener">Abrir PDF</a>
+                </div>`);
+        }
+
+        if (grid.children.length) document.getElementById('multimedia').hidden = false;
+        if (atajos.length) {
+            const a = document.getElementById('postMediaAtajo');
+            a.innerHTML = atajos.join('');
+            a.hidden = false;
+        }
+    }
+
     async function loadPost(slug) {
         try {
             const post = await window.API.getPostBySlug(slug);
@@ -295,6 +373,8 @@
                     .map(p => `<p>${escHtml(p.trim())}</p>`)
                     .join('');
             }
+
+            mostrarMultimedia(post);
 
             // === SEO: Update meta tags dynamically ===
             const pageUrl = `https://omarvaldez.com/post.html?slug=${slug}`;

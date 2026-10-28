@@ -271,6 +271,10 @@ Del lado de Supabase, la secuencia de archivos queda así:
    Authentication del panel de Supabase.
 8. `09_limite_de_envios.sql` — tope de envíos para contacto y newsletter. Ver
    "Límite de envíos" más abajo.
+9. `10_redes_sociales.sql` — borradores y conexión con LinkedIn. Ver "Redes
+   sociales".
+10. `11_multimedia_posts.sql` — columnas de multimedia en `posts`. Ver
+   "Multimedia del blog".
 
 Aplicado el 10 de octubre de 2026: `07` y `08` corridos por Omar desde el SQL
 Editor (el conector no puede: las sentencias de DDL se quedan esperando una
@@ -402,6 +406,34 @@ Instagram.
 - LinkedIn no permite leer las publicaciones del perfil con estos permisos, así
   que "de LinkedIn al sitio" no se puede automatizar; Instagram sí lo permite
   (cuenta profesional, API con Instagram Login, sin página de Facebook).
+
+### Multimedia del blog (podcast, video, infografía y carrusel)
+
+Decisión de Omar (28 de octubre de 2026): cada entrada aprobada se convierte
+en podcast para su canal de Spotify, video para YouTube, infografía y carrusel
+PDF, con su cuenta de Gemini Notebook (antes NotebookLM); las miniaturas las
+hace ChatGPT con su foto como referencia.
+
+- **No hay servidor que lo haga solo.** Gemini Notebook (cuentas personales),
+  ChatGPT (la suscripción no da API) y Spotify for Creators no tienen API para
+  esto, y los videos que se suben por la API de YouTube quedan privados hasta
+  pasar una auditoría de Google. Por eso lo hace Claude **en la computadora de
+  Omar**, con Claude in Chrome y sus sesiones abiertas: skill
+  `.claude/skills/multimedia-blog/` (también se sube a claude.ai como skill).
+- Flujo: panel → Blog → botón de multimedia → "Generar multimedia" deja
+  `posts.multimedia_estado = 'pendiente'` → la skill la toma (`en_proceso`),
+  genera, pide confirmación antes de publicar, sube a Spotify y YouTube, y
+  guarda enlaces y archivos **desde el mismo diálogo del panel** (`listo`) →
+  `post.html` muestra solo la sección "Escucha y mira" (`#multimedia`).
+- La infografía y el PDF van al bucket `images`, carpeta `multimedia/`.
+- `11_multimedia_posts.sql` limita los enlaces: Spotify sólo
+  `https://open.spotify.com/episode|show/...`, YouTube sólo `youtube.com/watch`,
+  `/shorts` o `youtu.be`, y los archivos sólo del bucket del proyecto.
+  `post.html` vuelve a extraer el id antes de armar cada iframe.
+- El audio y el video salen del texto: si el artículo se corrige después, ya
+  no coinciden. El panel lo advierte.
+- YouTube: la skill marca "contenido alterado o sintético: Sí" y las
+  descripciones dicen que el material se generó con IA.
 
 ### Caché de SiteGround para HTML
 

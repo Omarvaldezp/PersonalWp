@@ -977,6 +977,38 @@ a.blog-thumb { color: inherit; text-decoration: none; }
 }
 .post-body strong { color: #0f172a; }
 
+/* Escucha y mira: multimedia generada a partir del artículo */
+.post-media-atajo { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.5rem; }
+.post-media-atajo a {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.88rem; font-weight: 600;
+    background: #eff6ff; color: var(--primary-dark); text-decoration: none; transition: var(--transition);
+}
+.post-media-atajo a:hover { background: var(--primary); color: #fff; }
+.post-media { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+.post-media > h2 { font-size: 1.5rem; font-weight: 700; color: #0f172a; letter-spacing: -0.01em; }
+.post-media-nota { font-size: 0.88rem; color: #64748b; margin: 0.35rem 0 1.5rem; }
+.post-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.post-media-item {
+    background: #fff; border: 1px solid #e2e8f0; border-radius: var(--radius);
+    padding: 1.25rem; box-shadow: var(--shadow-sm); min-width: 0;
+}
+.post-media-ancho { grid-column: 1 / -1; }
+.post-media-item h3 {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.85rem;
+}
+.post-media-item h3 .fa-youtube { color: #ff0000; }
+.post-media-item h3 .fa-spotify { color: #1db954; }
+.post-media-item p { font-size: 0.92rem; color: #475569; margin-bottom: 1rem; }
+.post-media-item img { width: 100%; height: auto; display: block; border-radius: var(--radius-sm); }
+.post-media-video { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-sm); overflow: hidden; background: #0f172a; }
+.post-media-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.post-media-spotify { width: 100%; height: 152px; border: 0; border-radius: 12px; }
+@media (max-width: 640px) {
+    .post-media-grid { grid-template-columns: 1fr; }
+}
+
 /* Share */
 .post-share {
     display: flex; align-items: center; gap: 1rem;

@@ -809,13 +809,14 @@ function renderPosts(data) {
     tbody.innerHTML = data.map(p => `<tr>
         <td><strong>${esc(p.title)}</strong><br><span style="font-size:0.75rem;color:var(--text-light);">/${esc(p.slug)}</span></td>
         <td><span class="badge badge-blue">${esc(p.category)}</span></td>
-        <td>${p.published ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-yellow">Borrador</span>'}${p.featured ? ' <span class="badge badge-blue">★</span>' : ''}</td>
+        <td>${p.published ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-yellow">Borrador</span>'}${p.featured ? ' <span class="badge badge-blue">★</span>' : ''}${badgeMultimedia(p.multimedia_estado)}</td>
         <td>${fmtDate(p.created_at)}</td>
         <td class="actions">
             <a href="/post.html?slug=${encodeURIComponent(p.slug)}" target="_blank" class="btn-link" title="Vista previa">👁 Ver</a>
             <button class="btn btn-ghost btn-sm" onclick="editPost('${p.id}')">Editar</button>
             <button class="btn btn-ghost btn-sm" onclick="duplicatePost('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="nuevoBorradorDesdePost('${p.id}')" title="Preparar post para LinkedIn"><i class="fab fa-linkedin"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="abrirMultimedia('${p.id}')" title="Podcast, video, infografía y carrusel"><i class="fas fa-photo-film"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="togglePublish('${p.id}', ${p.published})">${p.published ? '⏸' : '▶'}</button>
             <button class="btn btn-danger btn-sm" onclick="deleteRecord('posts', '${p.id}', loadPosts)">✕</button>
         </td>
@@ -2337,6 +2338,126 @@ async function nuevoBorradorDesdePost(postId) {
     if (e2) { toast('Error: ' + e2.message + (e2.code === '42P01' ? ' (falta correr 10_redes_sociales.sql)' : ''), 'error'); return; }
     document.querySelector('.nav-item[data-section="redes"]').click();
     abrirBorradorRedes(data.id, data);
+}
+
+// =============================================
+// MULTIMEDIA DE CADA ENTRADA (11_multimedia_posts.sql)
+// =============================================
+// "Generar multimedia" sólo deja la entrada en 'pendiente'. El trabajo lo hace
+// Claude en la computadora de Omar con la skill multimedia-blog (Gemini
+// Notebook, ChatGPT, Spotify for Creators y YouTube no tienen API utilizable
+// para cuentas personales). Esa skill usa este mismo diálogo para subir la
+// infografía y el PDF, y guarda los enlaces.
+const ESTADOS_MULTIMEDIA = {
+    pendiente: '<span class="badge badge-yellow" title="Multimedia pendiente">Multimedia: pendiente</span>',
+    en_proceso: '<span class="badge badge-blue" title="Multimedia en proceso">Multimedia: en proceso</span>',
+    listo: '<span class="badge badge-green" title="Multimedia lista">Multimedia</span>',
+    error: '<span class="badge badge-red" title="Falló la multimedia">Multimedia: error</span>'
+};
+function badgeMultimedia(estado) { return ESTADOS_MULTIMEDIA[estado] ? ' ' + ESTADOS_MULTIMEDIA[estado] : ''; }
+
+async function abrirMultimedia(postId) {
+    const { data: p, error } = await db.from('posts').select('*').eq('id', postId).single();
+    if (error || !p) { toast('No se encontró la entrada', 'error'); return; }
+    if (!('multimedia_estado' in p)) { toast('Falta correr 11_multimedia_posts.sql en Supabase', 'error'); return; }
+    currentEditType = 'multimedia';
+    currentEditId = p.id;
+    const estado = p.multimedia_estado || 'ninguno';
+    const textoEstado = {
+        ninguno: 'Sin multimedia. Pulsa "Generar multimedia" cuando el artículo esté terminado.',
+        pendiente: 'Aprobada. Claude la generará la próxima vez que corra la skill multimedia-blog en tu computadora.',
+        en_proceso: 'Claude la está generando.',
+        listo: 'Lista. El artículo ya muestra la sección "Escucha y mira".',
+        error: 'Falló: ' + (p.multimedia_error || 'sin detalle')
+    }[estado];
+    document.getElementById('modalTitle').textContent = 'Multimedia: ' + p.title;
+    document.getElementById('modalBody').innerHTML = `
+        <div class="form-group">
+            <label>Estado</label>
+            <div>${badgeMultimedia(estado) || '<span class="badge">Sin multimedia</span>'}</div>
+            <div class="form-hint">${esc(textoEstado)}${p.multimedia_actualizado ? ' Última actualización: ' + fmtDate(p.multimedia_actualizado) + '.' : ''}</div>
+            <div class="form-hint">El audio y el video se generan a partir del texto: si corriges el artículo después, ya no coincidirán.</div>
+        </div>
+        <div class="form-group"><label>Episodio en Spotify</label>
+            <input id="mm_podcast" value="${esc(p.podcast_url || '')}" placeholder="https://open.spotify.com/episode/...">
+            <div class="form-hint">En Spotify: Compartir → Copiar enlace del episodio.</div>
+        </div>
+        <div class="form-group"><label>Video en YouTube</label>
+            <input id="mm_video" value="${esc(p.video_url || '')}" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>Infografía (imagen)</label>
+                <input type="file" id="mm_infografia_file" accept="image/png,image/jpeg,image/webp">
+                <input type="hidden" id="mm_infografia" value="${esc(p.infografia_url || '')}">
+                <div id="mm_infografia_vista" style="margin-top:0.5rem;">${p.infografia_url ? `<a href="${esc(p.infografia_url)}" target="_blank"><img src="${esc(p.infografia_url)}" alt="" style="max-height:120px;border-radius:8px;border:1px solid var(--border);"></a> <button type="button" class="btn btn-ghost btn-sm" onclick="quitarArchivoMultimedia('infografia')">Quitar</button>` : ''}</div>
+            </div>
+            <div class="form-group"><label>Presentación o carrusel (PDF)</label>
+                <input type="file" id="mm_carrusel_file" accept="application/pdf">
+                <input type="hidden" id="mm_carrusel" value="${esc(p.carrusel_url || '')}">
+                <div id="mm_carrusel_vista" style="margin-top:0.5rem;">${p.carrusel_url ? `<a href="${esc(p.carrusel_url)}" target="_blank">Ver PDF actual</a> <button type="button" class="btn btn-ghost btn-sm" onclick="quitarArchivoMultimedia('carrusel')">Quitar</button>` : ''}</div>
+            </div>
+        </div>`;
+    const puedeAprobar = estado === 'ninguno' || estado === 'error' || estado === 'listo';
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        ${puedeAprobar ? `<button class="btn btn-ghost" onclick="guardarMultimedia('pendiente')" title="Claude la generará en tu computadora"><i class="fas fa-wand-magic-sparkles"></i> ${estado === 'ninguno' ? 'Generar multimedia' : 'Volver a generar'}</button>` : ''}
+        <button class="btn btn-primary" onclick="guardarMultimedia()">Guardar enlaces</button>`;
+    document.getElementById('modalOverlay').classList.add('active');
+}
+
+function quitarArchivoMultimedia(cual) {
+    document.getElementById('mm_' + cual).value = '';
+    document.getElementById('mm_' + cual + '_vista').innerHTML = '<span class="form-hint">Se quitará al guardar.</span>';
+}
+
+async function subirArchivoMultimedia(file, carpeta) {
+    // Las infografías traen texto pequeño: se comprimen a WebP pero con más
+    // resolución y calidad que las imágenes del blog.
+    const final = file.type === 'application/pdf' ? file : await comprimirImagen(file, 2400, 0.9);
+    if (final.size > 45 * 1024 * 1024) throw new Error('El archivo pasa de 45 MB.');
+    const ext = final.name.split('.').pop().toLowerCase();
+    const nombre = `multimedia/${carpeta}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await db.storage.from('images')
+        .upload(nombre, final, { cacheControl: '31536000', upsert: false, contentType: final.type });
+    if (error) throw error;
+    return db.storage.from('images').getPublicUrl(nombre).data.publicUrl;
+}
+
+async function guardarMultimedia(nuevoEstado = null) {
+    const campos = {
+        podcast_url: document.getElementById('mm_podcast').value.trim() || null,
+        video_url: document.getElementById('mm_video').value.trim() || null,
+        infografia_url: document.getElementById('mm_infografia').value || null,
+        carrusel_url: document.getElementById('mm_carrusel').value || null,
+        multimedia_actualizado: new Date().toISOString()
+    };
+    if (campos.podcast_url && !/^https:\/\/open\.spotify\.com\/(episode|show)\/[A-Za-z0-9]+/.test(campos.podcast_url)) {
+        toast('El enlace de Spotify debe empezar con https://open.spotify.com/episode/', 'error'); return;
+    }
+    if (campos.video_url && !/^https:\/\/(www\.youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]{11}/.test(campos.video_url)) {
+        toast('El enlace de YouTube debe ser https://www.youtube.com/watch?v=... o https://youtu.be/...', 'error'); return;
+    }
+    try {
+        const fInfo = document.getElementById('mm_infografia_file').files[0];
+        const fPdf = document.getElementById('mm_carrusel_file').files[0];
+        if (fInfo || fPdf) toast('Subiendo archivos...', 'success');
+        if (fInfo) campos.infografia_url = await subirArchivoMultimedia(fInfo, 'infografias');
+        if (fPdf) campos.carrusel_url = await subirArchivoMultimedia(fPdf, 'carruseles');
+    } catch (e) {
+        toast('No se pudo subir el archivo: ' + (e.message || e), 'error'); return;
+    }
+    if (nuevoEstado) {
+        campos.multimedia_estado = nuevoEstado;
+        campos.multimedia_error = null;
+    } else if (campos.podcast_url || campos.video_url || campos.infografia_url || campos.carrusel_url) {
+        // Guardar enlaces a mano también cuenta como multimedia lista.
+        const actual = cachedPosts.find(x => x.id === currentEditId)?.multimedia_estado;
+        if (actual !== 'en_proceso') campos.multimedia_estado = 'listo';
+    }
+    const { error } = await db.from('posts').update(campos).eq('id', currentEditId);
+    if (error) { toast('Error: ' + error.message + (error.code === '42703' ? ' (falta correr 11_multimedia_posts.sql)' : ''), 'error'); return; }
+    toast(nuevoEstado === 'pendiente' ? 'Aprobada: Claude generará la multimedia' : 'Multimedia guardada', 'success');
+    closeModal(); loadPosts();
 }
 
 function abrirBorradorRedes(id = null, fila = null) {
