@@ -275,6 +275,8 @@ Del lado de Supabase, la secuencia de archivos queda así:
    sociales".
 10. `11_multimedia_posts.sql` — columnas de multimedia en `posts`. Ver
    "Multimedia del blog".
+11. `12_instagram.sql` — columna `imagenes` (láminas del carrusel) en
+   `redes_publicaciones`. Ver "Instagram".
 
 Aplicado el 10 de octubre de 2026: `07` y `08` corridos por Omar desde el SQL
 Editor (el conector no puede: las sentencias de DDL se quedan esperando una
@@ -375,7 +377,7 @@ El enlace de baja lleva el correo en base64 de sus bytes UTF-8 y pasado por
 `encodeURIComponent`: sin eso, un `+` del base64 llegaba como espacio a
 `unsubscribe.html` y la baja fallaba.
 
-### Redes sociales (LinkedIn; Instagram después)
+### Redes sociales (LinkedIn; Instagram en su propia sección)
 
 Decisiones de Omar (27 de octubre de 2026): el sitio es el centro; cada
 entrada del blog se convierte en un borrador para redes que **Omar aprueba uno
@@ -406,6 +408,44 @@ Instagram.
 - LinkedIn no permite leer las publicaciones del perfil con estos permisos, así
   que "de LinkedIn al sitio" no se puede automatizar; Instagram sí lo permite
   (cuenta profesional, API con Instagram Login, sin página de Facebook).
+
+### Instagram
+
+Decisiones de Omar (28 de octubre de 2026): su cuenta ya es profesional; cada
+entrada va como **carrusel con las láminas de su presentación** (Gemini
+Notebook), aprobado uno por uno desde el panel, sección Redes. Por ahora
+**no** se muestra su Instagram en el sitio.
+
+- API: "Instagram API with Instagram Login" (`graph.instagram.com`, sin
+  página de Facebook), permisos `instagram_business_basic` e
+  `instagram_business_content_publish`. La app de Meta puede quedarse en modo
+  desarrollo mientras sólo publique en la cuenta de Omar (agregada como
+  evaluador de Instagram en Roles de la app).
+- Edge Functions `instagram-auth` (OAuth, callback en la propia función,
+  regresa a `/admin/#redes?instagram=...`) e `instagram-publicar`. Las dos con
+  `verify_jwt = false` y validación de rol dentro; con la llave anónima
+  responden 401. Secretos: `INSTAGRAM_APP_ID` e `INSTAGRAM_APP_SECRET` (los
+  "de la app de Instagram", distintos del id de la app de Meta) y opcional
+  `INSTAGRAM_API_VERSION` (`v23.0` por omisión).
+- Redirect que va en la app de Meta:
+  `https://mogmgtnkyazpsgslucrx.supabase.co/functions/v1/instagram-auth`.
+- **El token sí se renueva** (a diferencia de LinkedIn): dura 60 días y
+  `instagram-auth` lo refresca en la acción `estado` cuando le quedan menos de
+  30 días y tiene más de 24 horas. El panel llama `estado` cada vez que se abre
+  Redes. Si pasan 60 días sin abrirla, vence y hay que volver a conectar.
+- Instagram sólo acepta **JPEG por URL pública**, con proporción entre 4:5 y
+  1.91:1, y de 2 a 10 elementos por carrusel (todos toman la proporción del
+  primero). El panel dibuja cada página del PDF con PDF.js, la recorta a ese
+  rango si hace falta, la sube como JPEG de 1080 px a
+  `images/multimedia/instagram/{slug}-{ts}/NN.jpg` y guarda la lista en
+  `redes_publicaciones.imagenes`. Sin presentación, usa la imagen del
+  artículo. `instagram-publicar` sólo acepta JPEG del bucket del proyecto.
+- Los enlaces del pie de foto no se pueden abrir en Instagram: el texto dice
+  "en el enlace de mi perfil", así que el perfil de Omar debe llevar
+  omarvaldez.com.
+- Publicar es asíncrono: un contenedor por lámina, uno CAROUSEL, esperar
+  `status_code = FINISHED` y luego `media_publish`. Puede tardar hasta un
+  minuto.
 
 ### Multimedia del blog (podcast, video, infografía y carrusel)
 

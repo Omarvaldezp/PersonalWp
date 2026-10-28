@@ -551,9 +551,12 @@ tr:hover { background: #f8fafc; }
 
         <!-- ANALYTICS -->
         <div class="section-panel" id="sec-redes">
-            <div class="page-header"><div><h1>Redes</h1><p>Prepara, revisa y publica en LinkedIn las entradas de tu blog</p></div></div>
+            <div class="page-header"><div><h1>Redes</h1><p>Prepara, revisa y publica en LinkedIn e Instagram las entradas de tu blog</p></div></div>
             <div id="redesConexion" style="margin-bottom:1.25rem; padding:1.1rem 1.25rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border); font-size:0.86rem;">
                 <span class="spinner-sm"></span> Revisando la conexión con LinkedIn...
+            </div>
+            <div id="redesConexionIg" style="margin-bottom:1.25rem; padding:1.1rem 1.25rem; background:var(--card); border-radius:var(--radius); border:1px solid var(--border); font-size:0.86rem;">
+                <span class="spinner-sm"></span> Revisando la conexión con Instagram...
             </div>
             <div class="toolbar">
                 <div class="toolbar-left">
@@ -568,7 +571,7 @@ tr:hover { background: #f8fafc; }
                 <tbody id="redesTable"><tr class="loading-row"><td colspan="5"><span class="spinner-sm"></span> Cargando...</td></tr></tbody>
             </table></div>
             <p style="font-size:0.8rem; color:var(--text-light); margin-top:1rem; line-height:1.6;">
-                Para crear un borrador a partir de una entrada, usa el botón <i class="fab fa-linkedin"></i> en la lista del <strong>Blog</strong>.
+                Para crear un borrador a partir de una entrada, usa los botones <i class="fab fa-linkedin"></i> e <i class="fab fa-instagram"></i> en la lista del <strong>Blog</strong>.
                 Nada se publica sin que pulses <strong>Publicar</strong>.
             </p>
         </div>
@@ -634,6 +637,7 @@ let cachedSubscribers = [];
 let cachedNewsletters = [];
 let cachedRedes = [];          // filas de redes_publicaciones
 let linkedinConectado = false;
+let instagramConectado = false;
 let cachedSeminario = [];      // filas de v_seminario_alumnos
 let cachedSemReactivos = [];   // filas de v_seminario_reactivos
 
@@ -671,13 +675,16 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 function showApp() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('app').classList.add('active');
-    // LinkedIn regresa a /admin/#redes?linkedin=conectado (o =error&motivo=...)
+    // LinkedIn e Instagram regresan a /admin/#redes?linkedin=conectado
+    // (o instagram=..., o =error&motivo=...)
     if (location.hash.startsWith('#redes')) {
         const params = new URLSearchParams(location.hash.split('?')[1] || '');
         history.replaceState(null, '', location.pathname);
         document.querySelector('.nav-item[data-section="redes"]').click();
         if (params.get('linkedin') === 'conectado') toast('LinkedIn conectado', 'success');
         else if (params.get('linkedin') === 'error') toast('No se conectó LinkedIn: ' + (params.get('motivo') || 'error desconocido'), 'error');
+        if (params.get('instagram') === 'conectado') toast('Instagram conectado', 'success');
+        else if (params.get('instagram') === 'error') toast('No se conectó Instagram: ' + (params.get('motivo') || 'error desconocido'), 'error');
         return;
     }
     loadDashboard();
@@ -816,6 +823,7 @@ function renderPosts(data) {
             <button class="btn btn-ghost btn-sm" onclick="editPost('${p.id}')">Editar</button>
             <button class="btn btn-ghost btn-sm" onclick="duplicatePost('${p.id}')" title="Duplicar"><i class="fas fa-copy"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="nuevoBorradorDesdePost('${p.id}')" title="Preparar post para LinkedIn"><i class="fab fa-linkedin"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="nuevoBorradorInstagram('${p.id}')" title="Preparar carrusel para Instagram"><i class="fab fa-instagram"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="abrirMultimedia('${p.id}')" title="Podcast, video, infografía y carrusel"><i class="fas fa-photo-film"></i></button>
             <button class="btn btn-ghost btn-sm" onclick="togglePublish('${p.id}', ${p.published})">${p.published ? '⏸' : '▶'}</button>
             <button class="btn btn-danger btn-sm" onclick="deleteRecord('posts', '${p.id}', loadPosts)">✕</button>
@@ -2237,6 +2245,7 @@ async function llamarFuncion(nombre, body) {
 
 async function loadRedes() {
     estadoLinkedIn();
+    estadoInstagram();
     const { data, error } = await db.from('redes_publicaciones').select('*').order('created_at', { ascending: false });
     const tbody = document.getElementById('redesTable');
     if (error) {
@@ -2310,7 +2319,10 @@ function renderRedes(data) {
         <td>${fmtDate(r.publicado_en || r.created_at)}</td>
         <td class="actions">
             ${r.estado === 'publicado'
-                ? (r.url_externa ? `<a class="btn-link" href="${esc(r.url_externa)}" target="_blank" rel="noopener">Ver en LinkedIn</a>` : '')
+                ? (r.url_externa ? `<a class="btn-link" href="${esc(r.url_externa)}" target="_blank" rel="noopener">Ver en ${r.red === 'instagram' ? 'Instagram' : 'LinkedIn'}</a>` : '')
+                : r.red === 'instagram'
+                ? `<button class="btn btn-ghost btn-sm" onclick="abrirBorradorInstagram('${r.id}')">Editar</button>
+                   <button class="btn btn-primary btn-sm" onclick="publicarInstagram('${r.id}')" ${r.estado === 'publicando' ? 'disabled' : ''}>Publicar</button>`
                 : `<button class="btn btn-ghost btn-sm" onclick="abrirBorradorRedes('${r.id}')">Editar</button>
                    <button class="btn btn-primary btn-sm" onclick="publicarLinkedIn('${r.id}')" ${r.estado === 'publicando' ? 'disabled' : ''}>Publicar</button>`}
             ${r.estado !== 'publicado' ? `<button class="btn btn-danger btn-sm" onclick="deleteRecord('redes_publicaciones', '${r.id}', loadRedes)">✕</button>` : ''}
@@ -2554,6 +2566,226 @@ async function publicarLinkedIn(id) {
         if (r.imagen_url) imagen_jpeg_base64 = await imagenAJpegBase64(r.imagen_url);
         const res = await llamarFuncion('linkedin-publicar', { publicacion_id: id, imagen_jpeg_base64 });
         toast('Publicado en LinkedIn', 'success');
+        if (res.url) window.open(res.url, '_blank', 'noopener');
+    } catch (err) {
+        toast('No se publicó: ' + err.message, 'error');
+    }
+    loadRedes();
+}
+
+// =============================================
+// INSTAGRAM (12_instagram.sql, Edge Functions instagram-auth e instagram-publicar)
+// =============================================
+// Cada entrada se publica como carrusel con las láminas de su presentación
+// (posts.carrusel_url). Instagram sólo acepta JPEG, por URL pública, con
+// proporción entre 4:5 y 1.91:1 y de 2 a 10 elementos: el panel dibuja cada
+// página del PDF con PDF.js, la guarda como JPEG de 1080 px de ancho en el
+// bucket images y el borrador lleva la lista en redes_publicaciones.imagenes.
+// Sin presentación, usa la imagen del artículo.
+const INSTAGRAM_MAX = 2200;
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+const HASHTAGS_INSTAGRAM = {
+    ia: '#InteligenciaArtificial #IA #Innovación #Tecnología #México',
+    blockchain: '#Blockchain #Bitcoin #Criptomonedas #Fintech #México',
+    fintech: '#Fintech #FinanzasDigitales #Pagos #México',
+    marketing: '#MarketingDigital #MiPyMES #Emprendimiento #NegociosLocales #México',
+    ecommerce: '#ComercioElectrónico #eCommerce #MiPyMES #Emprendimiento #México'
+};
+
+async function estadoInstagram() {
+    const box = document.getElementById('redesConexionIg');
+    try {
+        const e = await llamarFuncion('instagram-auth', { accion: 'estado' });
+        instagramConectado = !!e.conectado;
+        if (!e.configurado) {
+            box.innerHTML = `<strong><i class="fab fa-instagram"></i> Instagram sin configurar.</strong>
+                Faltan <code>INSTAGRAM_APP_ID</code> e <code>INSTAGRAM_APP_SECRET</code> en Supabase (Edge Functions &rsaquo; Secrets).`;
+        } else if (!e.conectado) {
+            box.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <span><strong><i class="fab fa-instagram"></i> Instagram no está conectado.</strong>
+                ${e.expira ? 'La conexión anterior venció el ' + fmtDate(e.expira) + '.' : 'Conéctalo para poder publicar.'}</span>
+                <button class="btn btn-primary btn-sm" onclick="conectarInstagram()">Conectar Instagram</button></div>`;
+        } else {
+            box.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <span><strong style="color:var(--success);"><i class="fab fa-instagram"></i> Conectado</strong> como ${esc(e.nombre || 'tu cuenta')}.
+                La conexión se renueva sola cada vez que abres esta sección (vence el ${fmtDate(e.expira)} si no entras antes).</span>
+                <span style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-ghost btn-sm" onclick="desconectarInstagram()">Desconectar</button>
+                </span></div>`;
+        }
+    } catch (err) {
+        box.innerHTML = '<strong>No se pudo revisar la conexión con Instagram:</strong> ' + esc(err.message);
+    }
+}
+
+async function conectarInstagram() {
+    try {
+        const { url } = await llamarFuncion('instagram-auth', { accion: 'iniciar' });
+        window.location.href = url;
+    } catch (err) { toast(err.message, 'error'); }
+}
+
+async function desconectarInstagram() {
+    if (!confirm('¿Desconectar Instagram? Para volver a publicar tendrás que conectarlo de nuevo.')) return;
+    try { await llamarFuncion('instagram-auth', { accion: 'desconectar' }); toast('Instagram desconectado', 'success'); }
+    catch (err) { toast(err.message, 'error'); }
+    estadoInstagram();
+}
+
+function cargarPdfJs() {
+    return new Promise((ok, mal) => {
+        if (window.pdfjsLib) return ok(window.pdfjsLib);
+        const sc = document.createElement('script');
+        sc.src = PDFJS + 'pdf.min.js';
+        sc.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js'; ok(window.pdfjsLib); };
+        sc.onerror = () => mal(new Error('No se pudo cargar PDF.js'));
+        document.head.appendChild(sc);
+    });
+}
+
+// Recorta al centro lo que se salga de 4:5 a 1.91:1 y deja 1080 px de ancho.
+function lienzoInstagram(fuente, ancho, alto) {
+    const prop = Math.min(1.91, Math.max(0.8, ancho / alto));
+    let sw = ancho, sh = alto;
+    if (ancho / alto > prop) sw = alto * prop; else sh = ancho / prop;
+    const c = document.createElement('canvas');
+    c.width = 1080; c.height = Math.round(1080 / prop);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(fuente, (ancho - sw) / 2, (alto - sh) / 2, sw, sh, 0, 0, c.width, c.height);
+    return c;
+}
+
+async function subirJpeg(canvas, carpeta, n) {
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.9));
+    const nombre = `multimedia/instagram/${carpeta}/${String(n).padStart(2, '0')}.jpg`;
+    const { error } = await db.storage.from('images')
+        .upload(nombre, blob, { cacheControl: '31536000', upsert: false, contentType: 'image/jpeg' });
+    if (error) throw error;
+    return db.storage.from('images').getPublicUrl(nombre).data.publicUrl;
+}
+
+async function laminasDesdePdf(url, carpeta) {
+    const pdfjsLib = await cargarPdfJs();
+    const doc = await pdfjsLib.getDocument(url).promise;
+    const total = Math.min(doc.numPages, 10);
+    const urls = [];
+    for (let i = 1; i <= total; i++) {
+        toast(`Preparando lámina ${i} de ${total}...`, 'success');
+        const pag = await doc.getPage(i);
+        const base = pag.getViewport({ scale: 1 });
+        const vista = pag.getViewport({ scale: 1600 / base.width });
+        const c = document.createElement('canvas');
+        c.width = vista.width; c.height = vista.height;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height);
+        await pag.render({ canvasContext: ctx, viewport: vista }).promise;
+        urls.push(await subirJpeg(lienzoInstagram(c, c.width, c.height), carpeta, i));
+    }
+    return { urls, omitidas: doc.numPages - total };
+}
+
+async function laminaDesdeImagen(url, carpeta) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('No se pudo leer la imagen del artículo');
+    const bmp = await createImageBitmap(await r.blob());
+    const c = lienzoInstagram(bmp, bmp.width, bmp.height);
+    bmp.close();
+    return [await subirJpeg(c, carpeta, 1)];
+}
+
+async function nuevoBorradorInstagram(postId) {
+    const { data: p, error } = await db.from('posts').select('*').eq('id', postId).single();
+    if (error || !p) { toast('No se encontró la entrada', 'error'); return; }
+    if (!p.carrusel_url && !p.image_url) { toast('La entrada no tiene presentación ni imagen para Instagram', 'error'); return; }
+    const carpeta = `${p.slug}-${Date.now()}`;
+    let imagenes, aviso = '';
+    try {
+        if (p.carrusel_url) {
+            const r = await laminasDesdePdf(p.carrusel_url, carpeta);
+            imagenes = r.urls;
+            if (r.omitidas > 0) aviso = ` Instagram admite 10 láminas; se omitieron las últimas ${r.omitidas}.`;
+        } else {
+            imagenes = await laminaDesdeImagen(p.image_url, carpeta);
+            aviso = ' La entrada no tiene presentación: se usó su imagen principal.';
+        }
+    } catch (e) {
+        toast('No se pudieron preparar las imágenes: ' + (e.message || e), 'error'); return;
+    }
+    const texto = [
+        p.title,
+        '',
+        p.excerpt || '',
+        '',
+        imagenes.length > 1 ? 'Desliza para ver las ideas clave.' : '',
+        'El artículo completo, con el podcast y el video, está en el enlace de mi perfil.',
+        '',
+        HASHTAGS_INSTAGRAM[p.category] || '#Innovación #México'
+    ].join('\n').replace(/\n{3,}/g, '\n\n');
+    const { data, error: e2 } = await db.from('redes_publicaciones').insert([{
+        red: 'instagram', post_id: p.id, texto,
+        enlace: 'https://omarvaldez.com/post.html?slug=' + encodeURIComponent(p.slug),
+        enlace_titulo: p.title, imagen_url: imagenes[0], imagenes
+    }]).select().single();
+    if (e2) { toast('Error: ' + e2.message + (e2.code === '42703' ? ' (falta correr 12_instagram.sql)' : ''), 'error'); return; }
+    toast('Borrador de Instagram listo.' + aviso, 'success');
+    document.querySelector('.nav-item[data-section="redes"]').click();
+    abrirBorradorInstagram(data.id, data);
+}
+
+function abrirBorradorInstagram(id, fila = null) {
+    const r = fila || cachedRedes.find(x => x.id === id) || {};
+    const imgs = (r.imagenes && r.imagenes.length ? r.imagenes : [r.imagen_url]).filter(Boolean);
+    currentEditType = 'redes';
+    currentEditId = r.id;
+    document.getElementById('modalTitle').textContent = 'Post para Instagram';
+    document.getElementById('modalBody').innerHTML = `
+        <div class="form-group"><label>${imgs.length > 1 ? `Carrusel (${imgs.length} láminas)` : 'Imagen'}</label>
+            <div style="display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.4rem;">
+                ${imgs.map((u, i) => `<a href="${esc(u)}" target="_blank" title="Lámina ${i + 1}"><img src="${esc(u)}" alt="Lámina ${i + 1}" style="height:110px;border-radius:6px;border:1px solid var(--border);"></a>`).join('')}
+            </div>
+            <div class="form-hint">Para cambiar las láminas, borra este borrador y vuelve a crearlo desde el Blog.</div>
+        </div>
+        <div class="form-group"><label>Texto (pie de foto)</label>
+            <textarea id="ig_texto" rows="11" maxlength="${INSTAGRAM_MAX}" oninput="contarInstagram()">${esc(r.texto || '')}</textarea>
+            <div class="char-count" id="ig_cc"></div>
+            <div class="form-hint">Instagram muestra unos 125 caracteres antes de "más". Los enlaces del texto no se pueden abrir: pon omarvaldez.com en el enlace de tu perfil. Máximo 30 hashtags.</div>
+        </div>`;
+    document.getElementById('modalFooter').innerHTML = `
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-ghost" onclick="guardarBorradorInstagram(false)">Guardar borrador</button>
+        <button class="btn btn-primary" onclick="guardarBorradorInstagram(true)">Guardar y publicar</button>`;
+    document.getElementById('modalOverlay').classList.add('active');
+    contarInstagram();
+}
+
+function contarInstagram() {
+    const t = document.getElementById('ig_texto'), c = document.getElementById('ig_cc');
+    if (!t || !c) return;
+    const tags = (t.value.match(/#[\p{L}\p{N}_]+/gu) || []).length;
+    c.textContent = `${t.value.length} / ${INSTAGRAM_MAX} · ${tags} hashtag${tags === 1 ? '' : 's'}`;
+    c.className = 'char-count' + (t.value.length > INSTAGRAM_MAX * 0.95 || tags > 30 ? ' danger' : '');
+}
+
+async function guardarBorradorInstagram(publicarDespues) {
+    const texto = document.getElementById('ig_texto').value;
+    const id = currentEditId;
+    const { error } = await db.from('redes_publicaciones')
+        .update({ texto, updated_at: new Date().toISOString() }).eq('id', id);
+    if (error) { toast('Error: ' + error.message, 'error'); return; }
+    closeModal();
+    await loadRedes();
+    if (publicarDespues) publicarInstagram(id);
+    else toast('Borrador guardado', 'success');
+}
+
+async function publicarInstagram(id) {
+    if (!instagramConectado) { toast('Primero conecta Instagram (arriba en esta sección).', 'error'); return; }
+    if (!confirm('¿Publicar este post en tu cuenta de Instagram? Será público de inmediato.')) return;
+    toast('Publicando en Instagram... puede tardar hasta un minuto.', 'success');
+    try {
+        const res = await llamarFuncion('instagram-publicar', { publicacion_id: id });
+        toast('Publicado en Instagram', 'success');
         if (res.url) window.open(res.url, '_blank', 'noopener');
     } catch (err) {
         toast('No se publicó: ' + err.message, 'error');
