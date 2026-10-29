@@ -528,9 +528,9 @@ que los buscadores lo sigan) y TRAMA tiene una tarjeta en Cursos (tabla
 
 `src/sitemap.xml` lista las páginas fijas y los posts publicados. **No se
 actualiza solo**: al publicar un post nuevo, agrégalo. La entrada del Manual de
-Claude en el blog (`manual-claude-investigadores`) la borró Omar el 11 de
-octubre de 2026 para rehacerla; cuando se vuelva a publicar, hay que agregarla
-otra vez.
+Claude en el blog (`manual-claude-investigadores`) se volvió a publicar el 29 de
+octubre de 2026, ya con su entrada en el sitemap; su imagen es la portada del
+manual (`img/manual-claude/portada.webp`).
 
 Aplicado por Omar el 10 de octubre de 2026. Comprobado en producción con la
 llave anónima: un correo inválido y un mensaje vacío responden 400 sin guardar
