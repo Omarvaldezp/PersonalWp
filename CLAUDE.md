@@ -124,6 +124,33 @@ cambia la paleta del sitio.
 `src/trama/`, en cambio, sí carga `custom.css` y usa la paleta azul marino y oro
 del deck del curso-taller. Los dos micro sitios no comparten estilos.
 
+### Manual de Claude (`src/manual-claude/`)
+
+Página autocontenida: estilos y script van dentro de `index.html`, y sólo carga
+Inter de Google Fonts. Paleta: azul marino con un solo acento, el cian del sitio
+(`--acento`); el rojo, el ámbar y el verde se reservan para los avisos
+(`.recuadro` y `.si-no`). Columna de 640 px con letra de 18 px (17 px en
+celular), unos 70 caracteres por línea.
+
+- **Navegación:** en pantallas de 1060 px o más, índice lateral fijo
+  (`.lateral`) con la sección actual marcada (`aria-current`); en celular y
+  tableta, botones flotantes "Índice" (abre un `<dialog>` que clona las listas
+  del índice lateral) y "Volver arriba".
+- **Plantillas:** `<div class="plantilla" data-titulo="..."><pre>…</pre></div>`.
+  Los campos a llenar van como `<span class="campo">[tema]</span>`, con los
+  corchetes dentro para que se copien. El botón Copiar lo agrega el script.
+- **Imágenes** en `src/img/manual-claude/`: `portada.webp` (encabezado),
+  `portada-movil.webp` (recorte a la parte del texto, para celular) y
+  `og-manual-claude.jpg` (para compartir; JPEG porque LinkedIn no acepta WebP).
+- **PDF:** `src/manual-claude/manual-de-claude.pdf` se genera desde la página
+  con `node scripts/pdf-manual-claude.mjs` (Playwright; en una computadora sin
+  él: `npm install --no-save playwright && npx playwright install chromium`).
+
+Cada vez que cambie el contenido: actualiza la fecha en la ficha, la cita APA,
+el pie, `dateModified` y `article:modified_time`, agrega la entrada al
+"Registro de cambios", sube `lastmod` en `sitemap.xml`, regenera el PDF y
+cambia el `?v=` de los dos enlaces "Descargar PDF".
+
 ### Por qué los documentos largos NO van en `posts`
 
 El campo `content` de `posts` guarda **HTML semántico plano** —salida del editor

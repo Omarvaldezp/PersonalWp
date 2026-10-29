@@ -16,12 +16,14 @@
 <meta property="og:description" content="Cómo configurar la herramienta, cómo integrarla al trabajo de investigación de maestría y doctorado, y dónde están sus límites.">
 <meta property="og:url" content="https://omarvaldez.com/manual-claude/">
 <meta property="og:locale" content="es_MX">
+<meta property="article:published_time" content="2026-10-09">
+<meta property="article:modified_time" content="2026-10-29">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:image" content="https://omarvaldez.com/img/og-default.jpg">
+<meta property="og:image" content="https://omarvaldez.com/img/manual-claude/og-manual-claude.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Dr. Omar Valdez Palazuelos, investigador y consultor en tecnologías emergentes">
-<meta name="twitter:image" content="https://omarvaldez.com/img/og-default.jpg">
+<meta property="og:image:alt" content="Portada del Manual de Claude para investigación de maestría y doctorado, del Dr. Omar Valdez Palazuelos">
+<meta name="twitter:image" content="https://omarvaldez.com/img/manual-claude/og-manual-claude.jpg">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230B1D3A'/><text x='50' y='68' font-family='Segoe UI,Arial,sans-serif' font-size='48' font-weight='700' fill='white' text-anchor='middle'>OV</text></svg>" type="image/svg+xml">
 
@@ -33,6 +35,8 @@
   "description": "Guía práctica para integrar Claude al trabajo de investigación de posgrado, con sus límites y las reglas de integridad académica.",
   "inLanguage": "es-MX",
   "datePublished": "2026-10-09",
+  "dateModified": "2026-10-29",
+  "image": "https://omarvaldez.com/img/manual-claude/og-manual-claude.jpg",
   "author": {
     "@type": "Person",
     "name": "Omar Valdez Palazuelos",
@@ -41,183 +45,310 @@
 }
 </script>
 
+<meta name="theme-color" content="#07152b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
 <style>
+/* Paleta: azul marino con un solo acento, el azul-cian del sitio.
+   Rojo, ámbar y verde se reservan para los avisos (.recuadro y .si-no). */
 :root {
-  --navy: #0B1D3A; --navy-2: #1e3a5f; --coral: #F96167; --teal: #0891B2; --gold: #F59E0B; --green: #10B981;
-  --texto: #1f2937; --suave: #4b5563; --tenue: #6b7280; --borde: #e5e7eb; --fondo: #f3f5f8; --papel: #ffffff;
-  --teal-claro: #ecfeff; --gold-claro: #fffbeb; --coral-claro: #fff1f2; --green-claro: #ecfdf5; --navy-claro: #eef2f7;
+  --marino: #0B1D3A; --marino-2: #1e3a5f; --marino-claro: #eef2f7; --marino-oscuro: #07152b;
+  --acento: #0891b2; --acento-texto: #0e7490; --acento-claro: #ecfeff; --acento-medio: #cffafe; --acento-borde: #a5f3fc;
+  --texto: #1e293b; --suave: #475569; --tenue: #64748b; --borde: #e2e8f0; --fondo-suave: #f8fafc; --papel: #ffffff;
+  --rojo: #e11d48; --rojo-claro: #fff1f2; --rojo-texto: #be123c;
+  --ambar: #f59e0b; --ambar-claro: #fffbeb; --ambar-texto: #b45309;
+  --verde: #10b981; --verde-claro: #ecfdf5; --verde-texto: #047857;
+  /* Columna de lectura de 640 px con letra de 18 px: unos 70 caracteres por línea */
+  --lateral: 250px; --columna: 640px; --separacion: 56px;
+  --total: calc(var(--lateral) + var(--separacion) + var(--columna));
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-text-size-adjust: 100%; }
-body { font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px; line-height: 1.65; color: var(--texto); background: var(--fondo); }
-.documento { max-width: 880px; margin: 0 auto; background: var(--papel); min-height: 100vh; box-shadow: 0 1px 4px rgba(11,29,58,.08); }
-.contenido { padding: 8px 48px 56px; }
+html { font-size: 18px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html:has(dialog[open]) { overflow: hidden; }
+body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1rem; line-height: 1.7; color: var(--texto); background: var(--papel); }
+img { display: block; max-width: 100%; height: auto; }
+svg { flex-shrink: 0; }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; border-radius: 4px; }
+.oculto { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.saltar { position: absolute; left: 16px; top: -60px; z-index: 40; background: var(--marino); color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; text-decoration: none; }
+.saltar:focus { top: 10px; }
 
 /* Barra de regreso al sitio */
-.volver { background: #07152b; }
-.volver .interior { max-width: 880px; margin: 0 auto; padding: 10px 48px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
-.volver a { color: #fff; text-decoration: none; font-size: .88rem; font-weight: 600; display: inline-flex; align-items: center; gap: 7px; }
-.volver a:hover { color: var(--gold); }
-.volver span { color: rgba(255,255,255,.55); font-size: .82rem; }
+.barra { background: var(--marino-oscuro); }
+.barra .interior { width: min(100% - 32px, var(--total)); margin: 0 auto; padding: 11px 0; }
+.barra a { color: #fff; text-decoration: none; font-size: .84rem; font-weight: 600; }
+.barra a:hover { color: var(--acento-borde); }
 
-/* Portada */
-.portada { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; padding: 44px 48px 36px; border-bottom: 5px solid var(--coral); }
-.portada .ceja { font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 10px; }
-.portada h1 { font-size: 2.15rem; line-height: 1.2; font-weight: 700; margin-bottom: 10px; }
-.portada .bajada { font-size: 1.08rem; color: rgba(255,255,255,.88); max-width: 640px; }
-.portada .datos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-.portada .dato { font-size: .8rem; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); border-radius: 999px; padding: 4px 12px; }
-.portada .autoria { margin-top: 22px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.18); font-size: .9rem; color: rgba(255,255,255,.82); }
-.portada .autoria b { display: block; color: #fff; font-size: 1rem; }
+/* Portada: la imagen ya trae el título; en celular se recorta a la parte del texto */
+.portada { width: min(100% - 32px, var(--total)); margin: 28px auto 0; }
+.portada img { width: 100%; border-radius: 16px; aspect-ratio: 1200 / 630; object-fit: cover; background: #f6efe6; }
 
-/* Indice */
-.indice { background: var(--navy-claro); border-radius: 10px; padding: 18px 22px; margin: 28px 0 8px; }
-.indice strong { display: block; color: var(--navy); font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
-.indice ol { columns: 2; column-gap: 28px; padding-left: 20px; }
-.indice li { font-size: .95rem; margin-bottom: 4px; padding-right: 16px; break-inside: avoid; }
-.indice a { color: var(--navy); text-decoration: none; }
-.indice a:hover { color: var(--teal); text-decoration: underline; }
+/* Marco de dos columnas: índice fijo a la izquierda y texto a la derecha */
+.marco { width: min(100% - 32px, var(--total)); margin: 0 auto; }
+.contenido { max-width: var(--columna); margin: 0 auto; padding: 32px 0 72px; }
 
-/* Titulos y texto */
-section { margin-top: 44px; }
-h2 { font-size: 1.55rem; color: var(--navy); line-height: 1.3; padding-bottom: 10px; margin-bottom: 18px; border-bottom: 3px solid var(--teal); scroll-margin-top: 12px; }
-h3 { font-size: 1.15rem; color: var(--navy); margin: 26px 0 10px; }
-h4 { font-size: 1rem; color: var(--navy); margin: 18px 0 6px; }
-p { margin-bottom: 14px; color: var(--texto); }
-ul, ol { padding-left: 24px; margin-bottom: 14px; }
+/* Índice lateral (solo en pantallas anchas) */
+.lateral { display: none; }
+.indice-titulo { font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--tenue); margin: 0 0 10px 14px; }
+.lista-indice { list-style: none; padding: 0; margin: 0; }
+.lista-indice li { margin: 0; }
+.lista-indice a { display: flex; gap: 8px; padding: 6px 10px 6px 12px; border-left: 2px solid var(--borde); color: var(--suave); text-decoration: none; font-size: .8rem; line-height: 1.4; border-radius: 0 6px 6px 0; }
+.lista-indice a .n { min-width: 1.3em; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.lista-indice a:hover { color: var(--marino); border-left-color: #94a3b8; }
+.lista-indice a[aria-current] { color: var(--marino); font-weight: 600; background: var(--acento-claro); border-left-color: var(--acento); }
+.lista-indice a[aria-current] .n { color: var(--acento-texto); }
+.lista-indice.anexos { margin-top: 12px; }
+.lateral .btn { margin: 20px 0 0 14px; }
+
+/* Ficha bajo la portada */
+.ficha { padding-bottom: 26px; border-bottom: 1px solid var(--borde); }
+.ficha .bajada { font-size: 1.16rem; line-height: 1.5; font-weight: 500; color: var(--marino); margin-bottom: 16px; }
+.ficha .meta { font-size: .88rem; color: var(--suave); margin-bottom: 4px; }
+.ficha .meta strong { color: var(--marino); }
+.ficha .independencia { font-size: .82rem; color: var(--tenue); margin: 0; }
+.acciones { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 16px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 9px 18px; border: 1px solid var(--borde); border-radius: 10px; background: #fff; color: var(--marino); font: inherit; font-size: .86rem; font-weight: 600; line-height: 1.2; text-decoration: none; cursor: pointer; }
+.btn:hover { border-color: var(--acento); color: var(--acento-texto); }
+.btn-primario { background: var(--marino); border-color: var(--marino); color: #fff; }
+.btn-primario:hover { background: var(--marino-2); border-color: var(--marino-2); color: #fff; }
+
+/* Índice al inicio del texto (celular, tableta e impresión) */
+.indice { background: var(--fondo-suave); border: 1px solid var(--borde); border-radius: 12px; padding: 18px 22px; margin: 28px 0 8px; scroll-margin-top: 16px; }
+.indice strong { display: block; color: var(--marino); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+.indice ol { columns: 2; column-gap: 28px; padding-left: 22px; margin-bottom: 8px; }
+.indice li { font-size: .88rem; margin-bottom: 4px; padding-right: 12px; break-inside: avoid; }
+.indice a { color: var(--marino); text-decoration: none; }
+.indice a:hover { color: var(--acento-texto); text-decoration: underline; }
+.indice .anexos { font-size: .84rem; color: var(--tenue); margin: 0; }
+
+/* Títulos y texto */
+section { margin-top: 56px; }
+section[id] { scroll-margin-top: 16px; }
+h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.01em; color: var(--marino); padding-bottom: 12px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--borde); background: linear-gradient(var(--acento), var(--acento)) left bottom / 56px 3px no-repeat; background-origin: border-box; }
+h3 { font-size: 1.14rem; line-height: 1.35; color: var(--marino); margin: 30px 0 10px; }
+h4 { font-size: 1rem; line-height: 1.4; color: var(--marino); margin: 22px 0 8px; }
+p { margin-bottom: 16px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
 li { margin-bottom: 6px; }
-a { color: var(--teal); }
-strong { color: var(--navy); }
-.entrada { font-size: 1.12rem; color: var(--suave); }
-.nota-pie { font-size: .85rem; color: var(--tenue); }
+a { color: var(--acento-texto); text-underline-offset: 2px; }
+strong { color: var(--marino); }
+.entrada { font-size: 1.1rem; line-height: 1.6; color: var(--suave); }
+.nota-pie { font-size: .84rem; color: var(--tenue); }
 
-/* Recuadros */
-.recuadro { border-radius: 10px; padding: 16px 20px; margin: 18px 0; border-left: 5px solid; }
-.recuadro > strong:first-child { display: block; margin-bottom: 6px; font-size: .95rem; }
+/* Recuadros: los únicos lugares con rojo, ámbar y verde */
+.recuadro { border-radius: 12px; padding: 16px 20px; margin: 22px 0; border-left: 4px solid; }
+.recuadro > strong:first-child { display: block; margin-bottom: 6px; font-size: .94rem; }
 .recuadro p:last-child, .recuadro ul:last-child, .recuadro ol:last-child { margin-bottom: 0; }
-.recuadro.info { background: var(--teal-claro); border-color: var(--teal); }
-.recuadro.info > strong:first-child { color: #0e7490; }
-.recuadro.aviso { background: var(--gold-claro); border-color: var(--gold); }
-.recuadro.aviso > strong:first-child { color: #b45309; }
-.recuadro.alerta { background: var(--coral-claro); border-color: var(--coral); }
-.recuadro.alerta > strong:first-child { color: #be123c; }
-.recuadro.bien { background: var(--green-claro); border-color: var(--green); }
-.recuadro.bien > strong:first-child { color: #047857; }
-.destacado { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%); color: #fff; border-radius: 12px; padding: 22px 26px; margin: 22px 0; }
+.recuadro.info { background: var(--acento-claro); border-color: var(--acento); }
+.recuadro.info > strong:first-child { color: var(--acento-texto); }
+.recuadro.aviso { background: var(--ambar-claro); border-color: var(--ambar); }
+.recuadro.aviso > strong:first-child { color: var(--ambar-texto); }
+.recuadro.alerta { background: var(--rojo-claro); border-color: var(--rojo); }
+.recuadro.alerta > strong:first-child { color: var(--rojo-texto); }
+.recuadro.bien { background: var(--verde-claro); border-color: var(--verde); }
+.recuadro.bien > strong:first-child { color: var(--verde-texto); }
+.destacado { background: linear-gradient(135deg, var(--marino) 0%, var(--marino-2) 100%); color: #fff; border-radius: 14px; padding: 22px 26px; margin: 24px 0; }
 .destacado strong, .destacado h3 { color: #fff; }
-.destacado p { color: rgba(255,255,255,.92); }
-.destacado .grande { font-size: 1.25rem; line-height: 1.45; font-weight: 600; margin: 0; }
+.destacado p { color: rgba(255,255,255,.94); }
+.destacado .grande { font-size: 1.16rem; line-height: 1.5; font-weight: 600; margin: 0; }
 
 /* Cadena de pasos */
-.cadena { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 18px 0 22px; }
-.eslabon { flex: 1 1 130px; background: var(--navy-claro); border: 1px solid #d5deea; border-radius: 10px; padding: 12px 12px; text-align: center; font-size: .9rem; position: relative; }
-.eslabon b { display: block; color: var(--navy); font-size: .98rem; }
-.eslabon span { color: var(--suave); font-size: .82rem; }
-.eslabon.primero { background: var(--navy); border-color: var(--navy); }
+.cadena { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 20px 0 24px; }
+.eslabon { flex: 1 1 120px; background: var(--marino-claro); border: 1px solid #d5deea; border-radius: 10px; padding: 12px; text-align: center; font-size: .85rem; line-height: 1.45; }
+.eslabon b { display: block; color: var(--marino); font-size: .94rem; }
+.eslabon span { color: var(--suave); font-size: .78rem; }
+.eslabon.primero { background: var(--marino); border-color: var(--marino); }
 .eslabon.primero b, .eslabon.primero span { color: #fff; }
-.flecha { align-self: center; color: var(--coral); font-weight: 700; font-size: 1.2rem; }
+.flecha { align-self: center; color: var(--acento); font-weight: 700; font-size: 1.2rem; }
 
 /* Tarjetas */
-.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 18px 0; }
-.tarjetas.cuatro { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
-.tarjetas.dos { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-.tarjeta { border: 1px solid var(--borde); border-radius: 12px; padding: 16px 18px; background: #fff; border-top: 4px solid var(--teal); }
-.tarjeta.coral { border-top-color: var(--coral); }
-.tarjeta.gold { border-top-color: var(--gold); }
-.tarjeta.green { border-top-color: var(--green); }
-.tarjeta.navy { border-top-color: var(--navy); }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 20px 0; }
+.tarjetas.cuatro, .tarjetas.dos { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.tarjeta { border: 1px solid var(--borde); border-top: 3px solid var(--marino); border-radius: 12px; padding: 16px 18px; background: #fff; }
 .tarjeta h4 { margin-top: 0; }
-.tarjeta p, .tarjeta ul { font-size: .93rem; margin-bottom: 8px; }
+.tarjeta p, .tarjeta ul { font-size: .9rem; margin-bottom: 8px; }
 .tarjeta p:last-child, .tarjeta ul:last-child { margin-bottom: 0; }
-.etiqueta { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; background: var(--navy-claro); color: var(--navy); margin-bottom: 6px; }
+.etiqueta { display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; border-radius: 4px; padding: 2px 8px; background: var(--marino-claro); color: var(--marino); margin-bottom: 6px; }
 
 /* Tablas */
-.tabla-scroll { overflow-x: auto; margin: 16px 0 20px; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; font-size: .93rem; min-width: 520px; }
-th { background: var(--navy); color: #fff; text-align: left; padding: 10px 12px; font-weight: 600; }
+.tabla-scroll { overflow-x: auto; margin: 18px 0 22px; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; line-height: 1.55; min-width: 520px; }
+th { background: var(--marino); color: #fff; text-align: left; padding: 10px 12px; font-weight: 600; }
 td { padding: 10px 12px; border-bottom: 1px solid var(--borde); vertical-align: top; }
-tr:nth-child(even) td { background: #f9fafb; }
-td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+tr:nth-child(even) td { background: var(--fondo-suave); }
 
 /* Pasos numerados */
 ol.pasos { list-style: none; counter-reset: paso; padding-left: 0; }
-ol.pasos > li { counter-increment: paso; position: relative; padding-left: 44px; margin-bottom: 14px; }
-ol.pasos > li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 700; font-size: .9rem; display: flex; align-items: center; justify-content: center; }
+ol.pasos > li { counter-increment: paso; position: relative; padding-left: 44px; margin-bottom: 16px; }
+ol.pasos > li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--marino); color: #fff; font-weight: 700; font-size: .82rem; display: flex; align-items: center; justify-content: center; }
 
-/* Elementos de interfaz y codigo */
-.boton { display: inline-block; font-size: .86em; font-weight: 600; background: var(--navy); color: #fff; border-radius: 6px; padding: 1px 9px; white-space: nowrap; }
-.pestana { display: inline-block; font-size: .86em; font-weight: 600; background: var(--teal-claro); color: #0e7490; border: 1px solid #a5f3fc; border-radius: 6px; padding: 0 8px; white-space: nowrap; }
-code, .codigo { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .88em; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 5px; padding: 1px 6px; }
-pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86rem; line-height: 1.55; white-space: pre-wrap; background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 16px 18px; margin: 12px 0 18px; border-left: 4px solid var(--gold); }
-.si-no { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
-.si-no > div { border-radius: 10px; padding: 14px 18px; }
-.si-no .si { background: var(--green-claro); border: 1px solid #a7f3d0; }
-.si-no .no { background: var(--coral-claro); border: 1px solid #fecdd3; }
+/* Código en línea */
+code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86em; background: #f1f5f9; border: 1px solid var(--borde); border-radius: 5px; padding: 1px 6px; }
+
+/* Plantillas: prosa en letra normal sobre fondo claro, con botón Copiar */
+.plantilla { margin: 14px 0 22px; border: 1px solid var(--borde); border-left: 4px solid var(--acento); border-radius: 12px; background: var(--fondo-suave); overflow: hidden; }
+.plantilla-barra { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 8px 6px 16px; border-bottom: 1px solid var(--borde); background: #fff; }
+.plantilla-barra > span { font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--tenue); }
+.plantilla pre, .plantilla .referencia { font-family: inherit; font-size: .94rem; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--texto); padding: 14px 18px 16px; margin: 0; }
+.plantilla.codigo pre { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .8rem; line-height: 1.6; }
+.plantilla .referencia { white-space: normal; padding-left: calc(18px + 2em); text-indent: -2em; }
+.campo { background: var(--acento-medio); color: #155e75; font-weight: 500; border-radius: 4px; padding: 1px 3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.copiar { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 5px 12px; border: 1px solid var(--borde); border-radius: 8px; background: #fff; color: var(--acento-texto); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; }
+.copiar:hover { background: var(--acento-claro); border-color: var(--acento-borde); }
+.copiar.listo { background: var(--acento-claro); border-color: var(--acento); }
+
+/* Sí y no */
+.si-no { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 18px 0; }
+.si-no > div { border-radius: 12px; padding: 14px 18px; }
+.si-no .si { background: var(--verde-claro); border: 1px solid #a7f3d0; }
+.si-no .no { background: var(--rojo-claro); border: 1px solid #fecdd3; }
 .si-no h4 { margin-top: 0; }
-.si-no ul { margin-bottom: 0; font-size: .93rem; }
+.si-no ul { margin-bottom: 0; font-size: .9rem; }
+
+/* Registro de cambios */
+.cambios { list-style: none; padding: 0; }
+.cambios > li { padding-left: 18px; border-left: 2px solid var(--borde); margin-bottom: 18px; }
+.cambios time { display: block; font-weight: 600; color: var(--marino); margin-bottom: 4px; }
+.cambios ul { margin-bottom: 0; }
 
 /* Pie */
-.pie { margin-top: 48px; padding-top: 18px; border-top: 1px solid var(--borde); font-size: .85rem; color: var(--tenue); }
+.pie { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--borde); font-size: .8rem; color: var(--tenue); }
+.pie p { margin-bottom: 10px; }
 .pie strong { color: var(--suave); }
+
+/* Botones flotantes y hoja del índice (celular y tableta) */
+.flotantes { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 20; display: flex; gap: 10px;
+  opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity .2s, transform .2s, visibility 0s .2s; }
+.flotantes.visible { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.flotante { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 48px; min-height: 48px; padding: 0 18px; border: 0; border-radius: 999px;
+  background: var(--marino); color: #fff; font: inherit; font-size: .9rem; font-weight: 600; box-shadow: 0 6px 20px rgba(11,29,58,.28); cursor: pointer; }
+.flotante.arriba { padding: 0; background: #fff; color: var(--marino); border: 1px solid var(--borde); }
+.hoja { width: 100%; max-width: 560px; max-height: min(85vh, 760px); margin: auto auto 0; padding: 0; border: 0; border-radius: 18px 18px 0 0; overflow-y: auto; overscroll-behavior: contain;
+  background: #fff; color: var(--texto); box-shadow: 0 -10px 40px rgba(11,29,58,.25); }
+.hoja::backdrop { background: rgba(11,29,58,.45); }
+.hoja-cabeza { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 12px 20px; background: #fff; border-bottom: 1px solid var(--borde); }
+.hoja-cabeza .indice-titulo { margin: 0; }
+.hoja-cuerpo { padding: 10px 14px calc(22px + env(safe-area-inset-bottom)); }
+.hoja .lista-indice a { font-size: .96rem; padding: 10px 12px; }
+.hoja .btn-primario { margin: 18px 0 0 14px; }
+
+/* Pantallas anchas: índice lateral fijo */
+@media (min-width: 1060px) {
+  .marco { display: grid; grid-template-columns: var(--lateral) minmax(0, var(--columna)); gap: var(--separacion); align-items: start; }
+  .lateral { display: block; position: sticky; top: 0; max-height: 100vh; overflow-y: auto; overscroll-behavior: contain; padding: 34px 4px 28px 0; }
+  .contenido { margin: 0; }
+  .indice, .flotantes { display: none; }
+}
+
+/* Tableta y celular: una sola columna */
+@media (max-width: 1059px) {
+  :root { --total: var(--columna); }
+  .contenido { padding-bottom: 104px; }
+}
 
 /* Celular */
 @media (max-width: 640px) {
-  .volver .interior { padding: 9px 16px; }
-  .portada { padding: 32px 16px 26px; }
-  .portada h1 { font-size: 1.6rem; }
-  .contenido { padding: 4px 16px 40px; }
+  html { font-size: 17px; }
+  .portada { width: 100%; margin-top: 0; }
+  .portada img { border-radius: 0; aspect-ratio: 590 / 540; }
+  .contenido { padding-top: 24px; }
+  .ficha .bajada { font-size: 1.1rem; }
   .indice ol { columns: 1; }
-  h2 { font-size: 1.3rem; }
+  h2 { font-size: 1.32rem; }
   .flecha { display: none; }
   .eslabon { flex-basis: 100%; }
+  .plantilla pre, .plantilla .referencia { padding: 12px 14px 14px; }
+  .plantilla .referencia { padding-left: calc(14px + 2em); }
+  ol.pasos > li > .plantilla { margin-left: -44px; }
 }
 
-/* Impresion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .flotantes { transition: none; }
+}
+
+/* Impresión y PDF */
 @media print {
-  body { background: #fff; font-size: 11.5pt; }
-  .documento { box-shadow: none; max-width: none; }
-  .volver { display: none; }
-  .portada { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  th, .destacado, .eslabon.primero, .boton, ol.pasos > li::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  section { break-inside: auto; }
-  .tarjeta, .recuadro, .destacado, .eslabon, .si-no > div, pre.prompt, tr, li, .pie { break-inside: avoid; }
+  @page { size: letter; margin: 16mm 17mm 18mm; }
+  html { font-size: 10.5pt; }
+  body { line-height: 1.55; }
+  .barra, .lateral, .flotantes, .hoja, .saltar, .acciones, .plantilla-barra, #aviso-copiado { display: none !important; }
+  .portada, .marco { width: auto; margin: 0; }
+  .portada img { border-radius: 8px; }
+  .contenido { max-width: none; padding: 18px 0 0; }
+  .indice { display: block; break-inside: avoid; }
+  .portada img, th, .destacado, .eslabon.primero, ol.pasos > li::before, .campo, .recuadro, .si-no > div, .plantilla, .indice, h2 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  section { margin-top: 30px; break-inside: auto; }
   h2, h3, h4 { break-after: avoid; }
+  .tarjeta, .recuadro, .destacado, .eslabon, .si-no > div, .plantilla, .tabla-scroll, tr, li, .pie, .ficha { break-inside: avoid; }
+  #citar { break-before: page; }
   p { orphans: 3; widows: 3; }
   a { color: inherit; text-decoration: none; }
-  .indice { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
 </head>
 <body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
 
-<div class="volver">
+<nav class="barra" aria-label="Sitio">
   <div class="interior">
     <a href="/">&larr; Volver a omarvaldez.com</a>
-    <span>Documento de libre consulta &middot; optimizado para imprimir</span>
   </div>
-</div>
+</nav>
 
-<div class="documento">
 <header class="portada">
-  <div class="ceja">Guía práctica para investigación de posgrado</div>
-  <h1>Manual de Claude</h1>
-  <p class="bajada">Cómo configurar la herramienta, cómo integrarla al trabajo de investigación de maestría y doctorado, y dónde están sus límites.</p>
-  <div class="datos">
-    <span class="dato">Cuenta Claude Pro</span>
-    <span class="dato">Chat, Cowork, Proyectos y Skills</span>
-    <span class="dato">Octubre de 2026</span>
-  </div>
-  <div class="autoria">
-    Material elaborado por
-    <b>Dr. Omar Valdez Palazuelos</b>
-    Investigador SNII Nivel I
-  </div>
+  <h1 class="oculto">Manual de Claude para investigación de posgrado</h1>
+  <picture>
+    <source media="(max-width: 640px)" srcset="../img/manual-claude/portada-movil.webp" width="590" height="540">
+    <img src="../img/manual-claude/portada.webp" width="1200" height="630" alt="" fetchpriority="high">
+  </picture>
 </header>
 
-<div class="contenido">
+<div class="marco">
 
-<nav class="indice">
+<nav class="lateral" aria-label="Índice del manual">
+  <p class="indice-titulo">Contenido</p>
+  <ol class="lista-indice">
+    <li><a href="#esencial"><span class="n">1</span>Lo esencial en un minuto</a></li>
+    <li><a href="#integridad"><span class="n">2</span>Integridad y uso responsable</a></li>
+    <li><a href="#configura"><span class="n">3</span>Configura tu cuenta</a></li>
+    <li><a href="#hoy"><span class="n">4</span>Cómo funciona Claude hoy</a></li>
+    <li><a href="#modelos"><span class="n">5</span>Modelos y nivel de esfuerzo</a></li>
+    <li><a href="#limites"><span class="n">6</span>Límites de uso</a></li>
+    <li><a href="#proyecto"><span class="n">7</span>Un Proyecto por línea de investigación</a></li>
+    <li><a href="#skills"><span class="n">8</span>Skills</a></li>
+    <li><a href="#programadas"><span class="n">9</span>Tareas programadas</a></li>
+    <li><a href="#pedir"><span class="n">10</span>Cómo pedirle las cosas</a></li>
+    <li><a href="#tareas"><span class="n">11</span>Ejemplos por tarea de investigación</a></li>
+    <li><a href="#limitaciones"><span class="n">12</span>Qué no conviene delegarle</a></li>
+    <li><a href="#seguridad"><span class="n">13</span>Seguridad</a></li>
+    <li><a href="#ayuda"><span class="n">14</span>Ayuda y recursos</a></li>
+  </ol>
+  <ul class="lista-indice anexos">
+    <li><a href="#citar">Cómo citar este manual</a></li>
+    <li><a href="#cambios">Registro de cambios</a></li>
+  </ul>
+  <a class="btn btn-primario" href="manual-de-claude.pdf?v=20261029" download="Manual-de-Claude-Omar-Valdez.pdf"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar PDF</a>
+</nav>
+
+<main id="contenido" class="contenido">
+
+<div class="ficha">
+  <p class="bajada">Cómo configurar la herramienta, cómo integrarla al trabajo de investigación de maestría y doctorado, y dónde están sus límites.</p>
+  <p class="meta">Material elaborado por el <strong>Dr. Omar Valdez Palazuelos</strong>, Investigador SNII Nivel I. Pensado para cuentas Claude Pro.</p>
+  <p class="meta">Última actualización: <time datetime="2026-10-29">29 de octubre de 2026</time> · <a href="#cambios">Qué cambió</a></p>
+  <div class="acciones">
+    <a class="btn btn-primario" href="manual-de-claude.pdf?v=20261029" download="Manual-de-Claude-Omar-Valdez.pdf"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar PDF</a>
+    <a class="btn" href="#citar">Cómo citar este manual</a>
+  </div>
+  <p class="independencia">Guía independiente, sin afiliación con Anthropic.</p>
+</div>
+
+<nav class="indice" id="indice" aria-label="Contenido">
   <strong>Contenido</strong>
   <ol>
     <li><a href="#esencial">Lo esencial en un minuto</a></li>
@@ -235,6 +366,7 @@ pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86r
     <li><a href="#seguridad">Seguridad</a></li>
     <li><a href="#ayuda">Ayuda y recursos</a></li>
   </ol>
+  <p class="anexos">Al final: <a href="#citar">Cómo citar este manual</a> · <a href="#cambios">Registro de cambios</a></p>
 </nav>
 
 <section id="esencial">
@@ -242,9 +374,9 @@ pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86r
   <p class="entrada">Claude puede acelerar casi todas las etapas de una investigación, pero no puede responder por ninguna. Esa frontera es la que organiza todo este manual.</p>
   <div class="tarjetas cuatro">
     <div class="tarjeta"><h4>Tu cuenta</h4><p>Una cuenta personal de Claude Pro con el entrenamiento desactivado antes de subir cualquier material propio.</p></div>
-    <div class="tarjeta navy"><h4>Tu espacio</h4><p>Un Proyecto por línea de investigación, con tus fuentes, tu marco teórico y tus criterios ya cargados.</p></div>
-    <div class="tarjeta coral"><h4>La línea roja</h4><p>Nunca datos identificables de participantes, ni manuscritos ajenos que estés dictaminando.</p></div>
-    <div class="tarjeta green"><h4>Tu firma</h4><p>Verificas cada cita, respondes por cada afirmación y declaras el uso de IA donde corresponda.</p></div>
+    <div class="tarjeta"><h4>Tu espacio</h4><p>Un Proyecto por línea de investigación, con tus fuentes, tu marco teórico y tus criterios ya cargados.</p></div>
+    <div class="tarjeta"><h4>La línea roja</h4><p>Nunca datos identificables de participantes, ni manuscritos ajenos que estés dictaminando.</p></div>
+    <div class="tarjeta"><h4>Tu firma</h4><p>Verificas cada cita, respondes por cada afirmación y declaras el uso de IA donde corresponda.</p></div>
   </div>
   <div class="recuadro alerta">
     <strong>Lo primero que debes saber</strong>
@@ -299,8 +431,8 @@ pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86r
 
   <h3>Cómo declarar el uso</h3>
   <p>Dos formatos de partida, que debes ajustar a lo que pida la revista o la institución:</p>
-  <pre class="prompt">Declaración de uso de inteligencia artificial: durante la preparación de este trabajo se utilizó Claude (Anthropic) para [la revisión de estilo y claridad del manuscrito / la depuración del código de análisis / la exploración preliminar de literatura]. Tras usar la herramienta, los autores revisaron y editaron el contenido según fue necesario y asumen plena responsabilidad por el contenido de la publicación.</pre>
-  <pre class="prompt">Nota sobre el uso de herramientas de IA en esta tesis: se empleó Claude (Anthropic) como apoyo en [especificar etapas]. El diseño de la investigación, el análisis de los datos, la interpretación de los resultados y las conclusiones son obra del autor. Todas las referencias citadas fueron verificadas directamente en la fuente original.</pre>
+  <div class="plantilla" data-titulo="Declaración para artículo"><pre>Declaración de uso de inteligencia artificial: durante la preparación de este trabajo se utilizó Claude (Anthropic) para <span class="campo">[la revisión de estilo y claridad del manuscrito / la depuración del código de análisis / la exploración preliminar de literatura]</span>. Tras usar la herramienta, los autores revisaron y editaron el contenido según fue necesario y asumen plena responsabilidad por el contenido de la publicación.</pre></div>
+  <div class="plantilla" data-titulo="Nota para tesis"><pre>Nota sobre el uso de herramientas de IA en esta tesis: se empleó Claude (Anthropic) como apoyo en <span class="campo">[especificar etapas]</span>. El diseño de la investigación, el análisis de los datos, la interpretación de los resultados y las conclusiones son obra del autor. Todas las referencias citadas fueron verificadas directamente en la fuente original.</pre></div>
 
   <div class="recuadro aviso">
     <strong>Antes de enviar a una revista</strong>
@@ -318,11 +450,11 @@ pre.prompt { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: .86r
     <li><strong>Activa la creación de archivos:</strong> en <em>Settings › Capabilities</em>, enciende <em>«Code execution and file creation»</em>. Sin esto, Claude no genera documentos, hojas de cálculo ni usa skills.</li>
     <li><strong>Revisa la memoria:</strong> en <em>Settings › Memory</em>. Viene activa: Claude recuerda datos de conversaciones anteriores. Puedes revisarla, corregirla o pausarla. Si trabajas dentro de un Proyecto, este tiene su propia memoria.</li>
     <li><strong>Escribe tus instrucciones generales</strong> en <em>Settings › General › «Instructions for Claude»</em>. Aplican a todas tus conversaciones, así que no pongas ahí material no publicado. Un ejemplo:
-      <pre class="prompt">Soy investigador en [tu disciplina], con formación doctoral. Respóndeme en español, con precisión conceptual y sin relleno; puedo con el vocabulario técnico de mi campo.
+      <div class="plantilla" data-titulo="Instrucciones para Claude"><pre>Soy investigador en <span class="campo">[tu disciplina]</span>, con formación doctoral. Respóndeme en español, con precisión conceptual y sin relleno; puedo con el vocabulario técnico de mi campo.
 
 Si no tienes un dato o una fuente, dilo. No inventes referencias, cifras ni citas bajo ninguna circunstancia: prefiero una respuesta incompleta a una inventada.
 
-Distingue siempre entre lo que está establecido en la literatura, lo que está en disputa y lo que es inferencia tuya. Cuando la tarea sea ambigua, pregúntame antes de empezar.</pre></li>
+Distingue siempre entre lo que está establecido en la literatura, lo que está en disputa y lo que es inferencia tuya. Cuando la tarea sea ambigua, pregúntame antes de empezar.</pre></div></li>
     <li><strong>Crea un Proyecto por línea de investigación</strong>, como explica la sección 7.</li>
   </ol>
 </section>
@@ -330,22 +462,22 @@ Distingue siempre entre lo que está establecido en la literatura, lo que está 
 <section id="hoy">
   <h2>4. Cómo funciona Claude hoy</h2>
   <p class="entrada">Claude ya no es solo un chat: en la misma conversación platica contigo y también hace el trabajo, como investigar, crear archivos o ejecutar tareas de varios pasos.</p>
-  <p>Desde el 16 de septiembre de 2026, Anthropic está unificando el chat y Cowork. El cambio llega poco a poco a cada cuenta, así que puedes encontrarte cualquiera de estos dos casos:</p>
+  <p>Desde el 16 de septiembre de 2026, las funciones que antes estaban en Cowork forman parte de cualquier conversación: ya no eliges un modo, describes lo que necesitas y Claude decide si responde o si toma la tarea. Tus conversaciones, tareas, Proyectos y skills se conservan. El cambio llega poco a poco a las cuentas Pro y Max, así que puedes encontrarte cualquiera de estos dos casos:</p>
   <div class="tarjetas">
-    <div class="tarjeta gold">
-      <span class="etiqueta">Experiencia anterior</span>
-      <h4>Ves el selector «Chat / Cowork»</h4>
-      <p>Está abajo a la izquierda de la caja de mensaje. Elige <strong>Cowork</strong> para tareas con archivos, documentos o varios pasos, y <strong>Chat</strong> para conversar.</p>
-    </div>
-    <div class="tarjeta green">
+    <div class="tarjeta">
       <span class="etiqueta">Experiencia nueva</span>
       <h4>Ya no hay selector</h4>
       <p>Cualquier conversación puede tomar una tarea. Describe el resultado que quieres y Claude decide cómo hacerlo.</p>
     </div>
+    <div class="tarjeta">
+      <span class="etiqueta">Si tu cuenta aún no cambia</span>
+      <h4>Ves el selector «Chat / Cowork»</h4>
+      <p>Está abajo a la izquierda de la caja de mensaje. Elige <strong>Cowork</strong> para tareas con archivos, documentos o varios pasos, y <strong>Chat</strong> para conversar. El selector desaparece cuando tu cuenta pasa a la experiencia nueva, y ya no se puede volver a la anterior.</p>
+    </div>
   </div>
 
   <h3>Lo que puede hacer</h3>
-  <div class="tabla-scroll">
+  <div class="tabla-scroll" tabindex="0" role="region" aria-label="Tabla: lo que puede hacer Claude">
     <table>
       <tr><th>Función</th><th>Para qué te sirve</th></tr>
       <tr><td><strong>Búsqueda web</strong></td><td>Literatura de acceso abierto, repositorios, preprints, datos oficiales y noticias, con ligas a las fuentes.</td></tr>
@@ -369,13 +501,13 @@ Distingue siempre entre lo que está establecido en la literatura, lo que está 
   </div>
 
   <h3>Modo de permisos</h3>
-  <p>En <strong>Manual</strong> (el predeterminado), Claude te pide aprobar las acciones importantes. En <strong>Auto</strong> avanza solo, pero consume más de tu límite. Para trabajo con tus archivos, quédate en Manual y lee lo que vas a aprobar.</p>
+  <p>En la caja de mensaje eliges cómo aprueba Claude sus acciones. En la experiencia nueva del plan Pro, el predeterminado es <em>«Automatically approve»</em>: Claude avanza solo y revisa cada acción antes de ejecutarla, pero consume más de tu límite. En <em>«Manually approve»</em> te pide permiso antes de actuar. Hay un tercero, <em>«Skip all approvals»</em>, en el que nada revisa sus acciones: no lo uses con material de investigación. Para trabajo con tus archivos, cambia a <em>«Manually approve»</em> y lee lo que vas a aprobar.</p>
 </section>
 
 <section id="modelos">
   <h2>5. Modelos y nivel de esfuerzo</h2>
   <p>El modelo se elige en el selector de la caja de mensaje. Para casi todo, empieza con Sonnet.</p>
-  <div class="tabla-scroll">
+  <div class="tabla-scroll" tabindex="0" role="region" aria-label="Tabla: modelos y para qué usarlos">
     <table>
       <tr><th>Modelo</th><th>Úsalo para</th><th>Consumo</th></tr>
       <tr><td><strong>Sonnet 5.5</strong></td><td>El trabajo de todos los días: redactar, analizar, documentos, hojas de cálculo y presentaciones. Es rápido y muy capaz.</td><td>Medio</td></tr>
@@ -402,7 +534,7 @@ Distingue siempre entre lo que está establecido en la literatura, lo que está 
       <ul>
         <li>Opus y los niveles de esfuerzo altos.</li>
         <li>Research y las tareas largas de varios pasos.</li>
-        <li>El modo Auto.</li>
+        <li>La aprobación automática (<em>«Automatically approve»</em>).</li>
         <li>Conversaciones muy largas y PDF pesados.</li>
       </ul>
     </div>
@@ -433,17 +565,17 @@ Distingue siempre entre lo que está establecido en la literatura, lo que está 
     <li>Sube como archivos de consulta tus lecturas clave, tu protocolo, el manual de estilo de la revista objetivo y tu libro de códigos. Cada archivo puede pesar hasta 30 MB.</li>
     <li>Trabaja siempre dentro del Proyecto cuando se trate de esa línea.</li>
   </ol>
-  <pre class="prompt">Este proyecto corresponde a mi investigación sobre [tema], en [disciplina]. El producto en curso es [un artículo para la revista X / el capítulo 4 de una tesis doctoral / un informe para la agencia financiadora].
+  <div class="plantilla" data-titulo="Instrucciones del Proyecto"><pre>Este proyecto corresponde a mi investigación sobre <span class="campo">[tema]</span>, en <span class="campo">[disciplina]</span>. El producto en curso es <span class="campo">[un artículo para la revista X / el capítulo 4 de una tesis doctoral / un informe para la agencia financiadora]</span>.
 
-Enfoque: [cuantitativo / cualitativo / mixto]. Marco teórico de referencia: [teoría y autores principales]. Diseño: [descripción breve]. Muestra o corpus: [descripción, sin datos identificables].
+Enfoque: <span class="campo">[cuantitativo / cualitativo / mixto]</span>. Marco teórico de referencia: <span class="campo">[teoría y autores principales]</span>. Diseño: <span class="campo">[descripción breve]</span>. Muestra o corpus: <span class="campo">[descripción, sin datos identificables]</span>.
 
 Reglas de trabajo:
 - Responde en español, con precisión conceptual.
 - No inventes referencias ni cifras. Si no tienes la fuente, dilo.
 - Distingue lo establecido en la literatura, lo que está en disputa y lo que es inferencia tuya.
 - Cuando uses internet, cita con liga y señala si la fuente es revisada por pares.
-- Citas y referencias en formato [APA 7 / Chicago / el que pida la revista].
-- Los casos del estudio se identifican solo por código (P01, P02...).</pre>
+- Citas y referencias en formato <span class="campo">[APA 7 / Chicago / el que pida la revista]</span>.
+- Los casos del estudio se identifican solo por código (P01, P02...).</pre></div>
   <div class="recuadro aviso">
     <strong>Qué no subir al Proyecto</strong>
     <p>Bases de datos con información identificable, grabaciones, transcripciones sin anonimizar, manuscritos ajenos en dictamen, y datos no publicados de colegas que no te hayan autorizado a usarlos así.</p>
@@ -463,11 +595,11 @@ Reglas de trabajo:
     <li>Ve a <em>Customize › Skills</em>, da clic en <strong>«+»</strong>, luego en <em>Create skill › Upload a skill</em> y sube el ZIP.</li>
     <li>Revisa que su interruptor esté encendido.</li>
   </ol>
-  <p>La skill queda guardada en tu cuenta y funciona en el chat y en Cowork, en la web y en la app de escritorio, sin reiniciar nada. Claude la usa sola cuando la tarea coincide con su descripción, o cuando se lo pides por su nombre.</p>
+  <p>La skill queda guardada en tu cuenta y funciona en cualquier conversación, en la web y en la app de escritorio, sin reiniciar nada. Claude la usa sola cuando la tarea coincide con su descripción, o cuando se lo pides por su nombre.</p>
 
   <h3>Cómo crear la tuya</h3>
   <p>Una skill es una carpeta con un archivo <code>SKILL.md</code>. Arriba lleva un nombre y una descripción; abajo, las instrucciones. Para un investigador, las candidatas naturales son las tareas que repites con criterios fijos: fichar un artículo, revisar el formato de un manuscrito, evaluar un avance de tesis. Un ejemplo:</p>
-  <pre class="prompt">---
+  <div class="plantilla codigo" data-titulo="SKILL.md"><pre>---
 name: ficha-de-lectura
 description: Genera la ficha de lectura estandarizada de un artículo académico. Úsala al procesar literatura para una revisión o un marco teórico.
 ---
@@ -487,7 +619,7 @@ Al recibir un artículo, produce una ficha con esta estructura exacta:
 
 Reglas: no inventes nada que no esté en el texto. Si un apartado no aplica o
 el artículo no lo reporta, escribe "no reportado". Distingue siempre lo que
-dice el artículo de lo que es interpretación tuya.</pre>
+dice el artículo de lo que es interpretación tuya.</pre></div>
   <ul>
     <li><strong>Nombre:</strong> en minúsculas y con guiones, sin las palabras «claude» ni «anthropic».</li>
     <li><strong>Descripción:</strong> de 200 caracteres o menos. De ella depende que Claude sepa cuándo usarla, así que di qué hace y cuándo aplica.</li>
@@ -504,8 +636,8 @@ dice el artículo de lo que es interpretación tuya.</pre>
   <h2>9. Tareas programadas</h2>
   <p>Claude puede repetir una tarea cada hora, cada día, cada semana o en días hábiles. Se crean escribiendo <code>/schedule</code>, desde <em>Scheduled</em> en la barra lateral o, en la experiencia nueva, pidiéndolo con tus palabras. Corren en la nube aunque tu computadora esté apagada.</p>
   <p>Para un investigador, el uso natural es la vigilancia: literatura nueva, convocatorias y cambios normativos. Dos ejemplos:</p>
-  <pre class="prompt">Cada lunes a las 7:00, busca artículos y preprints publicados la semana anterior sobre [tu tema], en español e inglés. Revisa repositorios de acceso abierto y servidores de preprints. Dame un máximo de 12 viñetas, cada una con título, autores, año, una línea de por qué me puede interesar y la liga. Si no hay nada relevante, dímelo en una línea en lugar de rellenar.</pre>
-  <pre class="prompt">El día 1 de cada mes, revisa las convocatorias abiertas de financiamiento a la investigación en [tu país o área] cuyo cierre caiga en los siguientes 90 días. Para cada una: organismo, monto, requisitos de elegibilidad, fecha de cierre y liga oficial. Ordénalas por fecha de cierre.</pre>
+  <div class="plantilla" data-titulo="Tarea programada: literatura nueva"><pre>Cada lunes a las 7:00, busca artículos y preprints publicados la semana anterior sobre <span class="campo">[tu tema]</span>, en español e inglés. Revisa repositorios de acceso abierto y servidores de preprints. Dame un máximo de 12 viñetas, cada una con título, autores, año, una línea de por qué me puede interesar y la liga. Si no hay nada relevante, dímelo en una línea en lugar de rellenar.</pre></div>
+  <div class="plantilla" data-titulo="Tarea programada: convocatorias"><pre>El día 1 de cada mes, revisa las convocatorias abiertas de financiamiento a la investigación en <span class="campo">[tu país o área]</span> cuyo cierre caiga en los siguientes 90 días. Para cada una: organismo, monto, requisitos de elegibilidad, fecha de cierre y liga oficial. Ordénalas por fecha de cierre.</pre></div>
   <div class="recuadro aviso">
     <strong>Solo con información pública</strong>
     <p>Una tarea programada corre sin que tú la estés viendo. Úsala para vigilar fuentes abiertas, no para procesar tus datos ni tus borradores.</p>
@@ -555,74 +687,74 @@ dice el artículo de lo que es interpretación tuya.</pre>
   <p>Puntos de partida para las etapas donde la herramienta rinde más. Úsalos dentro del Proyecto de tu línea y ajústalos a tu caso.</p>
 
   <h4>Delimitar el problema y la pregunta</h4>
-  <pre class="prompt">Tengo un tema amplio: [descríbelo en tres o cuatro líneas]. Ayúdame a convertirlo en una pregunta de investigación viable para una tesis doctoral. Propón cinco formulaciones distintas, de la más ambiciosa a la más acotada. Para cada una: qué tendría que observar para responderla, qué diseño pediría, cuánto tiempo de campo supondría y cuál es su riesgo principal. Después dime cuál recomendarías y por qué.</pre>
+  <div class="plantilla" data-titulo="Prompt"><pre>Tengo un tema amplio: <span class="campo">[descríbelo en tres o cuatro líneas]</span>. Ayúdame a convertirlo en una pregunta de investigación viable para una tesis doctoral. Propón cinco formulaciones distintas, de la más ambiciosa a la más acotada. Para cada una: qué tendría que observar para responderla, qué diseño pediría, cuánto tiempo de campo supondría y cuál es su riesgo principal. Después dime cuál recomendarías y por qué.</pre></div>
 
   <h4>Revisión de literatura y estado del arte</h4>
-  <pre class="prompt">Estoy mapeando la literatura sobre [tema] para el estado del arte de mi tesis. Busca en acceso abierto y repositorios, y dame: (1) las corrientes o escuelas que organizan el campo, (2) los cinco trabajos más citados de cada una con su aporte en una línea, (3) los debates abiertos, con quién sostiene cada posición, y (4) los vacíos que la propia literatura reconoce.
+  <div class="plantilla" data-titulo="Prompt"><pre>Estoy mapeando la literatura sobre <span class="campo">[tema]</span> para el estado del arte de mi tesis. Busca en acceso abierto y repositorios, y dame: (1) las corrientes o escuelas que organizan el campo, (2) los cinco trabajos más citados de cada una con su aporte en una línea, (3) los debates abiertos, con quién sostiene cada posición, y (4) los vacíos que la propia literatura reconoce.
 
-Marca cada fuente como revisada por pares, preprint o literatura gris, y dame la liga. No incluyas ninguna referencia que no hayas podido localizar: prefiero una lista corta y verificable.</pre>
+Marca cada fuente como revisada por pares, preprint o literatura gris, y dame la liga. No incluyas ninguna referencia que no hayas podido localizar: prefiero una lista corta y verificable.</pre></div>
   <p class="nota-pie">Esto es exploración, no búsqueda sistemática. Si tu revisión va a declararse como sistemática, la estrategia de búsqueda tiene que correr en las bases indexadas y documentarse conforme al protocolo que uses.</p>
 
   <h4>Construcción del marco teórico</h4>
-  <pre class="prompt">Te subo los ocho artículos que son la base de mi marco teórico. Hazme un mapa conceptual en texto: qué constructos aparecen, cómo define cada autor los que comparte con los demás, dónde las definiciones son incompatibles entre sí, y qué relaciones entre constructos están propuestas y cuáles probadas empíricamente. Señala en qué puntos mi marco quedaría internamente contradictorio si los junto sin más.</pre>
+  <div class="plantilla" data-titulo="Prompt"><pre>Te subo los ocho artículos que son la base de mi marco teórico. Hazme un mapa conceptual en texto: qué constructos aparecen, cómo define cada autor los que comparte con los demás, dónde las definiciones son incompatibles entre sí, y qué relaciones entre constructos están propuestas y cuáles probadas empíricamente. Señala en qué puntos mi marco quedaría internamente contradictorio si los junto sin más.</pre></div>
 
   <h4>Diseño metodológico e instrumentos</h4>
-  <pre class="prompt">Estoy diseñando un cuestionario para medir [constructo] en [población]. Te paso los ítems que llevo. Para cada uno: señala si induce la respuesta, si es doble, si usa un lenguaje que la población podría no entender, y si realmente mide el constructo o algo adyacente. Propón la versión corregida.
+  <div class="plantilla" data-titulo="Prompt: cuestionario"><pre>Estoy diseñando un cuestionario para medir <span class="campo">[constructo]</span> en <span class="campo">[población]</span>. Te paso los ítems que llevo. Para cada uno: señala si induce la respuesta, si es doble, si usa un lenguaje que la población podría no entender, y si realmente mide el constructo o algo adyacente. Propón la versión corregida.
 
-Después dime qué dimensiones del constructo quedan sin cubrir según la literatura, y qué escalas ya validadas existen para medirlo, con su referencia.</pre>
-  <pre class="prompt">Revisa esta guía de entrevista semiestructurada para un estudio [fenomenológico / de caso múltiple / etnográfico]. Evalúa: si las preguntas abren o cierran, si el orden genera sesgo de arrastre, si hay preguntas que un participante no podría responder honestamente, y qué falta para cubrir mis categorías de análisis. Propón la versión corregida y las preguntas de profundización para cada bloque.</pre>
+Después dime qué dimensiones del constructo quedan sin cubrir según la literatura, y qué escalas ya validadas existen para medirlo, con su referencia.</pre></div>
+  <div class="plantilla" data-titulo="Prompt: guía de entrevista"><pre>Revisa esta guía de entrevista semiestructurada para un estudio <span class="campo">[fenomenológico / de caso múltiple / etnográfico]</span>. Evalúa: si las preguntas abren o cierran, si el orden genera sesgo de arrastre, si hay preguntas que un participante no podría responder honestamente, y qué falta para cubrir mis categorías de análisis. Propón la versión corregida y las preguntas de profundización para cada bloque.</pre></div>
 
   <h4>Análisis cuantitativo</h4>
-  <pre class="prompt">Tengo una muestra de [n] casos y quiero probar si [variable independiente] predice [variable dependiente], controlando por [covariables]. Mis variables son [escala de medición de cada una].
+  <div class="plantilla" data-titulo="Prompt"><pre>Tengo una muestra de <span class="campo">[n]</span> casos y quiero probar si <span class="campo">[variable independiente]</span> predice <span class="campo">[variable dependiente]</span>, controlando por <span class="campo">[covariables]</span>. Mis variables son <span class="campo">[escala de medición de cada una]</span>.
 
-Primero dime qué técnica es apropiada y por qué, qué supuestos tendría que verificar antes y cómo los verifico. Luego escríbeme el código en R, comentado línea por línea, incluyendo la verificación de supuestos y los diagnósticos. Al final, explícame cómo leer cada parte de la salida y qué conclusiones NO podría sacar de este diseño.</pre>
+Primero dime qué técnica es apropiada y por qué, qué supuestos tendría que verificar antes y cómo los verifico. Luego escríbeme el código en R, comentado línea por línea, incluyendo la verificación de supuestos y los diagnósticos. Al final, explícame cómo leer cada parte de la salida y qué conclusiones NO podría sacar de este diseño.</pre></div>
 
   <h4>Análisis cualitativo</h4>
-  <pre class="prompt">Te paso extractos ya anonimizados de ocho entrevistas, identificados de P01 a P08, sobre [tema]. Propón un libro de códigos inductivo: cada código con su definición operativa, criterios de inclusión y exclusión, y un ejemplo textual con su clave de participante. Agrúpalos en categorías y dime qué relaciones ves entre ellas.
+  <div class="plantilla" data-titulo="Prompt"><pre>Te paso extractos ya anonimizados de ocho entrevistas, identificados de P01 a P08, sobre <span class="campo">[tema]</span>. Propón un libro de códigos inductivo: cada código con su definición operativa, criterios de inclusión y exclusión, y un ejemplo textual con su clave de participante. Agrúpalos en categorías y dime qué relaciones ves entre ellas.
 
-Marca con claridad qué es lo que dicen los participantes y qué es interpretación tuya. Señala también los extractos que no encajan en ningún código: ahí suele estar lo interesante.</pre>
+Marca con claridad qué es lo que dicen los participantes y qué es interpretación tuya. Señala también los extractos que no encajan en ningún código: ahí suele estar lo interesante.</pre></div>
 
   <h4>Redacción y estructura del manuscrito</h4>
-  <pre class="prompt">Te paso el borrador de mi sección de discusión. No la reescribas: diagnostícala. Dime (1) cuál es el argumento central y si se sostiene de principio a fin, (2) qué afirmaciones van más allá de lo que permiten mis datos, (3) dónde repito lo que ya dije en resultados en lugar de interpretarlo, y (4) qué implicación importante de mis hallazgos no estoy desarrollando. Después propón una estructura alternativa en forma de esquema.</pre>
+  <div class="plantilla" data-titulo="Prompt"><pre>Te paso el borrador de mi sección de discusión. No la reescribas: diagnostícala. Dime (1) cuál es el argumento central y si se sostiene de principio a fin, (2) qué afirmaciones van más allá de lo que permiten mis datos, (3) dónde repito lo que ya dije en resultados en lugar de interpretarlo, y (4) qué implicación importante de mis hallazgos no estoy desarrollando. Después propón una estructura alternativa en forma de esquema.</pre></div>
 
   <h4>Publicación y respuesta a dictámenes</h4>
-  <pre class="prompt">Mi manuscrito trata sobre [tema], con enfoque [X] y una contribución que consiste en [Y]. Sugiéreme ocho revistas donde podría enviarlo. Para cada una: alcance temático, si publica trabajos con este enfoque metodológico, idioma, modelo de acceso y lo que encuentres sobre tiempos de dictamen. Ordénalas por ajuste real, no por prestigio, y dime cuáles descartaría y por qué.</pre>
-  <pre class="prompt">Te paso los comentarios de los dictaminadores de mi artículo y el manuscrito. Ayúdame a organizar la respuesta: clasifica cada observación en atendible con cambio menor, atendible con cambio mayor, o no procedente con argumento. Para las dos primeras, dime exactamente qué habría que modificar y dónde. Para las terceras, ayúdame a redactar el argumento de por qué no procede, en tono respetuoso y sin concesiones innecesarias.</pre>
+  <div class="plantilla" data-titulo="Prompt: elegir revista"><pre>Mi manuscrito trata sobre <span class="campo">[tema]</span>, con enfoque <span class="campo">[X]</span> y una contribución que consiste en <span class="campo">[Y]</span>. Sugiéreme ocho revistas donde podría enviarlo. Para cada una: alcance temático, si publica trabajos con este enfoque metodológico, idioma, modelo de acceso y lo que encuentres sobre tiempos de dictamen. Ordénalas por ajuste real, no por prestigio, y dime cuáles descartaría y por qué.</pre></div>
+  <div class="plantilla" data-titulo="Prompt: responder al dictamen"><pre>Te paso los comentarios de los dictaminadores de mi artículo y el manuscrito. Ayúdame a organizar la respuesta: clasifica cada observación en atendible con cambio menor, atendible con cambio mayor, o no procedente con argumento. Para las dos primeras, dime exactamente qué habría que modificar y dónde. Para las terceras, ayúdame a redactar el argumento de por qué no procede, en tono respetuoso y sin concesiones innecesarias.</pre></div>
   <p class="nota-pie">Esto aplica a dictámenes <em>de tu propio trabajo</em>. El manuscrito de otra persona que tú estés dictaminando no entra en ninguna herramienta de IA (sección 2, regla 3).</p>
 
   <h4>Dirección de tesis y docencia</h4>
-  <pre class="prompt">Te paso el avance de capítulo de una persona que dirijo, en nivel [maestría / doctorado]. Prepárame la retroalimentación: señala los problemas por orden de gravedad, distinguiendo los de fondo (problema mal planteado, método que no responde a la pregunta, conclusiones no sostenidas) de los de forma. Para cada observación, formula una pregunta que la lleve a darse cuenta sola, en lugar de darle la respuesta. No reescribas su texto.</pre>
-  <pre class="prompt">Diseña la sesión de un seminario de posgrado de dos horas sobre [tema]. Público: estudiantes de maestría de [disciplina], con formación desigual en metodología. Incluye: objetivo de aprendizaje, una pregunta detonadora, dos lecturas previas, una actividad práctica de 40 minutos con instrucciones para el estudiante, los errores que suelen cometer en esa actividad, y una rúbrica de evaluación de tres criterios.</pre>
+  <div class="plantilla" data-titulo="Prompt: retroalimentación de un avance"><pre>Te paso el avance de capítulo de una persona que dirijo, en nivel <span class="campo">[maestría / doctorado]</span>. Prepárame la retroalimentación: señala los problemas por orden de gravedad, distinguiendo los de fondo (problema mal planteado, método que no responde a la pregunta, conclusiones no sostenidas) de los de forma. Para cada observación, formula una pregunta que la lleve a darse cuenta sola, en lugar de darle la respuesta. No reescribas su texto.</pre></div>
+  <div class="plantilla" data-titulo="Prompt: sesión de seminario"><pre>Diseña la sesión de un seminario de posgrado de dos horas sobre <span class="campo">[tema]</span>. Público: estudiantes de maestría de <span class="campo">[disciplina]</span>, con formación desigual en metodología. Incluye: objetivo de aprendizaje, una pregunta detonadora, dos lecturas previas, una actividad práctica de 40 minutos con instrucciones para el estudiante, los errores que suelen cometer en esa actividad, y una rúbrica de evaluación de tres criterios.</pre></div>
 
   <h4>Difusión y transferencia</h4>
-  <pre class="prompt">Convierte los hallazgos de este artículo en tres productos de difusión: (1) un resumen de 250 palabras para público no especializado, sin tecnicismos y sin exagerar los alcances; (2) un guion de cinco minutos para presentarlo en video; y (3) una nota de una cuartilla dirigida a quien toma decisiones en [sector], que diga qué implica esto para su práctica. En los tres, conserva las salvedades del estudio: no quiero divulgación que prometa más de lo que encontramos.</pre>
+  <div class="plantilla" data-titulo="Prompt"><pre>Convierte los hallazgos de este artículo en tres productos de difusión: (1) un resumen de 250 palabras para público no especializado, sin tecnicismos y sin exagerar los alcances; (2) un guion de cinco minutos para presentarlo en video; y (3) una nota de una cuartilla dirigida a quien toma decisiones en <span class="campo">[sector]</span>, que diga qué implica esto para su práctica. En los tres, conserva las salvedades del estudio: no quiero divulgación que prometa más de lo que encontramos.</pre></div>
 </section>
 
 <section id="limitaciones">
   <h2>12. Qué no conviene delegarle</h2>
   <p>No por una regla externa, sino porque hace mal esas cosas o porque al hacerlas destruye el valor del trabajo.</p>
   <div class="tarjetas dos">
-    <div class="tarjeta coral">
+    <div class="tarjeta">
       <h4>La búsqueda sistemática</h4>
       <p>No entra a las bases indexadas, no replica una cadena booleana y no garantiza exhaustividad. Sirve para explorar, no para cumplir un protocolo de revisión sistemática.</p>
     </div>
-    <div class="tarjeta coral">
+    <div class="tarjeta">
       <h4>Las referencias</h4>
       <p>Las inventa. Cada una se verifica en la fuente, sin excepción. Una referencia falsa en un artículo publicado es una corrección, en el mejor de los casos.</p>
     </div>
-    <div class="tarjeta coral">
+    <div class="tarjeta">
       <h4>La interpretación de tus resultados</h4>
       <p>Puede proponer lecturas, y ayuda mucho para destrabarte. Pero la interpretación es el lugar donde tu conocimiento del campo y del trabajo de campo es insustituible, y donde un revisor competente notará de inmediato que alguien habló de lo que no conoce.</p>
     </div>
-    <div class="tarjeta coral">
+    <div class="tarjeta">
       <h4>La originalidad del aporte</h4>
       <p>Por construcción, tiende a lo que ya existe en la literatura. Puede ayudarte a ver dónde está el hueco; no puede decidir por ti qué vale la pena decir.</p>
     </div>
-    <div class="tarjeta gold">
+    <div class="tarjeta">
       <h4>El juicio sobre personas</h4>
       <p>Evaluar a un estudiante, dictaminar a un colega, decidir una autoría. Son actos de responsabilidad profesional que no se delegan, aunque se pueda preparar el material con apoyo.</p>
     </div>
-    <div class="tarjeta gold">
+    <div class="tarjeta">
       <h4>Las decisiones éticas</h4>
       <p>Qué puedes preguntar, a quién, y qué puedes publicar sobre ello. Eso lo define tu comité de ética y tu propio criterio, no una herramienta.</p>
     </div>
@@ -638,7 +770,7 @@ Marca con claridad qué es lo que dicen los participantes y qué es interpretaci
   <p>Mientras más puede hacer Claude, más importa cómo lo usas. Estas son las recomendaciones de Anthropic, aterrizadas al trabajo académico:</p>
   <ul>
     <li><strong>Instrucciones escondidas.</strong> Una página web o un PDF puede traer instrucciones escondidas para que Claude haga algo que no pediste. Si propone una acción rara, detenlo.</li>
-    <li><strong>Modo Manual y lectura atenta.</strong> Revisa lo que vas a aprobar, sobre todo si borra, envía o modifica algo.</li>
+    <li><strong>Aprobación manual y lectura atenta.</strong> Con tus archivos, o en un sitio que usas por primera vez, cambia a <em>«Manually approve»</em> y revisa lo que vas a aprobar, sobre todo si borra, envía o modifica algo.</li>
     <li><strong>Carpeta dedicada y respaldo.</strong> Conecta solo la carpeta del trabajo en curso, nunca la raíz de tus documentos, y guarda copia de lo importante. Tus datos de campo y tus borradores no deberían estar en la misma carpeta que conectas.</li>
     <li><strong>Solo fuentes confiables</strong> para conectores, plugins y skills.</li>
     <li><strong>Navegador.</strong> El navegador integrado puede importar las sesiones de tu navegador. Deja sin marcar la banca, el correo institucional y los sistemas donde gestionas evaluaciones o dictámenes. Claude in Chrome tiene sus propios riesgos: lee su guía de seguridad antes de activarlo.</li>
@@ -652,22 +784,203 @@ Marca con claridad qué es lo que dicen los participantes y qué es interpretaci
   <h2>14. Ayuda y recursos</h2>
   <div class="tarjetas dos">
     <div class="tarjeta"><h4>Centro de ayuda</h4><p><code>support.claude.com</code>. Dentro de la app, en el menú › <em>Get help</em>, hay un asistente y, si hace falta, atención humana.</p></div>
-    <div class="tarjeta gold"><h4>Cursos gratuitos</h4><p><code>academy.claude.com</code>, con cursos de Anthropic para aprender a usar Claude.</p></div>
-    <div class="tarjeta green"><h4>Ejemplos de skills</h4><p><code>github.com/anthropics/skills</code>. Revísalas antes de instalarlas.</p></div>
-    <div class="tarjeta navy"><h4>Políticas editoriales</h4><p>Antes de enviar, consulta las instrucciones para autores de tu revista objetivo y los lineamientos de integridad de tu institución. Son la referencia que manda.</p></div>
+    <div class="tarjeta"><h4>Cursos gratuitos</h4><p><code>academy.claude.com</code>, con cursos de Anthropic para aprender a usar Claude.</p></div>
+    <div class="tarjeta"><h4>Ejemplos de skills</h4><p><code>github.com/anthropics/skills</code>. Revísalas antes de instalarlas.</p></div>
+    <div class="tarjeta"><h4>Políticas editoriales</h4><p>Antes de enviar, consulta las instrucciones para autores de tu revista objetivo y los lineamientos de integridad de tu institución. Son la referencia que manda.</p></div>
   </div>
   <p class="nota-pie">Claude cambia con frecuencia. Las funciones, modelos y límites descritos aquí corresponden a octubre de 2026. Si algo no coincide con lo que ves en tu app, la documentación oficial de Anthropic es la que manda.</p>
 </section>
 
+<section id="citar">
+  <h2>Cómo citar este manual</h2>
+  <p>Referencia en formato APA, 7.ª edición:</p>
+  <div class="plantilla cita" data-titulo="Referencia APA 7" data-copiar="html">
+    <p class="referencia">Valdez Palazuelos, O. (2026, 29 de octubre). <em>Manual de Claude para investigación de posgrado</em>. https://omarvaldez.com/manual-claude/</p>
+  </div>
+  <p>Cita en el texto: (Valdez Palazuelos, 2026) o, en forma narrativa, Valdez Palazuelos (2026).</p>
+  <p class="nota-pie">La fecha de la referencia es la de la última actualización. Si el manual cambia después de que lo consultes, conserva la fecha de la versión que usaste: aparece al inicio de la página y en el PDF.</p>
+</section>
+
+<section id="cambios">
+  <h2>Registro de cambios</h2>
+  <p>Claude cambia rápido, y este manual con él. Aquí queda qué se modificó y cuándo.</p>
+  <ol class="cambios">
+    <li>
+      <time datetime="2026-10-29">29 de octubre de 2026</time>
+      <ul>
+        <li>Sección 4: las funciones de Cowork ya están en cualquier conversación. El manual deja de presentarlo como un modo aparte y explica qué ves si tu cuenta aún no cambia.</li>
+        <li>Sección 4: en la experiencia nueva del plan Pro, el modo de permisos predeterminado es <em>«Automatically approve»</em>, no el manual. Las secciones 4, 6 y 13 usan ya los nombres de los tres modos.</li>
+        <li>Diseño: índice fijo con la sección actual, plantillas con botón Copiar, versión en PDF, cómo citar y este registro.</li>
+      </ul>
+    </li>
+    <li>
+      <time datetime="2026-10-09">9 de octubre de 2026</time>
+      <ul>
+        <li>Primera publicación.</li>
+      </ul>
+    </li>
+  </ol>
+</section>
+
 <footer class="pie">
-  <p><strong>Manual de Claude para investigación de posgrado</strong> · Octubre de 2026.</p>
+  <p><strong>Manual de Claude para investigación de posgrado</strong> · Última actualización: 29 de octubre de 2026.</p>
   <p>Material elaborado por el <strong>Dr. Omar Valdez Palazuelos</strong>, Investigador SNII Nivel I.</p>
+  <p>Guía independiente, sin afiliación con Anthropic ni respaldo de su parte. Claude es una marca de Anthropic.</p>
   <p>© 2026 Omar Valdez Palazuelos. Todos los derechos reservados. Se autoriza su uso con fines académicos y de formación citando la fuente. Este documento no constituye asesoría legal ni sustituye las políticas de integridad académica de cada institución o revista.</p>
-  <p style="margin-top:10px"><a href="/">omarvaldez.com</a> &middot; <a href="/#contacto">Contacto</a></p>
+  <p><a href="/">omarvaldez.com</a> &middot; <a href="/#contacto">Contacto</a></p>
 </footer>
 
+</main>
 </div>
 
+<div class="flotantes" id="flotantes">
+  <button type="button" class="flotante" id="abrir-indice" aria-haspopup="dialog" aria-controls="hoja-indice"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Índice</button>
+  <button type="button" class="flotante arriba" id="volver-arriba" aria-label="Volver arriba"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
 </div>
+
+<dialog class="hoja" id="hoja-indice" aria-labelledby="titulo-hoja">
+  <div class="hoja-cabeza">
+    <p class="indice-titulo" id="titulo-hoja">Contenido</p>
+    <button type="button" class="btn" data-cerrar>Cerrar</button>
+  </div>
+  <div class="hoja-cuerpo"></div>
+</dialog>
+
+<p class="oculto" id="aviso-copiado" role="status" aria-live="polite"></p>
+
+<script>
+(function () {
+  var reducir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var aviso = document.getElementById('aviso-copiado');
+  var iconoCopiar = '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+  var iconoListo = '<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  /* Botón Copiar en cada plantilla. La referencia APA se copia también
+     como HTML para que Word conserve la cursiva del título. */
+  function copiar(texto, html) {
+    if (html && navigator.clipboard && window.ClipboardItem) {
+      return navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([texto], { type: 'text/plain' }),
+        'text/html': new Blob([html], { type: 'text/html' })
+      })]).catch(function () { return navigator.clipboard.writeText(texto); });
+    }
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(texto);
+    return new Promise(function (resolver, rechazar) {
+      var area = document.createElement('textarea');
+      area.value = texto;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      var hecho = false;
+      try { hecho = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(area);
+      if (hecho) resolver(); else rechazar();
+    });
+  }
+
+  document.querySelectorAll('.plantilla').forEach(function (caja) {
+    var fuente = caja.querySelector('pre, .referencia');
+    var titulo = caja.getAttribute('data-titulo') || 'Plantilla';
+    var barra = document.createElement('div');
+    var etiqueta = document.createElement('span');
+    var boton = document.createElement('button');
+    var espera;
+    barra.className = 'plantilla-barra';
+    etiqueta.textContent = titulo;
+    boton.type = 'button';
+    boton.className = 'copiar';
+    boton.setAttribute('aria-label', 'Copiar: ' + titulo);
+    boton.innerHTML = iconoCopiar + '<span>Copiar</span>';
+    boton.addEventListener('click', function () {
+      var texto = fuente.tagName === 'PRE' ? fuente.textContent.trim() : fuente.textContent.replace(/\s+/g, ' ').trim();
+      var html = caja.getAttribute('data-copiar') === 'html' ? '<p>' + fuente.innerHTML + '</p>' : null;
+      copiar(texto, html).then(function () {
+        boton.classList.add('listo');
+        boton.innerHTML = iconoListo + '<span>Copiado</span>';
+        aviso.textContent = titulo + ': copiado al portapapeles';
+      }, function () {
+        boton.innerHTML = '<span>No se pudo copiar</span>';
+        aviso.textContent = 'No se pudo copiar. Selecciona el texto y cópialo a mano.';
+      });
+      clearTimeout(espera);
+      espera = setTimeout(function () {
+        boton.classList.remove('listo');
+        boton.innerHTML = iconoCopiar + '<span>Copiar</span>';
+      }, 2200);
+    });
+    barra.appendChild(etiqueta);
+    barra.appendChild(boton);
+    caja.insertBefore(barra, caja.firstChild);
+  });
+
+  /* Índice: la hoja del celular reutiliza las listas del índice lateral */
+  var lateral = document.querySelector('.lateral');
+  var hoja = document.getElementById('hoja-indice');
+  var cuerpoHoja = hoja.querySelector('.hoja-cuerpo');
+  lateral.querySelectorAll('.lista-indice, .btn').forEach(function (nodo) {
+    cuerpoHoja.appendChild(nodo.cloneNode(true));
+  });
+
+  var enlaces = document.querySelectorAll('.lista-indice a');
+  var secciones = Array.prototype.slice.call(document.querySelectorAll('.contenido section[id]'));
+  var flotantes = document.getElementById('flotantes');
+  var actual = null;
+  var pendiente = false;
+
+  function llevarALaVista(contenedor, enlace) {
+    if (!enlace || contenedor.scrollHeight <= contenedor.clientHeight) return;
+    var caja = contenedor.getBoundingClientRect();
+    var fila = enlace.getBoundingClientRect();
+    if (fila.top < caja.top + 40 || fila.bottom > caja.bottom - 40) {
+      contenedor.scrollTop += fila.top - caja.top - caja.height / 3;
+    }
+  }
+
+  function revisar() {
+    pendiente = false;
+    var limite = Math.min(160, window.innerHeight * 0.3);
+    var nuevo = null;
+    for (var i = 0; i < secciones.length; i++) {
+      if (secciones[i].getBoundingClientRect().top <= limite) nuevo = secciones[i].id;
+      else break;
+    }
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+      nuevo = secciones[secciones.length - 1].id;
+    }
+    if (nuevo !== actual) {
+      actual = nuevo;
+      enlaces.forEach(function (a) {
+        if (a.getAttribute('href') === '#' + actual) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+      llevarALaVista(lateral, lateral.querySelector('[aria-current]'));
+    }
+    flotantes.classList.toggle('visible', window.scrollY > 420);
+  }
+
+  function alMoverse() {
+    if (!pendiente) { pendiente = true; window.requestAnimationFrame(revisar); }
+  }
+  window.addEventListener('scroll', alMoverse, { passive: true });
+  window.addEventListener('resize', alMoverse);
+  revisar();
+
+  document.getElementById('abrir-indice').addEventListener('click', function () {
+    if (typeof hoja.showModal !== 'function') { location.hash = 'indice'; return; }
+    hoja.showModal();
+    llevarALaVista(hoja, hoja.querySelector('[aria-current]'));
+  });
+  hoja.addEventListener('click', function (evento) {
+    if (evento.target === hoja || evento.target.closest('[data-cerrar]') || evento.target.closest('a[href^="#"]')) hoja.close();
+  });
+
+  document.getElementById('volver-arriba').addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reducir ? 'auto' : 'smooth' });
+  });
+})();
+</script>
 </body>
 </html>
+
