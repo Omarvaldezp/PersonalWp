@@ -22,7 +22,8 @@ tu foto):
 
 > Investigación aplicada en IA, blockchain y transformación digital de las MiPyMES · omarvaldez.com
 
-Si quieres, te lo genero como imagen lista para subir.
+Listo: `docs/img/banner-linkedin.png` (generado con Pillow; el script está en
+el historial de la sesión). Texto a la derecha, para que no lo tape la foto.
 
 ### Titular (máximo 220 caracteres)
 **Recomendado (178):**
