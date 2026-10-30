@@ -15,11 +15,8 @@ confirmación.
   banner de LinkedIn, con el texto a la derecha para que no lo tape la foto).
 - **Foto:** la misma de LinkedIn, ORCID, ResearchGate y Google Académico.
 - **Nombre** (máximo 50 caracteres): `Dr. Omar Valdez Palazuelos`
-- **Biografía** (máximo 160 caracteres):
-  - Recomendada (159):
-    > Profesor-Investigador en la UAS · SNII Nivel I. Investigo IA, blockchain y transformación digital de las MiPyMES. Artículos, podcast y video: omarvaldez.com
-  - Sin la universidad (151):
-    > Profesor-Investigador · SNII Nivel I. Investigo IA, blockchain y transformación digital de las MiPyMES. Artículos, podcast y video en omarvaldez.com
+- **Biografía** (151 de 160 caracteres; elegida por Omar, sin la universidad):
+  > Profesor-Investigador · SNII Nivel I. Investigo IA, blockchain y transformación digital de las MiPyMES. Artículos, podcast y video en omarvaldez.com
 - **Ubicación:** `Culiacán, Sinaloa, México`
 - **Sitio web:** `https://omarvaldez.com`
 - **Usuario:** `@valdezomar` se queda. Cambiarlo rompe los enlaces y las
@@ -88,7 +85,7 @@ Reglas:
 - Trabaja por las etapas del archivo. Al terminar cada una, detente, dime qué
   cambiaste y espera mi "sí" antes de seguir.
 - Antes de guardar o publicar cualquier cosa, muéstrame el texto exacto y
-  pregúntame qué versión de la biografía uso.
+  usa la biografía del archivo tal cual.
 - No publiques nada más que la publicación fijada, y sólo cuando te la apruebe.
 - No borres publicaciones, no sigas ni dejes de seguir a nadie y no mandes
   mensajes directos.
